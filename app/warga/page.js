@@ -56,18 +56,27 @@ export default function WargaPage() {
     }
   };
 
+  // State Toast Notification System
+  const [toastNotification, setToastNotification] = useState(null);
+
+  const showToast = (message, type = 'info') => {
+    setToastNotification({ message, type });
+    setTimeout(() => setToastNotification(null), 5000);
+  };
+
   const handleDiscordLogin = () => {
     const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || process.env.DISCORD_CLIENT_ID || '';
     const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://warga.supercali.tech';
     const redirectUri = `${currentOrigin}/warga`;
 
     if (!clientId || clientId === '123456789012345678') {
-      alert("PENTING: Set NEXT_PUBLIC_DISCORD_CLIENT_ID environment variable di hosting.");
+      showToast("PENTING: Set NEXT_PUBLIC_DISCORD_CLIENT_ID environment variable di Vercel / hosting.", "warning");
       return;
     }
 
     window.location.href = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=identify`;
   };
+
 
   const handleRegisterCitizen = (e) => {
     e.preventDefault();
@@ -88,8 +97,28 @@ export default function WargaPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060812] text-slate-100 font-sans pb-16">
+    <div className="min-h-screen bg-[#060812] text-slate-100 font-sans pb-16 relative">
+      
+      {/* GLASSMORPHISM TOAST NOTIFICATION SYSTEM */}
+      {toastNotification && (
+        <div className="fixed top-5 right-5 z-50 animate-bounce">
+          <div className={`p-4 rounded-2xl border backdrop-blur-xl shadow-2xl flex items-center gap-3 text-xs font-black text-white ${
+            toastNotification.type === 'error' ? 'bg-red-950/90 border-red-500/50 text-red-300' :
+            toastNotification.type === 'success' ? 'bg-emerald-950/90 border-emerald-500/50 text-emerald-300' :
+            'bg-amber-950/90 border-amber-500/50 text-amber-300'
+          }`}>
+            <i className={`text-lg fa-solid ${
+              toastNotification.type === 'error' ? 'fa-circle-xmark text-red-400' :
+              toastNotification.type === 'success' ? 'fa-circle-check text-emerald-400' :
+              'fa-bell text-amber-400'
+            }`}></i>
+            <span>{toastNotification.message}</span>
+          </div>
+        </div>
+      )}
+
       {/* Header Khusus Portal Warga */}
+
       <header className="sticky top-0 z-50 px-8 py-4 flex justify-between items-center bg-[#060812]/85 backdrop-blur-md border-b border-emerald-500/30">
         <div className="flex items-center gap-3.5">
           <div className="w-11 h-11 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-xl flex items-center justify-center text-xl shadow-lg shadow-emerald-500/30 text-white">

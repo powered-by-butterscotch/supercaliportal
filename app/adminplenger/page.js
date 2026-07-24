@@ -18,6 +18,14 @@ export default function AdminPlengerPage() {
   });
   const [activeTab, setActiveTab] = useState('overview'); // overview, hierarchy, rewards, weapons, sanctions, commands, donation_system, vehicles
 
+  // State Toast Notification System (NO MORE ANCIENT BROWSER ALERTS!)
+  const [toastNotification, setToastNotification] = useState(null);
+
+  const showToast = (message, type = 'info') => {
+    setToastNotification({ message, type });
+    setTimeout(() => setToastNotification(null), 5000);
+  };
+
   // State Search & Filter Kendaraan
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClassFilter, setSelectedClassFilter] = useState('ALL');
@@ -52,7 +60,7 @@ export default function AdminPlengerPage() {
   // State Reward & RP Target Claims
   const [rewardClaims, setRewardClaims] = useState([
     { id: 101, recipient: 'Dimas Support', type: 'CUSTOM_PED', detail: 'PED Hash: cs_martinmadrazo', reason: 'Reward Staff RP (Resolusi 100 Tiket)', status: 'APPROVED', date: '2026-07-20' },
-    { id: 102, recipient: 'Sultan_Donatur_01', type: 'DONASI_MOBIL', detail: 'Vehicle: agerars (Koenigsegg Agera RS)', reason: 'Paket Donasi Supreme Boss ($150)', status: 'INJECTED', date: '2026-07-22' },
+    { id: 102, recipient: 'Sultan_Donatur_01', type: 'DONASI_MOBIL', detail: 'Vehicle: agerars (Koenigsegg Agera RS)', reason: 'Paket Donasi Supreme Boss (Rp 25M)', status: 'INJECTED', date: '2026-07-22' },
     { id: 103, recipient: 'Gangs_Leader_Vagos', type: 'RUMAH_CUSTOM', detail: 'MLO House ID: 402 (Vagos Gang HQ)', reason: 'Claim Perks Donatur Turf Gang', status: 'INJECTED', date: '2026-07-24' }
   ]);
 
@@ -118,6 +126,7 @@ export default function AdminPlengerPage() {
       });
       setActiveTab('overview');
       setIsAuthorized(true);
+      showToast("🔓 Slay! Login Owner / Plenger Boss Berhasil!", "success");
     } 
     // 🔥 TIER 2: HIGH MANAGEMENT STAFF
     else if (cleanPin === 'mgmtsc2026' || cleanPin === 'mgmt4321') {
@@ -133,6 +142,7 @@ export default function AdminPlengerPage() {
       });
       setActiveTab('overview');
       setIsAuthorized(true);
+      showToast("🔓 Login High Management Berhasil!", "success");
     } 
     // 🛡️ TIER 3: STAFF ADMIN & TICKET MODERATOR
     else if (cleanPin === 'staffsc2026' || cleanPin === 'staff3322') {
@@ -148,6 +158,7 @@ export default function AdminPlengerPage() {
       });
       setActiveTab('overview');
       setIsAuthorized(true);
+      showToast("🔓 Login Staff Moderator Berhasil!", "success");
     } 
     // 💎 TIER 4: DONATUR VIP / GUEST
     else if (cleanPin === 'vipsc2026' || cleanPin === 'vip1122') {
@@ -163,9 +174,10 @@ export default function AdminPlengerPage() {
       });
       setActiveTab('donation_system');
       setIsAuthorized(true);
+      showToast("🔓 Login Donatur VIP Club Berhasil!", "success");
     } 
     else {
-      alert("AKSES DITOLAK! PIN Rahasia Salah.");
+      showToast("❌ AKSES DITOLAK! PIN Rahasia Salah.", "error");
     }
   };
 
@@ -179,22 +191,24 @@ export default function AdminPlengerPage() {
     setHierarchyList([...hierarchyList, added]);
     setNewMember({ name: '', role: '', tier: 'STAFF_ADMIN', discord: '', identifier: '', aceGroup: 'group.mod', status: 'ACTIVE', perkCount: '-' });
     setShowMemberModal(false);
+    showToast(`✨ Anggota baru ${added.name} berhasil ditambahkan ke hirarki!`, "success");
   };
 
   const handleDeleteMember = (id) => {
     if (!userRole.canDelete) {
-      alert("AKSES DITOLAK! Hanya Owner / Founder Plenger Boss yang berhak menghapus anggota dari hirarki.");
+      showToast("❌ AKSES DITOLAK! Hanya Owner / Founder Plenger Boss yang berhak menghapus anggota dari hirarki.", "error");
       return;
     }
     if (confirm("Apakah Anda yakin ingin menghapus user ini dari hirarki admin/donatur?")) {
       setHierarchyList(hierarchyList.filter(item => item.id !== id));
+      showToast("Anggota berhasil dihapus dari hirarki.", "info");
     }
   };
 
   const handleIssueReward = (e) => {
     e.preventDefault();
     if (!userRole.canIssueReward) {
-      alert("AKSES DITOLAK! Role Anda tidak memiliki izin untuk menerbitkan reward/perks.");
+      showToast("❌ AKSES DITOLAK! Role Anda tidak memiliki izin untuk menerbitkan reward/perks.", "error");
       return;
     }
     if (!newReward.recipient || !newReward.reason) return;
@@ -217,7 +231,7 @@ export default function AdminPlengerPage() {
 
     setRewardClaims([newClaim, ...rewardClaims]);
     setNewReward({ recipient: '', type: 'DONASI_MOBIL', vehicleCode: 'agerars', pedHash: '', houseId: '', cashAmount: '500000', reason: '' });
-    alert(`✨ Reward / Perks Donasi Berhasil Dikeluarkan oleh ${userRole.title}!`);
+    showToast(`✨ Reward / Perks Donasi Berhasil Dikeluarkan oleh ${userRole.title}!`, "success");
   };
 
   const handleRedeemVoucher = (e) => {
@@ -227,14 +241,16 @@ export default function AdminPlengerPage() {
 
     if (clean === 'GEMILANG-S1-VIP') {
       setRedeemStatus({ success: true, text: '✨ BERHASIL KLAIM: Gemilang Jaya VIP Season 1 (Hypercar Chiron + PED Hash + MLO Villa #402 + $1M Cash)' });
+      showToast("✨ BERHASIL KLAIM: Voucher VIP Season 1!", "success");
     } else if (clean === 'PED-SULTAN-2026') {
       setRedeemStatus({ success: true, text: '🧍 BERHASIL KLAIM: Custom PED Import Hash (cs_martinmadrazo)' });
+      showToast("🧍 BERHASIL KLAIM: Custom PED Import Hash!", "success");
     } else if (clean === 'CHIRON-EXOTIC-2026') {
       setRedeemStatus({ success: true, text: '🏎️ BERHASIL KLAIM: Bugatti Chiron SuperSport 2026 (Class S++)' });
-    } else if (clean === 'VILLAMLO-402') {
-      setRedeemStatus({ success: true, text: '🏠 BERHASIL KLAIM: MLO Villa Gang HQ #402 (`ps-housing`)' });
+      showToast("🏎️ BERHASIL KLAIM: Hypercar Chiron SuperSport!", "success");
     } else {
       setRedeemStatus({ success: false, text: '❌ Kode Voucher tidak ditemukan atau sudah pernah diklaim!' });
+      showToast("❌ Kode Voucher salah atau expired!", "error");
     }
   };
 
@@ -246,6 +262,7 @@ export default function AdminPlengerPage() {
       type: genVoucherType,
       date: new Date().toISOString().split('T')[0]
     });
+    showToast(`✨ Kode Voucher ${code} Berhasil Dibuat!`, "success");
   };
 
   const getGeneratedCommand = () => {
@@ -258,7 +275,26 @@ export default function AdminPlengerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060812] text-slate-100 font-sans pb-16">
+    <div className="min-h-screen bg-[#060812] text-slate-100 font-sans pb-16 relative">
+      
+      {/* GLASSMORPHISM TOAST NOTIFICATION SYSTEM */}
+      {toastNotification && (
+        <div className="fixed top-5 right-5 z-50 animate-bounce">
+          <div className={`p-4 rounded-2xl border backdrop-blur-xl shadow-2xl flex items-center gap-3 text-xs font-black text-white ${
+            toastNotification.type === 'error' ? 'bg-red-950/90 border-red-500/50 text-red-300' :
+            toastNotification.type === 'success' ? 'bg-emerald-950/90 border-emerald-500/50 text-emerald-300' :
+            'bg-purple-950/90 border-purple-500/50 text-purple-300'
+          }`}>
+            <i className={`text-lg fa-solid ${
+              toastNotification.type === 'error' ? 'fa-circle-xmark text-red-400' :
+              toastNotification.type === 'success' ? 'fa-circle-check text-emerald-400' :
+              'fa-bell text-purple-400'
+            }`}></i>
+            <span>{toastNotification.message}</span>
+          </div>
+        </div>
+      )}
+
       {/* HEADER DIREKSI & RAPAT DECK */}
       <header className="sticky top-0 z-50 px-6 py-4 flex flex-col md:flex-row justify-between items-center bg-[#080b1a]/95 backdrop-blur-md border-b border-purple-500/30 gap-4">
         <div className="flex items-center gap-3.5">
@@ -278,13 +314,12 @@ export default function AdminPlengerPage() {
             </div>
             <p className="text-xs text-slate-400 font-medium">Gemilang Jaya Auto Dealer, Battle Pass Season 1 & Secret Plenger Board</p>
           </div>
-
         </div>
 
         <div className="flex items-center gap-3">
           {isAuthorized && (
             <button
-              onClick={() => { setIsAuthorized(false); setAdminPin(''); }}
+              onClick={() => { setIsAuthorized(false); setAdminPin(''); showToast("Logout berhasil", "info"); }}
               className="bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 text-xs font-bold px-3 py-2 rounded-xl transition-colors"
             >
               🔒 Logout Role
@@ -307,8 +342,8 @@ export default function AdminPlengerPage() {
               <i className="fa-solid fa-user-shield"></i>
             </div>
             <div className="space-y-2">
-              <h3 className="text-2xl font-black text-white">PORTAL RAHASIA ADMIN PLENGER</h3>
-              <p className="text-xs text-slate-400">Masukkan Kode PIN Rahasia Sesuai Role & Jabatan Anda di Kota Supercali RP</p>
+              <h3 className="text-2xl font-black text-white">PORTAL RAHASIA ADMIN PLENGER ✨</h3>
+              <p className="text-xs text-slate-400">Masukkan PIN Rahasia Role Anda untuk membuka Console Direksi</p>
             </div>
 
             <form onSubmit={handleAdminAuth} className="space-y-4">
@@ -323,7 +358,7 @@ export default function AdminPlengerPage() {
                 />
               </div>
               <button type="submit" className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-800 text-white font-black p-4 rounded-2xl shadow-xl shadow-purple-500/40 hover:scale-[1.02] active:scale-[0.98] transition-transform">
-                🔓 MASUK DENGAN ROLE ANDA
+                🔓 MASUK CONSOLE DIREKSI NOW!
               </button>
             </form>
           </div>
@@ -353,7 +388,7 @@ export default function AdminPlengerPage() {
               </div>
             </div>
 
-            {/* DYNAMIC EXECUTIVE NAVIGATION TABS (FILTERED BY ROLE) */}
+            {/* DYNAMIC EXECUTIVE NAVIGATION TABS */}
             <div className="flex flex-wrap gap-2 p-1.5 bg-slate-900/80 border border-white/10 rounded-2xl backdrop-blur-md">
               {userRole.allowedTabs.includes('overview') && (
                 <button
@@ -437,7 +472,7 @@ export default function AdminPlengerPage() {
               )}
             </div>
 
-            {/* TAB 1: EXECUTIVE OVERVIEW & RAPAT METRICS */}
+            {/* TAB 1: EXECUTIVE OVERVIEW */}
             {activeTab === 'overview' && userRole.allowedTabs.includes('overview') && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -475,36 +510,36 @@ export default function AdminPlengerPage() {
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-3 gap-5 pt-2">
+                  <div className="grid md:grid-cols-3 gap-5 pt-2 text-xs">
                     <div className="bg-black/40 border border-white/10 p-4 rounded-2xl space-y-2">
-                      <div className="text-xs font-black text-purple-400 flex items-center gap-2">
+                      <div className="font-black text-purple-400 flex items-center gap-2">
                         <span className="w-5 h-5 bg-purple-500/30 rounded-full flex items-center justify-center text-[10px]">1</span>
                         <span>Restrukturisasi Hirarki</span>
                       </div>
-                      <p className="text-xs text-slate-300">Penetapan wewenang jelas dari Founder/Owner, High Management, hingga Staff Ticket Moderator agar eksekusi di game tidak saling tumpang tindih.</p>
+                      <p className="text-slate-300">Penetapan wewenang jelas dari Founder/Owner, High Management, hingga Staff Ticket Moderator.</p>
                     </div>
 
                     <div className="bg-black/40 border border-white/10 p-4 rounded-2xl space-y-2">
-                      <div className="text-xs font-black text-amber-400 flex items-center gap-2">
+                      <div className="font-black text-amber-400 flex items-center gap-2">
                         <span className="w-5 h-5 bg-amber-500/30 rounded-full flex items-center justify-center text-[10px]">2</span>
                         <span>Target RP & Reward Staff</span>
                       </div>
-                      <p className="text-xs text-slate-300">Staff & Faksi yang aktif mencapai target RP berhak memilih perk berupa Custom PED (`sc-ped`), Rumah MLO (`ps-housing`), atau Kendaraan Eksklusif.</p>
+                      <p className="text-slate-300">Staff & Faksi yang aktif mencapai target RP berhak memilih perk berupa Custom PED, Rumah MLO, atau Mobil.</p>
                     </div>
 
                     <div className="bg-black/40 border border-white/10 p-4 rounded-2xl space-y-2">
-                      <div className="text-xs font-black text-cyan-400 flex items-center gap-2">
+                      <div className="font-black text-cyan-400 flex items-center gap-2">
                         <span className="w-5 h-5 bg-cyan-500/30 rounded-full flex items-center justify-center text-[10px]">3</span>
-                        <span>Gemilang Jaya Battle Pass S1</span>
+                        <span>Gemilang Jaya Supreme (Rp 25M)</span>
                       </div>
-                      <p className="text-xs text-slate-300">Peluncuran Katalog Musiman Gemilang Jaya & Battle Pass 50 Tiers dengan sistem klaim otomatis in-game `/claimcode` dan FiveM Script (`sc-gemilangjaya`).</p>
+                      <p className="text-slate-300">Peluncuran Katalog Donasi High-Valuation (Supreme Rp 25M) & sistem voucher otomatis in-game.</p>
                     </div>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* TAB 2: HIRARKI SERVER & DONATUR (EDITABLE) */}
+            {/* TAB 2: HIRARKI SERVER & DONATUR */}
             {activeTab === 'hierarchy' && userRole.allowedTabs.includes('hierarchy') && (
               <div className="space-y-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 border border-white/10 p-6 rounded-3xl backdrop-blur-md">
@@ -524,7 +559,6 @@ export default function AdminPlengerPage() {
                   )}
                 </div>
 
-                {/* TABEL DATA HIRARKI SERVER */}
                 <div className="bg-slate-900/80 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-md shadow-2xl p-6 space-y-4">
                   <table className="w-full text-left border-collapse">
                     <thead className="bg-white/5 text-xs text-slate-400 font-bold uppercase border-b border-white/10">
@@ -583,7 +617,7 @@ export default function AdminPlengerPage() {
               </div>
             )}
 
-            {/* TAB 3: REWARD & CLAIM SELECTOR (PED, RUMAH, MOBIL, CASH) */}
+            {/* TAB 3: REWARD & CLAIM SELECTOR */}
             {activeTab === 'rewards' && userRole.allowedTabs.includes('rewards') && (
               <div className="space-y-6">
                 <div className="grid md:grid-cols-3 gap-6">
@@ -618,8 +652,8 @@ export default function AdminPlengerPage() {
                           className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-amber-400"
                         >
                           <option value="DONASI_MOBIL">🏎️ Donasi Mobil Custom (Select from 388 Cars)</option>
-                          <option value="CUSTOM_PED">🧍 Custom PED Import (sc-ped slot)</option>
-                          <option value="RUMAH_CUSTOM">🏠 Rumah / MLO Property (ps-housing)</option>
+                          <option value="CUSTOM_PED">🧍 Custom PED Import</option>
+                          <option value="RUMAH_CUSTOM">🏠 Rumah / MLO Property</option>
                           <option value="UANG_CASH">💵 Cash IC / Token Donasi</option>
                         </select>
                       </div>
@@ -644,7 +678,7 @@ export default function AdminPlengerPage() {
 
                       {newReward.type === 'CUSTOM_PED' && (
                         <div>
-                          <label className="text-slate-300 font-bold block mb-1">PED Model Hash (`sc-ped`)</label>
+                          <label className="text-slate-300 font-bold block mb-1">PED Model Hash</label>
                           <input
                             type="text"
                             value={newReward.pedHash}
@@ -657,7 +691,7 @@ export default function AdminPlengerPage() {
 
                       {newReward.type === 'RUMAH_CUSTOM' && (
                         <div>
-                          <label className="text-slate-300 font-bold block mb-1">ID Rumah MLO (`ps-housing`)</label>
+                          <label className="text-slate-300 font-bold block mb-1">ID Rumah MLO</label>
                           <input
                             type="text"
                             value={newReward.houseId}
@@ -688,7 +722,7 @@ export default function AdminPlengerPage() {
                           rows="3"
                           value={newReward.reason}
                           onChange={(e) => setNewReward({ ...newReward, reason: e.target.value })}
-                          placeholder="Misal: Reward Pencapaian Target Staff 50 Tiket / Claim Paket Donasi Platinum"
+                          placeholder="Misal: Reward Target Staff 50 Tiket / Claim Paket Donasi Supreme Boss (Rp 25M)"
                           className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-amber-400"
                         ></textarea>
                       </div>
@@ -755,7 +789,7 @@ export default function AdminPlengerPage() {
                     </div>
                     <div>
                       <h3 className="text-xl font-black text-amber-300">GEMILANG JAYA AUTO DEALER & BATTLE PASS SEASON 1</h3>
-                      <p className="text-xs text-slate-300">Pusat Katalog Mobil Musiman, Perks Donasi Custom PED (`sc-ped`), MLO Property, & In-Game Voucher Redemption (`/claimcode`).</p>
+                      <p className="text-xs text-slate-300">Pusat Katalog Mobil Musiman, Custom Character PED Imports, Luxury Villa Property, & In-Game Voucher Redemption (`/claimcode`).</p>
                     </div>
                   </div>
                 </div>
@@ -812,9 +846,9 @@ export default function AdminPlengerPage() {
                           className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-purple-400"
                         >
                           <option value="MULTI">💎 VIP Season 1 Bundle (Hypercar + PED + Villa + $1M Cash)</option>
-                          <option value="PED">🧍 Custom PED Import (`sc-ped` slot)</option>
+                          <option value="PED">🧍 Custom PED Import slot</option>
                           <option value="CHIRON">🏎️ Hypercar Chiron SuperSport (Class S++)</option>
-                          <option value="VILLA">🏠 Villa MLO Property (`ps-housing`)</option>
+                          <option value="VILLA">🏠 Villa MLO Property</option>
                         </select>
                       </div>
 
@@ -833,7 +867,7 @@ export default function AdminPlengerPage() {
                             <button
                               onClick={() => {
                                 navigator.clipboard.writeText(generatedVoucher.code);
-                                alert(`Kode Voucher ${generatedVoucher.code} berhasil disalin!`);
+                                showToast(`Kode Voucher ${generatedVoucher.code} berhasil disalin!`, "success");
                               }}
                               className="text-xs bg-purple-500/30 px-2 py-1 rounded hover:bg-purple-500/50"
                             >
@@ -854,7 +888,7 @@ export default function AdminPlengerPage() {
                       <h4 className="text-base font-black text-white flex items-center gap-2">
                         <i className="fa-solid fa-trophy text-amber-300"></i> Gemilang Jaya Battle Pass Season 1 (50 Tiers Preview)
                       </h4>
-                      <p className="text-xs text-slate-400">Daftar hadiah Battle Pass Musiman untuk Player Regular (Free) & Donatur VIP Pass.</p>
+                      <p className="text-xs text-slate-400">Daftar hadiah Battle Pass Musiman untuk Player Regular (Free) & VIP Pass Holders.</p>
                     </div>
                     <span className="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-black px-3 py-1 rounded-xl">
                       SEASON 1 LIVE
@@ -877,7 +911,7 @@ export default function AdminPlengerPage() {
                         <span className="text-[10px] text-slate-400 font-mono">Mid Season</span>
                       </div>
                       <div className="text-slate-300">✓ Free: Cash $300,000 & Repair Pack</div>
-                      <div className="text-purple-400 font-bold">✓ VIP: Custom PED Slot (`sc-ped`) + G63 AMG</div>
+                      <div className="text-purple-400 font-bold">✓ VIP: Custom PED Slot + G63 AMG</div>
                     </div>
 
                     <div className="bg-black/50 border border-purple-500/40 p-4 rounded-2xl space-y-2 bg-purple-950/20">
@@ -948,12 +982,10 @@ export default function AdminPlengerPage() {
                   </div>
                 </div>
 
-
-
               </div>
             )}
 
-            {/* TAB 5: KATALOG 388 MOBIL KOTA (EXISTING & ENHANCED) */}
+            {/* TAB 5: KATALOG 388 MOBIL KOTA */}
             {activeTab === 'vehicles' && userRole.allowedTabs.includes('vehicles') && (
               <div className="space-y-6">
                 
@@ -1045,7 +1077,7 @@ export default function AdminPlengerPage() {
                                   key={idx}
                                   onClick={() => {
                                     navigator.clipboard.writeText(`/car ${chip}`);
-                                    alert(`Spawn command /car ${chip} telah disalin!`);
+                                    showToast(`Spawn command '/car ${chip}' telah disalin brodie!`, "success");
                                   }}
                                   title="Klik untuk menyalin spawn command /car"
                                   className="bg-slate-900 border border-white/10 hover:border-purple-400 px-2.5 py-1 rounded-lg text-xs font-mono text-cyan-300 hover:text-white transition-all active:scale-95"

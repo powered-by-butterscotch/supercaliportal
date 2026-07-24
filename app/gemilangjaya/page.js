@@ -8,6 +8,14 @@ export default function GemilangJayaPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClassFilter, setSelectedClassFilter] = useState('ALL');
   
+  // State Toast Notification System (NO MORE ANCIENT BROWSER ALERTS!)
+  const [toastNotification, setToastNotification] = useState(null);
+
+  const showToast = (message, type = 'info') => {
+    setToastNotification({ message, type });
+    setTimeout(() => setToastNotification(null), 5000);
+  };
+
   // State Voucher Redeem Player
   const [voucherCode, setVoucherCode] = useState('');
   const [claimResult, setClaimResult] = useState(null);
@@ -38,17 +46,40 @@ export default function GemilangJayaPage() {
 
     if (clean === 'GEMILANG-S1-VIP') {
       setClaimResult({ success: true, title: '✨ SLAYYY! VOUCHER VALID FR FR!', detail: 'Paket VIP Season 1: Hypercar Chiron + Custom PED Import + Luxury Villa Property + $1,000,000 Cash IC' });
+      showToast("✨ BERHASIL KLAIM: Voucher VIP Season 1!", "success");
     } else if (clean === 'PED-SULTAN-2026') {
       setClaimResult({ success: true, title: '✨ SICK! VOUCHER AKTIF!', detail: 'Slot Character Custom PED Import (Standout in City!)' });
+      showToast("🧍 BERHASIL KLAIM: Custom PED Import Slot!", "success");
     } else if (clean === 'CHIRON-EXOTIC-2026') {
       setClaimResult({ success: true, title: '🔥 HYPERCAR UNLOCKED!', detail: 'Bugatti Chiron SuperSport 2026 (Class S++ Speed Demon)' });
+      showToast("🏎️ BERHASIL KLAIM: Bugatti Chiron SuperSport!", "success");
     } else {
       setClaimResult({ success: false, title: '❌ WHAATT? KODE WRONG ATAU EXPIRED!', detail: 'Coba re-check kodenya brodie, pastiin typo-free yaa!' });
+      showToast("❌ Kode Voucher tidak ditemukan atau expired!", "error");
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#050713] text-slate-100 font-sans pb-20">
+    <div className="min-h-screen bg-[#050713] text-slate-100 font-sans pb-20 relative">
+      
+      {/* GLASSMORPHISM TOAST NOTIFICATION SYSTEM */}
+      {toastNotification && (
+        <div className="fixed top-5 right-5 z-50 animate-bounce">
+          <div className={`p-4 rounded-2xl border backdrop-blur-xl shadow-2xl flex items-center gap-3 text-xs font-black text-white ${
+            toastNotification.type === 'error' ? 'bg-red-950/90 border-red-500/50 text-red-300' :
+            toastNotification.type === 'success' ? 'bg-emerald-950/90 border-emerald-500/50 text-emerald-300' :
+            'bg-amber-950/90 border-amber-500/50 text-amber-300'
+          }`}>
+            <i className={`text-lg fa-solid ${
+              toastNotification.type === 'error' ? 'fa-circle-xmark text-red-400' :
+              toastNotification.type === 'success' ? 'fa-circle-check text-emerald-400' :
+              'fa-bell text-amber-400'
+            }`}></i>
+            <span>{toastNotification.message}</span>
+          </div>
+        </div>
+      )}
+
       {/* HEADER GEMILANG JAYA GATE */}
       <header className="sticky top-0 z-50 px-6 py-4 flex flex-col md:flex-row justify-between items-center bg-[#070a1a]/95 backdrop-blur-md border-b border-amber-500/30 gap-4">
         <div className="flex items-center gap-3.5">
@@ -87,34 +118,36 @@ export default function GemilangJayaPage() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="space-y-2 max-w-2xl">
               <span className="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-black px-3 py-1 rounded-lg">
-                🔥 SEASON 1 DROPS • VIBES MELLBOURNE X LA
+                🔥 SEASON 1 DROPS • VIBES MELBOURNE X LA
               </span>
               <h2 className="text-3xl font-black text-white leading-tight">
                 WELCOME TO GEMILANG JAYA AUTO DEALER! ✨
               </h2>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Tempat nongkrong & beli mobil paling aesthetic di Supercali RP! Dari daily cruiser sampe hypercar flex mode, plus Battle Pass 50 Tiers yang slay abis. Donasi ngotak, kantong tetep safe! fr fr 💅🔥
+                Tempat nongkrong & beli mobil paling aesthetic di Supercali RP! Dari daily cruiser sampe hypercar flex mode, plus Battle Pass 50 Tiers yang slay abis. Donasi berkelas, benefit langsung tumpah-tumpah! fr fr 💅🔥
               </p>
             </div>
 
             <div className="bg-black/60 border border-white/10 p-5 rounded-2xl space-y-2 text-right">
-              <div className="text-xs font-bold text-slate-400">IN-GAME CLAIM COMMAND:</div>
-              <div className="font-mono text-sm text-cyan-300 font-black bg-slate-900 px-3 py-2 rounded-xl border border-white/10">
-                <code>/claimcode [KODE_VOUCHER]</code>
+              <div className="text-[10px] font-black text-slate-400 uppercase">Season 1 Status</div>
+              <div className="text-sm font-black text-emerald-400 flex items-center justify-end gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>65 CAR DROPS LIVE</span>
               </div>
+              <div className="text-[11px] text-amber-300 font-mono font-bold">50 Battle Pass Tiers Active</div>
             </div>
           </div>
         </div>
 
         {/* NAVIGATION TABS */}
-        <div className="flex flex-wrap gap-2 p-1.5 bg-slate-900/80 border border-white/10 rounded-2xl backdrop-blur-md">
+        <div className="flex flex-wrap gap-3 p-2 bg-slate-900/80 border border-white/10 rounded-2xl backdrop-blur-md">
           <button
             onClick={() => setActiveTab('showroom')}
             className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
               activeTab === 'showroom' ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
-            🏎️ Showroom Season 1 Drops
+            🏎️ Showroom Katalog Season 1
           </button>
           <button
             onClick={() => setActiveTab('battlepass')}
@@ -122,7 +155,7 @@ export default function GemilangJayaPage() {
               activeTab === 'battlepass' ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
-            🏆 Battle Pass Slay S1 (50 Tiers)
+            🏆 Battle Pass Slay (50 Tiers)
           </button>
           <button
             onClick={() => setActiveTab('voucher')}
@@ -138,43 +171,43 @@ export default function GemilangJayaPage() {
               activeTab === 'packages' ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
-            💎 Donasi Ngotak (Kantong Safe)
+            💎 Skema Donasi Sultan & Usaha
           </button>
         </div>
 
-        {/* TAB 1: SHOWROOM KATALOG MOBIL */}
+        {/* TAB 1: SHOWROOM KATALOG SEASON 1 */}
         {activeTab === 'showroom' && (
           <div className="space-y-6">
             <div className="bg-slate-900/80 border border-white/10 rounded-3xl p-6 backdrop-blur-md shadow-2xl space-y-6">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-4">
                 <div>
-                  <h3 className="text-base font-black text-white flex items-center gap-2">
-                    🏎️ Katalog Release Season 1 (No Cap, Slay Performance)
+                  <h3 className="text-lg font-black text-white flex items-center gap-2">
+                    🏎️ Katalog Season 1 Released Cars (65 Featured Vehicles)
                   </h3>
-                  <p className="text-xs text-slate-400">Pilih ride favoritmu brodie! Bisa beli via IC atau klaim pake Kode Voucher Donasi.</p>
+                  <p className="text-xs text-slate-400">Pilih mobil impian kamu! Sisa 323 mobil dirahasiakan & akan di-drop bertahap di Season 2 & 3.</p>
                 </div>
-                
+
                 <div className="flex items-center gap-3 w-full md:w-auto">
                   <select
                     value={selectedClassFilter}
                     onChange={(e) => setSelectedClassFilter(e.target.value)}
-                    className="bg-black/50 border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-amber-400"
+                    className="bg-black/60 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white outline-none focus:border-amber-400"
                   >
                     <option value="ALL">Semua Class (S++ s/d D)</option>
-                    <option value="S++">Class S++ Only</option>
-                    <option value="S">Class S Only</option>
-                    <option value="A">Class A Only</option>
-                    <option value="B">Class B Only</option>
-                    <option value="C">Class C Only</option>
-                    <option value="D">Class D Only</option>
+                    <option value="S++">Class S++ (Hypercars)</option>
+                    <option value="S">Class S (Supercars)</option>
+                    <option value="A">Class A (Sports & Muscle)</option>
+                    <option value="B">Class B (Coupe & SUV)</option>
+                    <option value="C">Class C (Sedan & Daily)</option>
+                    <option value="D">Class D (Compacts)</option>
                   </select>
 
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Cari Ride Season 1..."
-                    className="bg-black/50 border border-white/10 rounded-xl px-4 py-2 text-xs text-white outline-none focus:border-amber-400 w-full md:w-64"
+                    placeholder="Cari Kode Mobil (misal: chiron)..."
+                    className="bg-black/60 border border-white/10 rounded-xl px-4 py-2 text-xs text-white outline-none focus:border-amber-400 w-full md:w-60"
                   />
                 </div>
               </div>
@@ -183,26 +216,26 @@ export default function GemilangJayaPage() {
                 {classSummaryData
                   .filter(c => selectedClassFilter === 'ALL' || c.classTag === selectedClassFilter)
                   .map((c) => {
-                    const rawChips = season1ReleasedChips[c.classTag] || [];
-                    const filteredChips = rawChips.filter(chip => chip.toLowerCase().includes(searchQuery.toLowerCase()));
+                    const releasedChips = season1ReleasedChips[c.classTag] || [];
+                    const filteredChips = releasedChips.filter(chip => chip.toLowerCase().includes(searchQuery.toLowerCase()));
 
                     return (
                       <div key={c.classTag} className="bg-black/40 border border-white/10 rounded-2xl p-5 space-y-3">
                         <div className="flex justify-between items-center border-b border-white/10 pb-3">
                           <h4 className="text-sm font-black text-white flex items-center gap-2">
                             <span className={`px-2.5 py-1 rounded-md text-xs font-black ${c.color}`}>CLASS {c.classTag}</span>
-                            <span>{c.title} (Speed Cap: {c.limit})</span>
+                            <span>{c.title}</span>
                           </h4>
-                          <span className="text-xs font-mono font-bold text-amber-300">{filteredChips.length} Drops Unlocked</span>
+                          <span className="text-xs font-mono font-bold text-amber-300">{filteredChips.length} Drops Released</span>
                         </div>
 
-                        <div className="flex flex-wrap gap-2 pt-1">
+                        <div className="flex flex-wrap gap-2.5 pt-1">
                           {filteredChips.map((chip, idx) => (
                             <button
                               key={idx}
                               onClick={() => {
                                 navigator.clipboard.writeText(`/car ${chip}`);
-                                alert(`Spawn code '/car ${chip}' berhasil disalin brodie!`);
+                                showToast(`Spawn code '/car ${chip}' telah disalin brodie!`, "success");
                               }}
                               title="Klik buat salin spawn command"
                               className="bg-slate-900 border border-amber-500/30 hover:border-amber-400 px-3 py-1.5 rounded-xl text-xs font-mono text-cyan-300 hover:text-white transition-all active:scale-95 flex items-center gap-1.5"
@@ -299,26 +332,26 @@ export default function GemilangJayaPage() {
                     type="text"
                     value={voucherCode}
                     onChange={(e) => setVoucherCode(e.target.value)}
-                    placeholder="Masukin Kode (misal: GEMILANG-S1-VIP)..."
-                    className="w-full bg-black/70 border border-amber-500/40 rounded-2xl p-4 text-center font-mono text-lg text-amber-300 font-bold outline-none focus:border-amber-400"
+                    placeholder="Masukkan Kode Voucher (misal: GEMILANG-S1-VIP)..."
+                    className="w-full bg-black/60 border border-amber-500/40 rounded-2xl p-4 text-center font-mono text-amber-300 font-bold text-lg tracking-wider outline-none focus:border-amber-400"
                   />
                 </div>
-                <button type="submit" className="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-black font-black p-4 rounded-2xl shadow-xl shadow-amber-500/30 hover:scale-[1.01] transition-transform text-xs">
-                  🎁 VERIFIKASI KODE VOUCHER NOW!
+                <button type="submit" className="w-full bg-gradient-to-r from-amber-400 via-orange-500 to-amber-600 text-slate-950 font-black p-4 rounded-2xl shadow-xl shadow-amber-500/30 hover:scale-[1.01] transition-transform text-sm">
+                  🎁 KLAIM VOUCHER GEMILANG NOW!
                 </button>
               </form>
 
               {claimResult && (
-                <div className={`p-4 rounded-2xl text-xs space-y-1 border ${claimResult.success ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-red-500/20 text-red-300 border-red-500/40'}`}>
+                <div className={`p-5 rounded-2xl text-xs space-y-1 border ${claimResult.success ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-red-500/20 text-red-300 border-red-500/40'}`}>
                   <div className="font-black text-sm">{claimResult.title}</div>
-                  <div>{claimResult.detail}</div>
+                  <div className="text-slate-300">{claimResult.detail}</div>
                 </div>
               )}
             </div>
           </div>
         )}
 
-        {/* TAB 4: PAKET DONASI NGOTAK (KANTONG SAFE & EKONOMI PASAR INDO/US/AU) */}
+        {/* TAB 4: PAKET DONASI SULTAN & PERMIT USAHA */}
         {activeTab === 'packages' && (
           <div className="space-y-6">
             
@@ -436,8 +469,6 @@ export default function GemilangJayaPage() {
                 </div>
               </div>
             </div>
-
-
 
           </div>
         )}
