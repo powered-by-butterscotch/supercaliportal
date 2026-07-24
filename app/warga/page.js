@@ -78,6 +78,21 @@ export default function WargaPage() {
   };
 
 
+  // Load Saved Citizen Session on Mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('supercali_citizen_session');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setRegisteredProfile(parsed);
+        } catch (e) {
+          console.error("Error parsing saved citizen session", e);
+        }
+      }
+    }
+  }, []);
+
   const handleRegisterCitizen = (e) => {
     e.preventDefault();
     const profile = {
@@ -94,7 +109,12 @@ export default function WargaPage() {
       citizenshipStatus: 'WARGA OFFICIAL SUPERCALI'
     };
     setRegisteredProfile(profile);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('supercali_citizen_session', JSON.stringify(profile));
+    }
+    showToast(`✨ KTP Digital ${profile.icName} (${profile.cid}) Berhasil Diterbitkan!`, "success");
   };
+
 
   return (
     <div className="min-h-screen bg-[#060812] text-slate-100 font-sans pb-16 relative">

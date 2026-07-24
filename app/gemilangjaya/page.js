@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function GemilangJayaPage() {
@@ -8,6 +8,22 @@ export default function GemilangJayaPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClassFilter, setSelectedClassFilter] = useState('ALL');
   
+  // State Citizen Identity Sync from /warga
+  const [citizenSession, setCitizenSession] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('supercali_citizen_session');
+      if (saved) {
+        try {
+          setCitizenSession(JSON.parse(saved));
+        } catch (e) {
+          console.error("Error parsing citizen session", e);
+        }
+      }
+    }
+  }, []);
+
   // State Toast Notification System (NO MORE ANCIENT BROWSER ALERTS!)
   const [toastNotification, setToastNotification] = useState(null);
 
@@ -15,6 +31,7 @@ export default function GemilangJayaPage() {
     setToastNotification({ message, type });
     setTimeout(() => setToastNotification(null), 5000);
   };
+
 
   // State Voucher Redeem Player
   const [voucherCode, setVoucherCode] = useState('');
@@ -139,7 +156,49 @@ export default function GemilangJayaPage() {
           </div>
         </div>
 
+        {/* CITIZEN IDENTITY INTEGRATION STATUS BAR */}
+        <div className="bg-slate-900/90 border border-emerald-500/40 p-4 rounded-2xl backdrop-blur-md flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          {citizenSession ? (
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 bg-emerald-500/20 border border-emerald-500/40 rounded-xl flex items-center justify-center text-emerald-300 font-bold">
+                💳
+              </div>
+              <div className="text-xs">
+                <div className="text-slate-400 font-bold">Terverifikasi KTP Warga Supercali:</div>
+                <div className="font-black text-white flex items-center gap-2">
+                  <span>{citizenSession.icName}</span>
+                  <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded text-[10px] font-mono">
+                    CID: {citizenSession.cid}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 bg-amber-500/20 border border-amber-500/40 rounded-xl flex items-center justify-center text-amber-300 font-bold">
+                💡
+              </div>
+              <div className="text-xs">
+                <div className="text-white font-bold">Belum Login KTP Warga / Discord ID?</div>
+                <div className="text-slate-400">Bikin KTP IC dulu biar donasi & mobil otomatis masuk ke garasi in-game kamu no ribet!</div>
+              </div>
+            </div>
+          )}
+
+          <Link
+            href="/warga"
+            className={`text-xs font-black px-4 py-2 rounded-xl transition-transform active:scale-95 ${
+              citizenSession
+                ? 'bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40'
+                : 'bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/20'
+            }`}
+          >
+            {citizenSession ? '💳 KTP Warga Active ✓' : '⚡ Login KTP Warga Now →'}
+          </Link>
+        </div>
+
         {/* NAVIGATION TABS */}
+
         <div className="flex flex-wrap gap-3 p-2 bg-slate-900/80 border border-white/10 rounded-2xl backdrop-blur-md">
           <button
             onClick={() => setActiveTab('showroom')}
