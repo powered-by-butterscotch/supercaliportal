@@ -13,21 +13,22 @@ export default function GemilangJayaPage() {
   const [claimResult, setClaimResult] = useState(null);
 
   const classSummaryData = [
-    { classTag: 'S++', title: 'Hypercars / Limited Edition', limit: '205 MPH (~330 km/h)', force: '0.44', mult: '5.0x', count: '18 Mobil', color: 'bg-pink-500/20 text-pink-300 border-pink-500/40' },
-    { classTag: 'S', title: 'Supercars / Exotic Sports', limit: '180 MPH (~290 km/h)', force: '0.38', mult: '3.5x', count: '37 Mobil', color: 'bg-purple-500/20 text-purple-300 border-purple-500/40' },
-    { classTag: 'A', title: 'Sports Performance & Muscle', limit: '160 MPH (~257 km/h)', force: '0.33', mult: '2.2x', count: '70 Mobil', color: 'bg-blue-500/20 text-blue-300 border-blue-500/40' },
-    { classTag: 'B', title: 'Sport Coupes & Performance SUVs', limit: '140 MPH (~225 km/h)', force: '0.28', mult: '1.5x', count: '47 Mobil', color: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' },
-    { classTag: 'C', title: 'Executive Sedans & Standard SUVs', limit: '125 MPH (~200 km/h)', force: '0.25', mult: '1.0x', count: '205 Mobil', color: 'bg-amber-500/20 text-amber-300 border-amber-500/40' },
-    { classTag: 'D', title: 'Compacts, Hatchbacks & Utility', limit: '100 MPH (~160 km/h)', force: '0.20', mult: '0.7x', count: '11 Mobil', color: 'bg-slate-500/20 text-slate-400 border-slate-500/40' }
+    { classTag: 'S++', title: 'Hypercars / Limited Edition', limit: '205 MPH (~330 km/h)', force: '0.44', mult: '5.0x', count: '18 Mobil (Season 1 Released: 6)', color: 'bg-pink-500/20 text-pink-300 border-pink-500/40' },
+    { classTag: 'S', title: 'Supercars / Exotic Sports', limit: '180 MPH (~290 km/h)', force: '0.38', mult: '3.5x', count: '37 Mobil (Season 1 Released: 8)', color: 'bg-purple-500/20 text-purple-300 border-purple-500/40' },
+    { classTag: 'A', title: 'Sports Performance & Muscle', limit: '160 MPH (~257 km/h)', force: '0.33', mult: '2.2x', count: '70 Mobil (Season 1 Released: 12)', color: 'bg-blue-500/20 text-blue-300 border-blue-500/40' },
+    { classTag: 'B', title: 'Sport Coupes & Performance SUVs', limit: '140 MPH (~225 km/h)', force: '0.28', mult: '1.5x', count: '47 Mobil (Season 1 Released: 10)', color: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' },
+    { classTag: 'C', title: 'Executive Sedans & Standard SUVs', limit: '125 MPH (~200 km/h)', force: '0.25', mult: '1.0x', count: '205 Mobil (Season 1 Released: 15)', color: 'bg-amber-500/20 text-amber-300 border-amber-500/40' },
+    { classTag: 'D', title: 'Compacts, Hatchbacks & Utility', limit: '100 MPH (~160 km/h)', force: '0.20', mult: '0.7x', count: '11 Mobil (Season 1 Released: 4)', color: 'bg-slate-500/20 text-slate-400 border-slate-500/40' }
   ];
 
-  const classVehicleChips = {
-    'S++': ['2019chiron', 'agerars', 'chironspeedhunter', 'chironsuper', 'chironsupersport22', 'f1', 'f12rp', 'GODzKSTERZOTACHA', 'jesko', 'laferrariquadturbo', 'pagani_zonda_cinque', 'rmodpagani', 'senna', 'sian', 'terzo', 'terzo1'],
-    'S': ['18performante', '2f2fgtr34', '488animated', '488mishasp', '488sp', '812mnsry', '911gtrs', 'amggtbs', 'c8p1', 'contgt2011', 'ferrari812super', 'GODzDUKESGT2RSV2', 'gt3hycade', 'gta5rp_veh_gtr33', 'gtr50', 'gtrh', 'ikx3abt20', 'ikx3sf90custom', 'manssupersnake', 'por911gt3', 'r820', 'r8beastedit', 'rmodgtr', 'rmodr8alpil', 'rmodr8alpilx', 'rmodr8c', 'rs6abt20', 'rs6rabt20', 'sf90'],
-    'A': ['16charger', '18rs7', '2ncsbmwm8', 'c63hr', 'cayennemecqq', 'charger21', 'chargerf8', 'ckbmwm4offwhite', 'demon', 'evox', 'GODzDEMONUTE', 'GODzVIPS63AMG', 'gta5rp_veh_c63s', 'hellcatf9', 'hellcatlb', 'HellcatMagnum21', 'm3g80', 'm3g80mp', 'm3mafia', 'm3s', 'm4c', 'M4CC', 'm4g82', 'm4hr', 'm4lb2', 'm4speedhunter', 'm5cs22', 'm5e60', 'm5prime', 'm8benzo', 'm8hc', 'mansrs6', 'mercec63s', 'merse63', 'mustang65', 'playaturbozr1', 'rmodcharger', 'rmode63s', 'rmodm3e36', 'rmodm4', 'rmodm4gts', 'rmodm4Unikat', 'rmodmustang', 'rr21shelbystreet', 'rs5mans', 'rs615', 'rs666', 'rs6abtkit', 'rs6c8', 'rs7', 'rs721', 'rs7beast', 'rs7c821', 'rs7c8beast', 'rs7wide', 's63coupe', 's63msc', 'Shelbytacoma4x4', 'taycan', 'taycanani', 'vantage23'],
-    'B': ['1016urus', '16topcargle', '2ncsx7', '350z', '6x6', 'a45', 'camaro68t', 'camarodragmachine', 'escaladeprime', 'g632019', 'G63Sam', 'g65', 'g700brabusretuned', 'g81hr', 'g900przemo6x6', 'GODzKRCRX7FD', 'GODzOOF6x6', 'gta5rp_veh_gle1', 'hyundaiveloster', 'manhartx7', 'mansoryg63', 'mansurus', 'q8hycade', 'q8prior', 'ramtrx6x6', 'rmodg65', 'rmodskyline34', 'rmodx6', 'rr21camarowide', 'rx7', 'rx7veilside', 'sex6', 'silviagd', 'skyline', 'trx', 'Urus_Stretch_6', 'urusbeastedit', 'x6wz', 'zx6r'],
-    'C': ['1016rwdevo', '17mansorypnmr', '2018s650p', '204spetro', '21sierra', '24mss', '2f2fgts', '74civrswb', '77Monte', '911turbos', 'amrevu23mg', 'animfk8hr', 'banana', 'ben17', 'bentaygam', 'bmwe39', 'boss302', 'boss429', 'c8', 'C8WidebodyLC', 'carboDRCustoM', 'carrera19', 'carsonswbc6', 'cayen19', 'cb650r', 'centuria', 'choilambo', 'chr20', 'civic2020', 'cooperworks', 'cp9a', 'cu2', 'cx30wz', 'daytonasp3', 'dc5', 'DLCyber', 'dzdaytona', 'e39touring', 'e55', 'e92bb', 'EK9', 'eleanor', 'eli', 'evo9', 'evo9mr', 'evoss', 'f450', 'f450c', 'f550rbc', 'f812', 'f8kspider', 'fcxl', 'ffrs', 'FGT', 'firebirdwz', 'fk8', 'fmagnum', 'fnfmits', 'fnfmk4', 'fpaceprior', 'fprotozwb', 'ftecnica', 'furai', 'gcmlamboultimae', 'gemera', 'gl63', 'GLK', 'gmcev2', 'GODz67ELGT500', 'GODz95GSX', 'GODzBMWS1000RR', 'GODzDRIFTCAT', 'GODzHYCADER34', 'GODzRB26SUBI', 'GODzRZRPROLFTD', 'GODzYAMR1', 'gstbird1', 'gsthoonitruck1', 'gt17', 'gt63', 'gt63mt', 'gta5rp_veh_ferrari19', 'gtz34be', 'gxone', 'h2m', 'HellstingerwbSC', 'hexerz2', 'hycadeevo', 'hycadesti', 'ikx3mc2021', 'ikx3rebel22', 'impalag', 'impronta4', 'jcw', 'jcwc', 'jes21', 'kawagala', 'lbwk35', 'lc500', 'lightningdually22', 'loweyezv', 'm135iwb', 'm6e24', 'mach1', 'mache', 'machewb', 'mans65', 'mansgt', 'mayb900', 'maybach', 'mayg600p', 'mgt', 'mi8', 'mlnovitec', 'model', 'model3', 'models', 'modelx', 'mteche39', 'mxpan', 'na6', 'nsx17', 'ocnetrongt', 'ody18', 'owlbelair2', 'oycdefender', 'panamturs21', 'polestar1', 'porche911speedhunter', 'priorgt63s', 'project8', 'r34h', 'r355', 'r35secret', 'rapger19', 'rd', 'revueltobeast', 'rmod240sx', 'rmodbentley1', 'rmodbiposto', 'rmodf40', 'rmodfordgt', 'rmodgt63', 'rmodjeepg', 'rmodr50', 'rmodsvj', 'rmodzl1', 'rrghostbyv', 'rroctane', 'rtruck', 's1', 's15', 's500w222', 's550kev', 's8d4', 'scubieblob', 'SHEL', 'sinacp', 'singer', 'subisti08', 'suv_triaden', 'swl', 'TCZjc', 'techart17', 'teslapd', 'teslaroad', 'thewolftruck', 'tieens', 'topcargt63', 'ToraRTRShow', 'ugcprime350', 'unmarkedjl', 'v60hr', 'variszupra', 'venuum911', 'w222wald', 'waldw222', 'wraith', 'xkgt', 'yoti', 'yzfr6', 'yzfr7', 'zl1', 'zx10r'],
-    'D': ['fortwo17', 'GODz61BUS', 'kart', 'mlbrabus', 'RYGBus', 'van_blacklions', 'van_vagos', 'vanzwb06']
+  // PUBLIC SEASON 1 RELEASED CARS (EXCLUSIVES FOR SEASON 1)
+  const season1ReleasedChips = {
+    'S++': ['2019chiron', 'agerars', 'chironsupersport22', 'jesko', 'laferrariquadturbo', 'senna'],
+    'S': ['18performante', '2f2fgtr34', '812mnsry', '911gtrs', 'amggtbs', 'gta5rp_veh_gtr33', 'r820', 'sf90'],
+    'A': ['16charger', '18rs7', 'c63hr', 'charger21', 'm3g80', 'm4g82', 'm5cs22', 'mustang65', 'rmodmustang', 'rs7c8beast', 'taycan', 'vantage23'],
+    'B': ['1016urus', 'g632019', 'g700brabusretuned', 'g900przemo6x6', 'mansoryg63', 'ramtrx6x6', 'rmodskyline34', 'rx7veilside', 'skyline', 'trx'],
+    'C': ['2018s650p', 'bentaygam', 'bmwe39', 'c8', 'civic2020', 'evo9mr', 'fk8', 'gemera', 'gt63mt', 'ikx3mc2021', 'm5e60', 'maybach', 'model3', 'r34h', 'wraith'],
+    'D': ['fortwo17', 'GODz61BUS', 'kart', 'van_blacklions']
   };
 
   const handleClaimVoucher = (e) => {
@@ -60,7 +61,7 @@ export default function GemilangJayaPage() {
                 GEMILANG JAYA AUTO GROUP
               </h1>
               <span className="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                PUBLIC GATE & CATALOG
+                SEASON 1 DROPS
               </span>
             </div>
             <p className="text-xs text-slate-400 font-medium">Official Auto Dealer, Battle Pass Season 1, & Code Voucher Redemption Portal</p>
@@ -86,13 +87,13 @@ export default function GemilangJayaPage() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="space-y-2 max-w-2xl">
               <span className="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-black px-3 py-1 rounded-lg">
-                🏆 OFFICIAL DEALERSHIP & DONATION HUB
+                🔥 SEASON 1 FEATURED DROPS
               </span>
               <h2 className="text-3xl font-black text-white leading-tight">
                 GEMILANG JAYA AUTO DEALER & BATTLE PASS SEASON 1
               </h2>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Pusat transaksi kendaraan resmi kota Supercali RP (`jg-dealership`), katalog mobil musiman (388 Vehicles), Custom PED Import (`sc-ped`), MLO Properties (`ps-housing`), dan penukaran voucher in-game (`/claimcode`).
+                Rilis perdana Season 1! Katalog kendaraan bertahap (`jg-dealership`), Custom PED Import (`sc-ped`), MLO Properties (`ps-housing`), dan penukaran voucher in-game (`/claimcode`).
               </p>
             </div>
 
@@ -113,7 +114,7 @@ export default function GemilangJayaPage() {
               activeTab === 'showroom' ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
-            <i className="fa-solid fa-car-side"></i> Showroom Katalog Mobil (388 Vehicles)
+            <i className="fa-solid fa-car-side"></i> Showroom Season 1 Drops
           </button>
           <button
             onClick={() => setActiveTab('battlepass')}
@@ -141,14 +142,17 @@ export default function GemilangJayaPage() {
           </button>
         </div>
 
-        {/* TAB 1: SHOWROOM KATALOG MOBIL (388 VEHICLES) */}
+        {/* TAB 1: SHOWROOM KATALOG MOBIL (SEASON 1 RELEASED + MYSTERY LOCKED TEASER) */}
         {activeTab === 'showroom' && (
           <div className="space-y-6">
             <div className="bg-slate-900/80 border border-white/10 rounded-3xl p-6 backdrop-blur-md shadow-2xl space-y-6">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-4">
-                <h3 className="text-base font-black text-white flex items-center gap-2">
-                  <i className="fa-solid fa-car text-amber-400"></i> Gemilang Jaya Searchable Vehicle Database (388 Vehicles)
-                </h3>
+                <div>
+                  <h3 className="text-base font-black text-white flex items-center gap-2">
+                    <i className="fa-solid fa-car text-amber-400"></i> Katalog Release Season 1 (Rilis Bertahap)
+                  </h3>
+                  <p className="text-xs text-slate-400">Koleksi mobil Season 1 yang sudah rilis & dapat dibeli IC atau diklaim via Voucher Donasi.</p>
+                </div>
                 
                 <div className="flex items-center gap-3 w-full md:w-auto">
                   <select
@@ -169,7 +173,7 @@ export default function GemilangJayaPage() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Cari Kode Mobil (Contoh: agerars)..."
+                    placeholder="Cari Mobil Season 1..."
                     className="bg-black/50 border border-white/10 rounded-xl px-4 py-2 text-xs text-white outline-none focus:border-amber-400 w-full md:w-64"
                   />
                 </div>
@@ -179,7 +183,7 @@ export default function GemilangJayaPage() {
                 {classSummaryData
                   .filter(c => selectedClassFilter === 'ALL' || c.classTag === selectedClassFilter)
                   .map((c) => {
-                    const rawChips = classVehicleChips[c.classTag] || [];
+                    const rawChips = season1ReleasedChips[c.classTag] || [];
                     const filteredChips = rawChips.filter(chip => chip.toLowerCase().includes(searchQuery.toLowerCase()));
 
                     return (
@@ -189,7 +193,7 @@ export default function GemilangJayaPage() {
                             <span className={`px-2.5 py-1 rounded-md text-xs font-black ${c.color}`}>CLASS {c.classTag}</span>
                             <span>{c.title} (Limit: {c.limit})</span>
                           </h4>
-                          <span className="text-xs font-mono font-bold text-slate-400">{filteredChips.length} Mobil</span>
+                          <span className="text-xs font-mono font-bold text-amber-300">{filteredChips.length} Released in Season 1</span>
                         </div>
 
                         <div className="flex flex-wrap gap-2 pt-1">
@@ -201,15 +205,32 @@ export default function GemilangJayaPage() {
                                 alert(`Spawn command /car ${chip} telah disalin!`);
                               }}
                               title="Klik untuk menyalin spawn command /car"
-                              className="bg-slate-900 border border-white/10 hover:border-amber-400 px-2.5 py-1 rounded-lg text-xs font-mono text-cyan-300 hover:text-white transition-all active:scale-95"
+                              className="bg-slate-900 border border-amber-500/30 hover:border-amber-400 px-3 py-1.5 rounded-xl text-xs font-mono text-cyan-300 hover:text-white transition-all active:scale-95 flex items-center gap-1.5"
                             >
+                              <span className="text-[10px] text-amber-400 font-bold">✨ S1</span>
                               <code>{chip}</code>
                             </button>
                           ))}
+
+                          {/* MYSTERY LOCKED TEASER CARDS FOR SEASON 2 */}
+                          <div className="bg-slate-950/80 border border-dashed border-white/20 px-3 py-1.5 rounded-xl text-xs font-mono text-slate-500 italic flex items-center gap-1">
+                            <i className="fa-solid fa-lock text-amber-500/60"></i>
+                            <span>+ Locked Unreleased Drops (Releasing Season 2)</span>
+                          </div>
                         </div>
                       </div>
                     );
                   })}
+              </div>
+
+              {/* TEASER BANNER UNTUK SEASON 2 */}
+              <div className="bg-gradient-to-r from-purple-950/50 via-slate-900 to-indigo-950/50 border border-purple-500/30 p-6 rounded-2xl text-center space-y-2">
+                <div className="text-xs font-black text-purple-300 uppercase tracking-widest flex items-center justify-center gap-2">
+                  <i className="fa-solid fa-lock text-amber-400"></i> SEASON 2 & 3 UNCHAINED HYPERCAR PACK
+                </div>
+                <p className="text-xs text-slate-400">
+                  Ratusan kendaraan custom eksklusif lainnya disimpan rapi di Vault Direksi Admin Plenger & akan dirilis secara bertahap setiap update musim baru! 🚀
+                </p>
               </div>
             </div>
           </div>
