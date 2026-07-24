@@ -63,14 +63,15 @@ export default function Home() {
         {/* Banner Utama */}
         <div className="bg-gradient-to-r from-amber-600/20 via-yellow-700/15 to-orange-500/10 border border-amber-500/30 rounded-3xl p-8 flex justify-between items-center backdrop-blur-md relative overflow-hidden">
           <div className="space-y-2 z-10">
-            <span className="px-3 py-1 rounded-md text-[10px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase">OFFICIAL SUPERCALI ROLEPLAY</span>
-            <h2 className="text-3xl font-black text-white">Selamat Datang di Ekosistem Kota Supercali RP</h2>
+            <span className="px-3 py-1 rounded-md text-[10px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase">OFFICIAL SUPERCALI ROLEPLAY 🇦🇺🇺🇸</span>
+            <h2 className="text-3xl font-black text-white">Selamat Datang di Ekosistem Supercali RP! ✨</h2>
             <p className="text-xs text-slate-300 max-w-xl leading-relaxed">
-              Pantau harga komoditas pasar 24 jam, daftarkan KTP Digital IC, ajukan permohonan layanan instansi, & buka portal khusus faksi Anda.
+              Jalanan Los Santos rasa Melbourne x LA fr fr! Cek harga pasar 24 jam, bikin KTP Digital IC, urus kendaraan, sampe intip portal Gemilang Jaya Dealer. Satset brodie! 💅🔥
             </p>
           </div>
           <i className="fa-solid fa-crown text-8xl text-amber-500/15 absolute right-6 pointer-events-none"></i>
         </div>
+
 
         {/* 8 Subdomain Gates Grid */}
         <div className="space-y-4">
