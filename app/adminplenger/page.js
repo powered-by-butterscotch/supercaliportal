@@ -263,12 +263,12 @@ export default function AdminPlengerPage() {
       <header className="sticky top-0 z-50 px-6 py-4 flex flex-col md:flex-row justify-between items-center bg-[#080b1a]/95 backdrop-blur-md border-b border-purple-500/30 gap-4">
         <div className="flex items-center gap-3.5">
           <div className="w-12 h-12 bg-gradient-to-br from-purple-600 via-pink-600 to-indigo-900 rounded-2xl flex items-center justify-center text-2xl shadow-xl shadow-purple-500/30 text-white font-black">
-            <i className="fa-solid fa-crown text-amber-300"></i>
+            👑
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-300 bg-clip-text text-transparent">
-                CONSOLE DIREKSI ADMIN PLENGER
+                CONSOLE DIREKSI ADMIN PLENGER ✨
               </h1>
               {isAuthorized && (
                 <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border uppercase tracking-wider ${userRole.color}`}>
@@ -276,8 +276,9 @@ export default function AdminPlengerPage() {
                 </span>
               )}
             </div>
-            <p className="text-xs text-slate-400 font-medium">Gemilang Jaya Auto Dealer, Battle Pass Season 1 & Code Voucher System</p>
+            <p className="text-xs text-slate-400 font-medium">Gemilang Jaya Auto Dealer, Battle Pass Season 1 & Secret Plenger Board</p>
           </div>
+
         </div>
 
         <div className="flex items-center gap-3">

@@ -57,18 +57,15 @@ export default function WargaPage() {
   };
 
   const handleDiscordLogin = () => {
-    // Membaca NEXT_PUBLIC_DISCORD_CLIENT_ID atau DISCORD_CLIENT_ID
     const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || process.env.DISCORD_CLIENT_ID || '';
-    
     const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://warga.supercali.tech';
     const redirectUri = `${currentOrigin}/warga`;
 
     if (!clientId || clientId === '123456789012345678') {
-      alert("PENTING: Ganti nama Key Environment Variable di Vercel menjadi NEXT_PUBLIC_DISCORD_CLIENT_ID agar bisa dibaca browser!");
+      alert("PENTING: Set NEXT_PUBLIC_DISCORD_CLIENT_ID environment variable di hosting.");
       return;
     }
 
-    // Direct Redirect ke Official Discord Authorization URL
     window.location.href = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=identify`;
   };
 
@@ -82,27 +79,27 @@ export default function WargaPage() {
       job,
       phone,
       joinedDate: new Date().toLocaleDateString(),
-      simStatus: 'AKTIF (SIM A & C)',
+      simStatus: 'AKTIF (SIM A & C SLAY)',
       weaponLicStatus: 'DITINJAU POLISI SCVP',
       medicalStatus: 'TERVERIFIKASI SAFD',
-      citizenshipStatus: 'WARGA RESMI SUPERCALI RP'
+      citizenshipStatus: 'WARGA OFFICIAL SUPERCALI'
     };
     setRegisteredProfile(profile);
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#060812] text-slate-100 font-sans pb-16">
       {/* Header Khusus Portal Warga */}
       <header className="sticky top-0 z-50 px-8 py-4 flex justify-between items-center bg-[#060812]/85 backdrop-blur-md border-b border-emerald-500/30">
         <div className="flex items-center gap-3.5">
           <div className="w-11 h-11 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-xl flex items-center justify-center text-xl shadow-lg shadow-emerald-500/30 text-white">
-            <i className="fa-solid fa-address-card"></i>
+            💳
           </div>
           <div>
-            <h1 className="text-xl font-black text-emerald-400">
-              SUPERCALI CITIZEN PORTAL
+            <h1 className="text-xl font-black bg-gradient-to-r from-emerald-300 via-teal-300 to-cyan-300 bg-clip-text text-transparent">
+              SUPERCALI CITIZEN PORTAL ✨
             </h1>
-            <p className="text-xs text-slate-400 font-medium">Portal Kependudukan Digital, Profile Warga & DMV</p>
+            <p className="text-xs text-slate-400 font-medium">Portal Kependudukan Aesthetic, KTP Digital & STNK DMV</p>
           </div>
         </div>
 
@@ -110,8 +107,8 @@ export default function WargaPage() {
           <Link href="/" className="text-xs font-bold text-slate-400 hover:text-white transition-colors">
             ← City Hub
           </Link>
-          <Link href="/loket" className="text-xs font-bold text-cyan-400 hover:underline">
-            Loket Terpadu
+          <Link href="/gemilangjaya" className="text-xs font-bold text-amber-300 hover:underline">
+            💎 Gemilang Jaya
           </Link>
           <div className="flex items-center gap-2.5 bg-emerald-500/10 border border-emerald-500/30 px-4 py-2 rounded-full text-xs font-bold text-emerald-400">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -125,11 +122,11 @@ export default function WargaPage() {
         {/* Banner Welcome */}
         <div className="bg-gradient-to-r from-emerald-600/20 via-teal-700/15 to-cyan-500/10 border border-emerald-500/30 rounded-3xl p-7 flex justify-between items-center backdrop-blur-md">
           <div>
-            <span className="px-3 py-1 rounded-md text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 uppercase">PORTAL SIPIL WARGA KOTA</span>
-            <h2 className="text-2xl font-black text-white mt-1">KTP Digital & Profile Kependudukan Supercali RP</h2>
-            <p className="text-xs text-slate-400 mt-1">Login via Discord, daftarkan identitas karakter IC Anda, & dapatkan Kartu KTP Digital Resmi Kota.</p>
+            <span className="px-3 py-1 rounded-md text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 uppercase">PORTAL WARGA SLAY 💅</span>
+            <h2 className="text-2xl font-black text-white mt-1">KTP Digital & Profile Warga Supercali RP ✨</h2>
+            <p className="text-xs text-slate-300 mt-1">Login Discord, daftarkan biodata karakter IC kamu, & dapet KTP Digital super aesthetic real no fake!</p>
           </div>
-          <i className="fa-solid fa-passport text-4xl text-emerald-400/80"></i>
+          <i className="fa-solid fa-address-card text-4xl text-emerald-400/80"></i>
         </div>
 
         {/* CONDITION 1: BELUM LOGIN DISCORD */}
@@ -139,9 +136,9 @@ export default function WargaPage() {
               <i className="fa-brands fa-discord"></i>
             </div>
             <div className="space-y-2">
-              <h3 className="text-xl font-black text-white">Login Dengan Akun Discord Warga</h3>
+              <h3 className="text-xl font-black text-white">Login Discord Dulu Brodie! ✨</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Untuk mengakses KTP Digital & Profile Kependudukan Kota Supercali RP, silakan lakukan otentikasi akun Discord Anda terlebih dahulu.
+                Buka KTP Digital & Profile IC kamu paling satset via Discord OAuth2. Safe & real no cap!
               </p>
             </div>
 
@@ -149,7 +146,7 @@ export default function WargaPage() {
               onClick={handleDiscordLogin}
               className="w-full bg-[#5865F2] hover:bg-[#4752c4] text-white font-extrabold p-4 rounded-xl shadow-lg shadow-[#5865F2]/30 flex items-center justify-center gap-3 transition-transform hover:scale-[1.01]"
             >
-              <i className="fa-brands fa-discord text-xl"></i> Login Dengan Discord OAuth2
+              <i className="fa-brands fa-discord text-xl"></i> Login With Discord OAuth2
             </button>
           </div>
         )}
@@ -161,198 +158,158 @@ export default function WargaPage() {
               <img src={discordUser.avatarUrl} alt="Discord Avatar" className="w-12 h-12 rounded-full border-2 border-emerald-400" />
               <div>
                 <strong className="text-white text-base block">{discordUser.username}#{discordUser.discriminator}</strong>
-                <span className="text-xs text-emerald-400 font-semibold">✓ Terautentikasi Discord OAuth2 Server Supercali RP</span>
+                <span className="text-xs text-emerald-400 font-semibold">✓ Verified Discord Warga Supercali RP</span>
               </div>
             </div>
 
             <h3 className="text-lg font-black text-emerald-400 flex items-center gap-2">
-              <i className="fa-solid fa-file-signature"></i> Formulir Pendaftaran Biodata Karakter IC Warga Pertama Kali
+              📝 Form Biodata Karakter IC Warga (Satset No Ribet)
             </h3>
 
             <form onSubmit={handleRegisterCitizen} className="space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-bold text-slate-400 uppercase">Nama Lengkap Karakter (IC)</label>
-                  <input type="text" value={icName} onChange={(e) => setIcName(e.target.value)} placeholder="Contoh: Kenxzo Kenxzo" required className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm focus:border-emerald-500 outline-none" />
+                  <input type="text" value={icName} onChange={(e) => setIcName(e.target.value)} placeholder="Contoh: Kenxzo Plenger" required className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm focus:border-emerald-500 outline-none" />
                 </div>
                 <div>
                   <label className="text-xs font-bold text-slate-400 uppercase">Citizen ID (CID)</label>
                   <input type="text" value={cid} onChange={(e) => setCid(e.target.value)} placeholder="Contoh: USL99211" required className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm focus:border-emerald-500 outline-none" />
                 </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="text-xs font-bold text-slate-400 uppercase">Tanggal Lahir IC</label>
                   <input type="date" value={dob} onChange={(e) => setDob(e.target.value)} required className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm focus:border-emerald-500 outline-none" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-400 uppercase">Jenis Kelamin Karakter</label>
+                  <label className="text-xs font-bold text-slate-400 uppercase">Gender IC</label>
                   <select value={gender} onChange={(e) => setGender(e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm focus:border-emerald-500 outline-none">
-                    <option value="Laki-laki">Laki-laki (Male)</option>
-                    <option value="Perempuan">Perempuan (Female)</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-400 uppercase">Pekerjaan Utama IC</label>
-                  <input type="text" value={job} onChange={(e) => setJob(e.target.value)} placeholder="Contoh: Penambang Emas / SAFD Paramedis" required className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm focus:border-emerald-500 outline-none" />
-                </div>
-                <div>
                   <label className="text-xs font-bold text-slate-400 uppercase">Nomor Telepon IC</label>
-                  <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Contoh: 0812-9988-1234" required className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm focus:border-emerald-500 outline-none" />
+                  <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="555-0192" required className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm focus:border-emerald-500 outline-none" />
                 </div>
               </div>
 
-              <button type="submit" className="w-full bg-gradient-to-r from-emerald-500 to-teal-700 text-black font-black p-4 rounded-xl shadow-lg shadow-emerald-500/30 hover:scale-[1.01] transition-transform">
-                Terbitkan Kartu KTP Digital & Passport Warga
+              <div>
+                <label className="text-xs font-bold text-slate-400 uppercase">Pekerjaan Utama IC</label>
+                <select value={job} onChange={(e) => setJob(e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm focus:border-emerald-500 outline-none">
+                  <option value="Warga Sipil / Penambang">Warga Sipil / Penambang</option>
+                  <option value="Mekanik UltraSpeed">Mekanik UltraSpeed</option>
+                  <option value="Petugas Medis SAFD">Petugas Medis SAFD</option>
+                  <option value="Kepolisian SCVP">Kepolisian SCVP</option>
+                  <option value="Pengusaha / Pedagang">Pengusaha / Pedagang</option>
+                  <option value="Executive KenClub">Executive KenClub</option>
+                </select>
+              </div>
+
+              <button type="submit" className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black p-4 rounded-xl shadow-lg shadow-emerald-500/30 transition-transform active:scale-95 text-sm">
+                ✨ CETAK KTP DIGITAL SEKARANG!
               </button>
             </form>
           </div>
         )}
 
-        {/* CONDITION 3: PROFILE SUDAH TERDAFTAR (KARTU KTP DIGITAL RESMI) */}
-        {registeredProfile && (
+        {/* CONDITION 3: KTP DIGITAL RESMI WARGA */}
+        {discordLoggedIn && registeredProfile && (
           <div className="space-y-6">
             
-            {/* Tab Navigation Warga */}
-            <div className="flex gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10 w-fit">
-              <button
-                onClick={() => setActiveTab('profile')}
-                className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 ${activeTab === 'profile' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/30' : 'text-slate-400 hover:text-white'}`}
-              >
-                <i className="fa-solid fa-id-card"></i> KTP Digital IC
+            <div className="flex gap-3 border-b border-white/10 pb-3">
+              <button onClick={() => setActiveTab('profile')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === 'profile' ? 'bg-emerald-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}`}>
+                💳 KTP Digital IC
               </button>
-              <button
-                onClick={() => setActiveTab('dmv')}
-                className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 ${activeTab === 'dmv' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/30' : 'text-slate-400 hover:text-white'}`}
-              >
-                <i className="fa-solid fa-car"></i> DMV Registrasi STNK
+              <button onClick={() => setActiveTab('dmv')} className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${activeTab === 'dmv' ? 'bg-emerald-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'}`}>
+                🚗 DMV Surat STNK Kendaraan
               </button>
             </div>
 
-            {/* KARTU KTP DIGITAL PASSPORT DISPLAY */}
             {activeTab === 'profile' && (
-              <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border-2 border-emerald-500/40 rounded-3xl p-8 backdrop-blur-md shadow-2xl relative overflow-hidden space-y-6">
-                <div className="absolute top-0 right-0 p-8 opacity-10 font-black text-8xl text-emerald-400 pointer-events-none">SUPERCALI</div>
+              <div className="bg-gradient-to-br from-slate-900 via-teal-950/40 to-slate-900 border border-emerald-500/40 rounded-3xl p-8 backdrop-blur-xl shadow-2xl space-y-6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
 
-                {/* Passport Header */}
-                <div className="flex justify-between items-center border-b border-white/10 pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-emerald-500/20 border border-emerald-500/40 rounded-xl flex items-center justify-center text-emerald-400 text-lg">
-                      <i className="fa-solid fa-city"></i>
-                    </div>
+                <div className="flex justify-between items-start border-b border-white/10 pb-5">
+                  <div className="flex items-center gap-4">
+                    <img src={discordUser.avatarUrl} alt="Avatar" className="w-16 h-16 rounded-2xl border-2 border-emerald-400 shadow-lg shadow-emerald-500/30" />
                     <div>
-                      <h3 className="text-base font-black text-white tracking-wider">KARTU TANDA KEPENDUDUKAN (KTP DIGITAL)</h3>
-                      <p className="text-[10px] text-emerald-400 font-mono">SUPERCALI ROLEPLAY • OFFICIAL CITIZEN PASSPORT</p>
-                    </div>
-                  </div>
-                  <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 uppercase">
-                    STATUS: {registeredProfile.citizenshipStatus}
-                  </span>
-                </div>
-
-                {/* Passport Content Grid */}
-                <div className="grid grid-cols-3 gap-6 items-center">
-                  <div className="text-center space-y-2 border-r border-white/10 pr-6">
-                    <img src={discordUser.avatarUrl} alt="Discord Avatar" className="w-28 h-28 rounded-2xl mx-auto border-2 border-emerald-400 object-cover shadow-lg" />
-                    <div>
-                      <strong className="text-white text-sm block font-extrabold">{discordUser.username}#{discordUser.discriminator}</strong>
-                      <span className="text-[10px] text-slate-400 font-mono">Discord Verified Warga</span>
+                      <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase">PASSPORT RESMI KOTA</span>
+                      <h3 className="text-2xl font-black text-white mt-1">{registeredProfile.icName}</h3>
+                      <p className="text-xs text-slate-400 font-mono">CID: {registeredProfile.cid} • {discordUser.username}</p>
                     </div>
                   </div>
 
-                  <div className="col-span-2 grid grid-cols-2 gap-4 text-xs">
-                    <div>
-                      <span className="text-slate-400 font-bold uppercase text-[10px]">NAMA LENGKAP KARAKTER:</span>
-                      <strong className="text-white text-base block font-black mt-0.5">{registeredProfile.icName}</strong>
-                    </div>
-                    <div>
-                      <span className="text-slate-400 font-bold uppercase text-[10px]">CITIZEN ID (CID):</span>
-                      <strong className="text-cyan-400 text-base block font-mono font-black mt-0.5">{registeredProfile.cid}</strong>
-                    </div>
-                    <div>
-                      <span className="text-slate-400 font-bold uppercase text-[10px]">PEKERJAAN UTAMA:</span>
-                      <span className="text-amber-400 font-bold block mt-0.5">{registeredProfile.job}</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-400 font-bold uppercase text-[10px]">NOMOR TELEPON IC:</span>
-                      <span className="text-white font-mono block mt-0.5">{registeredProfile.phone}</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-400 font-bold uppercase text-[10px]">TANGGAL LAHIR IC:</span>
-                      <span className="text-white block mt-0.5">{registeredProfile.dob}</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-400 font-bold uppercase text-[10px]">JENIS KELAMIN:</span>
-                      <span className="text-white block mt-0.5">{registeredProfile.gender}</span>
-                    </div>
+                  <div className="text-right">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase block">Status Kependudukan</span>
+                    <span className="text-xs font-black text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/30 inline-block mt-1">
+                      ✓ WARGA RESMI
+                    </span>
                   </div>
                 </div>
 
-                {/* Status Lisensi & Verifikasi Instansi */}
-                <div className="bg-black/50 border border-white/10 rounded-2xl p-5 grid grid-cols-3 gap-4 text-xs">
-                  <div>
-                    <span className="text-slate-400 text-[10px] font-bold block">STATUS SIM KENDARAAN:</span>
-                    <strong className="text-emerald-400 font-bold block mt-0.5"><i className="fa-solid fa-id-card mr-1"></i> {registeredProfile.simStatus}</strong>
+                <div className="grid grid-cols-3 gap-4 text-xs">
+                  <div className="bg-black/40 p-4 rounded-2xl border border-white/10">
+                    <span className="text-slate-400 font-bold block">Tanggal Lahir:</span>
+                    <span className="text-white font-mono text-sm">{registeredProfile.dob}</span>
                   </div>
-                  <div>
-                    <span className="text-slate-400 text-[10px] font-bold block">LISENSI SENJATA SCVP:</span>
-                    <strong className="text-amber-400 font-bold block mt-0.5"><i className="fa-solid fa-gun mr-1"></i> {registeredProfile.weaponLicStatus}</strong>
+                  <div className="bg-black/40 p-4 rounded-2xl border border-white/10">
+                    <span className="text-slate-400 font-bold block">Gender IC:</span>
+                    <span className="text-white text-sm">{registeredProfile.gender}</span>
                   </div>
-                  <div>
-                    <span className="text-slate-400 text-[10px] font-bold block">SURAT SEHAT SAFD:</span>
-                    <strong className="text-emerald-400 font-bold block mt-0.5"><i className="fa-solid fa-hospital mr-1"></i> {registeredProfile.medicalStatus}</strong>
+                  <div className="bg-black/40 p-4 rounded-2xl border border-white/10">
+                    <span className="text-slate-400 font-bold block">No. Telepon:</span>
+                    <span className="text-cyan-300 font-mono text-sm">{registeredProfile.phone}</span>
                   </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex justify-between items-center pt-2">
-                  <span className="text-[10px] text-slate-400 font-mono">TERBIT SEJAK: {registeredProfile.joinedDate} • SUPERCALI RP OFFICIAL PASS</span>
-                  <button onClick={() => window.print()} className="bg-emerald-500 text-black font-extrabold px-5 py-2.5 rounded-xl hover:bg-emerald-400 transition-transform">
-                    🖨️ Print KTP Digital PDF
-                  </button>
+                  <div className="bg-black/40 p-4 rounded-2xl border border-white/10">
+                    <span className="text-slate-400 font-bold block">Pekerjaan Utama:</span>
+                    <span className="text-amber-300 font-bold text-sm">{registeredProfile.job}</span>
+                  </div>
+                  <div className="bg-black/40 p-4 rounded-2xl border border-white/10">
+                    <span className="text-slate-400 font-bold block">Status SIM:</span>
+                    <span className="text-emerald-400 font-bold text-sm">{registeredProfile.simStatus}</span>
+                  </div>
+                  <div className="bg-black/40 p-4 rounded-2xl border border-white/10">
+                    <span className="text-slate-400 font-bold block">Izin Senjata:</span>
+                    <span className="text-purple-300 font-bold text-sm">{registeredProfile.weaponLicStatus}</span>
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* DMV VEHICLE REGISTRATION */}
             {activeTab === 'dmv' && (
-              <div className="bg-slate-900/60 border border-white/10 rounded-3xl p-8 backdrop-blur-md shadow-2xl space-y-6">
+              <div className="bg-slate-900/80 border border-white/10 rounded-3xl p-8 backdrop-blur-md shadow-2xl space-y-6">
                 <h3 className="text-lg font-black text-emerald-400 flex items-center gap-2">
-                  <i className="fa-solid fa-car"></i> Registrasi Kendaraan Pribadi DMV & STNK (Atas Nama {registeredProfile.icName})
+                  🚗 Pendaftaran DMV Surat STNK Kendaraan IC
                 </h3>
-                <form onSubmit={(e) => { e.preventDefault(); setVehSuccess(true); }} className="space-y-5">
+
+                <form onSubmit={(e) => { e.preventDefault(); setVehSuccess(true); }} className="space-y-4 text-xs">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs font-bold text-slate-400 uppercase">Nama Pemilik Kendaraan</label>
-                      <input type="text" value={registeredProfile.icName} readOnly className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm outline-none" />
+                      <label className="text-slate-400 font-bold block mb-1">Model / Spawn Code Mobil</label>
+                      <input type="text" placeholder="Contoh: g632019 / agerars" required className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-emerald-400" />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-slate-400 uppercase">Citizen ID (CID)</label>
-                      <input type="text" value={registeredProfile.cid} readOnly className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm outline-none" />
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold text-slate-400 uppercase">Merk & Model Kendaraan</label>
-                      <input type="text" placeholder="Contoh: Sultan RS / Elegy RH8" required className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm focus:border-emerald-500 outline-none" />
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold text-slate-400 uppercase">Nomor Plat Kendaraan</label>
-                      <input type="text" placeholder="Contoh: SC 9921" required className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm focus:border-emerald-500 outline-none" />
+                      <label className="text-slate-400 font-bold block mb-1">Nomor Plat Mobil</label>
+                      <input type="text" placeholder="Contoh: SC 9912" required className="w-full bg-black/40 border border-white/10 rounded-xl p-3 text-white font-mono outline-none focus:border-emerald-400" />
                     </div>
                   </div>
-                  <button type="submit" className="w-full bg-gradient-to-r from-emerald-500 to-teal-700 text-black font-black p-4 rounded-xl shadow-lg shadow-emerald-500/30 hover:scale-[1.01] transition-transform">
-                    Registrasi STNK Kendaraan DMV
+
+                  <button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black p-3.5 rounded-xl shadow-lg shadow-emerald-500/30 transition-transform">
+                    📝 REGISTRASI STNK MOBIL SEKARANG
                   </button>
                 </form>
 
                 {vehSuccess && (
-                  <div className="p-4 bg-emerald-500/15 border border-emerald-500/30 rounded-2xl flex items-center gap-4 text-emerald-400">
-                    <i className="fa-solid fa-circle-check text-2xl"></i>
-                    <div>
-                      <strong className="text-white">STNK Kendaraan Berhasil Terdaftar di Database DMV SCVP!</strong>
-                      <p className="text-xs mt-0.5">Plat nomor Anda telah terverifikasi aman dari razia kepolisian.</p>
-                    </div>
+                  <div className="p-4 rounded-2xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold">
+                    ✓ BERHASIL! Surat STNK Kendaraan berhasil didaftarkan di database DMV Kota Supercali RP!
                   </div>
                 )}
               </div>
             )}
+
           </div>
         )}
 
