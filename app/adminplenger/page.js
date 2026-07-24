@@ -16,7 +16,6 @@ export default function AdminPlengerPage() {
     canIssueReward: false
   });
   const [activeTab, setActiveTab] = useState('overview'); // overview, hierarchy, rewards, donation_system, vehicles
-  const [showPinHelp, setShowPinHelp] = useState(false);
 
   // State Search & Filter Kendaraan
   const [searchQuery, setSearchQuery] = useState('');
@@ -69,13 +68,13 @@ export default function AdminPlengerPage() {
     'D': ['fortwo17', 'GODz61BUS', 'kart', 'mlbrabus', 'RYGBus', 'van_blacklions', 'van_vagos', 'vanzwb06']
   };
 
-  // MULTI-TIER PIN AUTHENTICATION SYSTEM
+  // MULTI-TIER SECRET PIN AUTHENTICATION SYSTEM
   const handleAdminAuth = (e) => {
     e.preventDefault();
     const cleanPin = adminPin.trim().toLowerCase();
 
     // 👑 TIER 1: OWNER / FOUNDER (PLENGER BOSS - YOU)
-    if (cleanPin === '7777' || cleanPin === '9999' || cleanPin === 'plengerboss' || cleanPin === 'owner') {
+    if (cleanPin === 'plengerboss99' || cleanPin === '987654' || cleanPin === 'boss#7726') {
       setUserRole({
         code: 'OWNER',
         title: 'Plenger Boss (Owner & Founder)',
@@ -88,7 +87,7 @@ export default function AdminPlengerPage() {
       setIsAuthorized(true);
     } 
     // 🔥 TIER 2: HIGH MANAGEMENT STAFF
-    else if (cleanPin === '8888' || cleanPin === '1234' || cleanPin === 'mgmt' || cleanPin === 'plenger') {
+    else if (cleanPin === 'mgmtsc2026' || cleanPin === 'mgmt4321') {
       setUserRole({
         code: 'HIGH_MGMT',
         title: 'High Management Staff',
@@ -101,7 +100,7 @@ export default function AdminPlengerPage() {
       setIsAuthorized(true);
     } 
     // 🛡️ TIER 3: STAFF ADMIN & TICKET MODERATOR
-    else if (cleanPin === '5555' || cleanPin === '3333' || cleanPin === 'staff') {
+    else if (cleanPin === 'staffsc2026' || cleanPin === 'staff3322') {
       setUserRole({
         code: 'STAFF',
         title: 'Staff Admin & Moderator',
@@ -114,7 +113,7 @@ export default function AdminPlengerPage() {
       setIsAuthorized(true);
     } 
     // 💎 TIER 4: DONATUR VIP / GUEST
-    else if (cleanPin === '1111' || cleanPin === 'vip' || cleanPin === 'donatur') {
+    else if (cleanPin === 'vipsc2026' || cleanPin === 'vip1122') {
       setUserRole({
         code: 'DONATUR',
         title: 'VIP Donatur Plenger',
@@ -127,7 +126,7 @@ export default function AdminPlengerPage() {
       setIsAuthorized(true);
     } 
     else {
-      alert("AKSES DITOLAK! PIN Rahasia Salah. Pastikan memasukkan PIN yang benar sesuai role Anda.");
+      alert("AKSES DITOLAK! PIN Rahasia Salah.");
     }
   };
 
@@ -232,7 +231,7 @@ export default function AdminPlengerPage() {
             </div>
             <div className="space-y-2">
               <h3 className="text-2xl font-black text-white">PORTAL RAHASIA ADMIN PLENGER</h3>
-              <p className="text-xs text-slate-400">Masukkan Kode PIN Sesuai Role & Jabatan Anda di Kota Supercali RP</p>
+              <p className="text-xs text-slate-400">Masukkan Kode PIN Rahasia Sesuai Role & Jabatan Anda di Kota Supercali RP</p>
             </div>
 
             <form onSubmit={handleAdminAuth} className="space-y-4">
@@ -250,43 +249,6 @@ export default function AdminPlengerPage() {
                 🔓 MASUK DENGAN ROLE ANDA
               </button>
             </form>
-
-            {/* TOGGLE PIN HINT MODAL/CHATSHEET UNTUK BOSS */}
-            <div className="pt-2 border-t border-white/10">
-              <button
-                type="button"
-                onClick={() => setShowPinHelp(!showPinHelp)}
-                className="text-[11px] text-purple-400 font-bold hover:underline flex items-center justify-center gap-1.5 mx-auto"
-              >
-                <i className="fa-solid fa-key"></i> {showPinHelp ? 'Sembunyikan Daftar Kode PIN Role' : 'Lihat Daftar Kode PIN Role Admin'}
-              </button>
-
-              {showPinHelp && (
-                <div className="mt-4 p-4 bg-black/60 border border-purple-500/30 rounded-2xl text-left space-y-3 text-xs">
-                  <div className="font-black text-amber-300 flex items-center gap-2">
-                    <i className="fa-solid fa-shield-halved"></i> Daftar Kode PIN Sesuai Role:
-                  </div>
-                  <div className="space-y-2 font-mono text-[11px]">
-                    <div className="flex justify-between items-center bg-pink-500/10 border border-pink-500/30 p-2 rounded-xl">
-                      <span className="text-pink-300 font-bold">👑 Plenger Boss (Owner / You)</span>
-                      <span className="bg-pink-500/30 text-white font-black px-2 py-0.5 rounded">7777</span>
-                    </div>
-                    <div className="flex justify-between items-center bg-purple-500/10 border border-purple-500/30 p-2 rounded-xl">
-                      <span className="text-purple-300 font-bold">🔥 High Management</span>
-                      <span className="bg-purple-500/30 text-white font-black px-2 py-0.5 rounded">1234</span>
-                    </div>
-                    <div className="flex justify-between items-center bg-blue-500/10 border border-blue-500/30 p-2 rounded-xl">
-                      <span className="text-blue-300 font-bold">🛡️ Staff Admin / Moderator</span>
-                      <span className="bg-blue-500/30 text-white font-black px-2 py-0.5 rounded">5555</span>
-                    </div>
-                    <div className="flex justify-between items-center bg-amber-500/10 border border-amber-500/30 p-2 rounded-xl">
-                      <span className="text-amber-300 font-bold">💎 Donatur VIP Viewer</span>
-                      <span className="bg-amber-500/30 text-white font-black px-2 py-0.5 rounded">1111</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
         ) : (
           /* AUTHORIZED DASHBOARD CONTAINER */
