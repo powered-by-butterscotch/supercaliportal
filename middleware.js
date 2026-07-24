@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export function middleware(request) {
-  const hostname = request.headers.get('host') || '';
+  const hostname = (request.headers.get('host') || '').toLowerCase();
   const url = request.nextUrl;
 
   // 1. Subdomain Secret Admin Plenger (adminplenger.supercali.tech)
@@ -11,8 +11,14 @@ export function middleware(request) {
     }
   }
 
-  // 2. Subdomain Gate Gemilang Jaya Auto Group (gemilangjaya.supercali.tech atau gemilang.supercali.tech atau dealer.supercali.tech)
-  if (hostname.startsWith('gemilangjaya.') || hostname.startsWith('gemilang.') || hostname.startsWith('dealer.')) {
+  // 2. Subdomain Gate Gemilang Jaya Auto Group (gemilangjaya.supercali.tech, gemiangjaya.supercali.tech, gemilang.supercali.tech, dealer.supercali.tech)
+  if (
+    hostname.startsWith('gemilangjaya.') ||
+    hostname.startsWith('gemiangjaya.') ||
+    hostname.startsWith('gemilang.') ||
+    hostname.startsWith('gemiang.') ||
+    hostname.startsWith('dealer.')
+  ) {
     if (url.pathname === '/') {
       return NextResponse.rewrite(new URL('/gemilangjaya', request.url));
     }

@@ -134,15 +134,16 @@ export default function Home() {
               <span className="text-xs text-slate-400">KenClub VIP Nightlife</span>
             </Link>
 
-            <div className="bg-slate-900/60 border border-amber-500/30 p-5 rounded-2xl backdrop-blur-md">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl mb-3">
-                <i className="fa-solid fa-chart-line"></i>
+            <Link href="/gemilangjaya" className="bg-slate-900/60 border border-amber-500/30 p-5 rounded-2xl backdrop-blur-md hover:scale-[1.02] transition-transform group">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl mb-3 group-hover:bg-amber-500 group-hover:text-black transition-colors">
+                <i className="fa-solid fa-gem"></i>
               </div>
-              <strong className="text-white text-sm block">city.supercali.tech</strong>
-              <span className="text-xs text-slate-400">Analitik Pasar & Ekonomi</span>
-            </div>
+              <strong className="text-white text-sm block group-hover:text-amber-400">gemilangjaya.supercali.tech</strong>
+              <span className="text-xs text-slate-400">Gemilang Auto & BattlePass</span>
+            </Link>
           </div>
         </div>
+
 
         {/* Live Market Commodities Table ($5 - $45 Low-Pay Model) */}
         <div className="bg-slate-900/60 border border-white/10 rounded-3xl p-8 backdrop-blur-md shadow-2xl space-y-6">
