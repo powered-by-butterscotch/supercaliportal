@@ -66,8 +66,9 @@ export default function WargaPage() {
 
   const handleDiscordLogin = () => {
     const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || process.env.DISCORD_CLIENT_ID || '';
-    const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://warga.supercali.tech';
-    const redirectUri = `${currentOrigin}/warga`;
+    const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://supercali.tech';
+    // Always append /warga to origin for canonical callback
+    const redirectUri = currentOrigin.endsWith('/warga') ? currentOrigin : `${currentOrigin}/warga`;
 
     if (!clientId || clientId === '123456789012345678') {
       showToast("PENTING: Set NEXT_PUBLIC_DISCORD_CLIENT_ID environment variable di Vercel / hosting.", "warning");
@@ -76,6 +77,7 @@ export default function WargaPage() {
 
     window.location.href = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=identify`;
   };
+
 
 
   // Load Saved Citizen Session on Mount
