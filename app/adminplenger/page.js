@@ -13,7 +13,8 @@ export default function AdminPlengerPage() {
     color: 'bg-slate-500/20 text-slate-300 border-slate-500/40',
     canDelete: false,
     canEdit: false,
-    canIssueReward: false
+    canIssueReward: false,
+    allowedTabs: []
   });
   const [activeTab, setActiveTab] = useState('overview'); // overview, hierarchy, rewards, donation_system, vehicles
 
@@ -68,7 +69,7 @@ export default function AdminPlengerPage() {
     'D': ['fortwo17', 'GODz61BUS', 'kart', 'mlbrabus', 'RYGBus', 'van_blacklions', 'van_vagos', 'vanzwb06']
   };
 
-  // MULTI-TIER SECRET PIN AUTHENTICATION SYSTEM
+  // MULTI-TIER SECRET PIN AUTHENTICATION SYSTEM WITH ROLE VISIBILITY
   const handleAdminAuth = (e) => {
     e.preventDefault();
     const cleanPin = adminPin.trim().toLowerCase();
@@ -82,8 +83,10 @@ export default function AdminPlengerPage() {
         color: 'bg-gradient-to-r from-pink-500 to-rose-600 text-white border-pink-400',
         canDelete: true,
         canEdit: true,
-        canIssueReward: true
+        canIssueReward: true,
+        allowedTabs: ['overview', 'hierarchy', 'rewards', 'donation_system', 'vehicles']
       });
+      setActiveTab('overview');
       setIsAuthorized(true);
     } 
     // 🔥 TIER 2: HIGH MANAGEMENT STAFF
@@ -95,8 +98,10 @@ export default function AdminPlengerPage() {
         color: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
         canDelete: false,
         canEdit: true,
-        canIssueReward: true
+        canIssueReward: true,
+        allowedTabs: ['overview', 'hierarchy', 'rewards', 'vehicles']
       });
+      setActiveTab('overview');
       setIsAuthorized(true);
     } 
     // 🛡️ TIER 3: STAFF ADMIN & TICKET MODERATOR
@@ -108,8 +113,10 @@ export default function AdminPlengerPage() {
         color: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
         canDelete: false,
         canEdit: false,
-        canIssueReward: true
+        canIssueReward: true,
+        allowedTabs: ['overview', 'rewards', 'vehicles']
       });
+      setActiveTab('overview');
       setIsAuthorized(true);
     } 
     // 💎 TIER 4: DONATUR VIP / GUEST
@@ -121,8 +128,10 @@ export default function AdminPlengerPage() {
         color: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
         canDelete: false,
         canEdit: false,
-        canIssueReward: false
+        canIssueReward: false,
+        allowedTabs: ['donation_system', 'vehicles']
       });
+      setActiveTab('donation_system');
       setIsAuthorized(true);
     } 
     else {
@@ -254,7 +263,7 @@ export default function AdminPlengerPage() {
           /* AUTHORIZED DASHBOARD CONTAINER */
           <div className="space-y-6">
             
-            {/* WELCOME BADGE USER ROLE */}
+            {/* WELCOME BADGE USER ROLE & ACCESS MATRIX */}
             <div className="bg-gradient-to-r from-slate-900 via-purple-950/40 to-slate-900 border border-purple-500/30 p-4 rounded-2xl backdrop-blur-md flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-purple-500/20 border border-purple-500/40 rounded-xl flex items-center justify-center text-purple-300 text-lg">
@@ -271,57 +280,67 @@ export default function AdminPlengerPage() {
                 </div>
               </div>
               
-              <div className="text-xs text-slate-400 font-mono">
-                Hak Akses: {userRole.canDelete ? '✓ Full Root Access' : userRole.canEdit ? '✓ Edit & Issue Allowed' : '👁️ View & Claim Only'}
+              <div className="text-xs text-slate-300 font-mono flex items-center gap-2">
+                <span className="text-purple-400 font-bold">Menu Aktif:</span> {userRole.allowedTabs.length} Tab Akses Ditampilkan
               </div>
             </div>
 
-            {/* EXECUTIVE NAVIGATION TABS */}
+            {/* DYNAMIC EXECUTIVE NAVIGATION TABS (FILTERED BY ROLE) */}
             <div className="flex flex-wrap gap-2 p-1.5 bg-slate-900/80 border border-white/10 rounded-2xl backdrop-blur-md">
-              <button
-                onClick={() => setActiveTab('overview')}
-                className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
-                  activeTab === 'overview' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <i className="fa-solid fa-chart-pie"></i> Executive Overview
-              </button>
-              <button
-                onClick={() => setActiveTab('hierarchy')}
-                className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
-                  activeTab === 'hierarchy' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <i className="fa-solid fa-sitemap"></i> Hirarki Server & Donatur ({hierarchyList.length})
-              </button>
-              <button
-                onClick={() => setActiveTab('rewards')}
-                className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
-                  activeTab === 'rewards' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <i className="fa-solid fa-gift text-amber-300"></i> Reward & Claim Selector
-              </button>
-              <button
-                onClick={() => setActiveTab('donation_system')}
-                className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
-                  activeTab === 'donation_system' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <i className="fa-solid fa-gem text-cyan-300"></i> System Donasi & Perks Roadmap
-              </button>
-              <button
-                onClick={() => setActiveTab('vehicles')}
-                className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
-                  activeTab === 'vehicles' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <i className="fa-solid fa-car"></i> Katalog 388 Mobil Kota
-              </button>
+              {userRole.allowedTabs.includes('overview') && (
+                <button
+                  onClick={() => setActiveTab('overview')}
+                  className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
+                    activeTab === 'overview' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <i className="fa-solid fa-chart-pie"></i> Executive Overview
+                </button>
+              )}
+              {userRole.allowedTabs.includes('hierarchy') && (
+                <button
+                  onClick={() => setActiveTab('hierarchy')}
+                  className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
+                    activeTab === 'hierarchy' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <i className="fa-solid fa-sitemap"></i> Hirarki Server & Donatur ({hierarchyList.length})
+                </button>
+              )}
+              {userRole.allowedTabs.includes('rewards') && (
+                <button
+                  onClick={() => setActiveTab('rewards')}
+                  className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
+                    activeTab === 'rewards' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <i className="fa-solid fa-gift text-amber-300"></i> Reward & Claim Selector
+                </button>
+              )}
+              {userRole.allowedTabs.includes('donation_system') && (
+                <button
+                  onClick={() => setActiveTab('donation_system')}
+                  className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
+                    activeTab === 'donation_system' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <i className="fa-solid fa-gem text-cyan-300"></i> System Donasi & Perks Roadmap
+                </button>
+              )}
+              {userRole.allowedTabs.includes('vehicles') && (
+                <button
+                  onClick={() => setActiveTab('vehicles')}
+                  className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
+                    activeTab === 'vehicles' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <i className="fa-solid fa-car"></i> Katalog 388 Mobil Kota
+                </button>
+              )}
             </div>
 
             {/* TAB 1: EXECUTIVE OVERVIEW & RAPAT METRICS */}
-            {activeTab === 'overview' && (
+            {activeTab === 'overview' && userRole.allowedTabs.includes('overview') && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                   <div className="bg-slate-900/80 border border-purple-500/30 rounded-2xl p-5 backdrop-blur-md relative overflow-hidden">
@@ -388,7 +407,7 @@ export default function AdminPlengerPage() {
             )}
 
             {/* TAB 2: HIRARKI SERVER & DONATUR (EDITABLE) */}
-            {activeTab === 'hierarchy' && (
+            {activeTab === 'hierarchy' && userRole.allowedTabs.includes('hierarchy') && (
               <div className="space-y-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80 border border-white/10 p-6 rounded-3xl backdrop-blur-md">
                   <div>
@@ -555,7 +574,7 @@ export default function AdminPlengerPage() {
                                   Hapus
                                 </button>
                               ) : (
-                                <span className="text-[10px] text-slate-500 italic">Restricted</span>
+                                <span className="text-[10px] text-slate-500 italic">Protected</span>
                               )}
                             </td>
                           </tr>
@@ -568,7 +587,7 @@ export default function AdminPlengerPage() {
             )}
 
             {/* TAB 3: REWARD & CLAIM SELECTOR (PED, RUMAH, MOBIL, CASH) */}
-            {activeTab === 'rewards' && (
+            {activeTab === 'rewards' && userRole.allowedTabs.includes('rewards') && (
               <div className="space-y-6">
                 <div className="grid md:grid-cols-3 gap-6">
                   
@@ -728,7 +747,7 @@ export default function AdminPlengerPage() {
             )}
 
             {/* TAB 4: SISTEM DONASI & PERKS ROADMAP */}
-            {activeTab === 'donation_system' && (
+            {activeTab === 'donation_system' && userRole.allowedTabs.includes('donation_system') && (
               <div className="space-y-6">
                 <div className="bg-slate-900/80 border border-cyan-500/30 p-6 rounded-3xl backdrop-blur-md space-y-3">
                   <h3 className="text-lg font-black text-cyan-300 flex items-center gap-2">
@@ -822,7 +841,7 @@ export default function AdminPlengerPage() {
             )}
 
             {/* TAB 5: KATALOG 388 MOBIL KOTA (EXISTING & ENHANCED) */}
-            {activeTab === 'vehicles' && (
+            {activeTab === 'vehicles' && userRole.allowedTabs.includes('vehicles') && (
               <div className="space-y-6">
                 
                 {/* RINGKASAN STRUKTUR KASTA TABLE */}
