@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function WargaPage() {
@@ -17,20 +17,63 @@ export default function WargaPage() {
 
   const [registeredProfile, setRegisteredProfile] = useState(null);
   const [activeTab, setActiveTab] = useState('profile');
-
-  // Vehicle DMV States
   const [vehSuccess, setVehSuccess] = useState(false);
 
+  // Catch Discord OAuth2 Hash Token Redirect
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash;
+      if (hash && hash.includes('access_token=')) {
+        const params = new URLSearchParams(hash.substring(1));
+        const accessToken = params.get('access_token');
+        if (accessToken) {
+          fetchDiscordUserData(accessToken);
+        }
+      }
+    }
+  }, []);
+
+  const fetchDiscordUserData = async (token) => {
+    try {
+      const res = await fetch('https://discord.com/api/users/@me', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const user = await res.json();
+        const discordProfile = {
+          username: user.username,
+          discriminator: user.discriminator || '0',
+          avatarUrl: user.avatar 
+            ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` 
+            : 'https://cdn.discordapp.com/embed/avatars/0.png',
+          discordId: user.id
+        };
+        setDiscordUser(discordProfile);
+        setDiscordLoggedIn(true);
+      }
+    } catch (e) {
+      console.error("Gagal mengambil data Discord:", e);
+    }
+  };
+
   const handleDiscordLogin = () => {
-    // Simulating Discord OAuth2 Auth
-    const dummyDiscord = {
-      username: "Kenxzo",
-      discriminator: "0001",
-      avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
-      discordId: "9876543210987654"
-    };
-    setDiscordUser(dummyDiscord);
-    setDiscordLoggedIn(true);
+    const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || '123456789012345678';
+    
+    // Redirect langsung ke URL Resmi Discord OAuth2 Authorization
+    const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://warga.supercali.tech';
+    const redirectUri = `${currentOrigin}/warga`;
+    const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=identify`;
+    
+    if (!process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID) {
+      const userClientId = prompt("Masukkan Discord Client ID Application Anda dari Discord Developer Portal:", "123456789012345678");
+      if (userClientId) {
+        const realAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${userClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=identify`;
+        window.location.href = realAuthUrl;
+        return;
+      }
+    }
+
+    window.location.href = discordAuthUrl;
   };
 
   const handleRegisterCitizen = (e) => {
@@ -110,7 +153,7 @@ export default function WargaPage() {
               onClick={handleDiscordLogin}
               className="w-full bg-[#5865F2] hover:bg-[#4752c4] text-white font-extrabold p-4 rounded-xl shadow-lg shadow-[#5865F2]/30 flex items-center justify-center gap-3 transition-transform hover:scale-[1.01]"
             >
-              <i className="fa-brands fa-discord text-xl"></i> Login Dengan Discord OAuth2
+              <i className="fa-brands fa-discord text-xl"></i> Login Dengan Discord OAuth2 (Official Redirect)
             </button>
           </div>
         )}
