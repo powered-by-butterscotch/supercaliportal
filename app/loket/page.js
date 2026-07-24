@@ -4,8 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 export default function LoketPage() {
-  const [selectedDept, setSelectedDept] = useState('arcane'); // arcane, scvp, rizz, whenthis, vanilla, highcouncil
-  const [activeFormType, setActiveFormType] = useState('service'); // 'service' (layanan) or 'job' (apply job)
+  const [selectedDept, setSelectedDept] = useState('arcane');
+  const [activeFormType, setActiveFormType] = useState('service');
   const [formSuccess, setFormSuccess] = useState(false);
 
   // Track Status States
@@ -15,13 +15,13 @@ export default function LoketPage() {
   const depts = [
     { id: 'arcane', name: 'Arcane Rescue Center', icon: 'fa-hospital', category: 'Medis & SAFD EMS', color: 'from-red-500 to-rose-700', badge: 'EMS SAFD' },
     { id: 'scvp', name: 'Vibe Patrol SCVP', icon: 'fa-shield-halved', category: 'Kepolisian & Patroli', color: 'from-blue-500 to-indigo-700', badge: 'POLISI' },
-    { id: 'rizz', name: 'Rizz Motor', icon: 'fa-wrench', category: 'Bengkel & Modifikasi', color: 'from-amber-500 to-orange-700', badge: 'MEKANIK' },
+    { id: 'ultraspeed', name: 'UltraSpeed Mechanic', icon: 'fa-gauge-high', category: 'Bengkel & Modifikasi Super', color: 'from-amber-500 to-orange-700', badge: 'ULTRASPEED' },
     { id: 'whenthis', name: 'When-This Burgershot', icon: 'fa-burger', category: 'Restoran & Kuliner', color: 'from-yellow-500 to-amber-600', badge: 'KULINER' },
-    { id: 'vanilla', name: 'Vanilla Unicorn', icon: 'fa-martini-glass-citrus', category: 'Nightlife & Event Club', color: 'from-pink-500 to-purple-700', badge: 'CLUB VIP' },
+    { id: 'kenclub', name: 'KenClub VIP', icon: 'fa-martini-glass-citrus', category: 'Nightlife & Event VIP Club', color: 'from-pink-500 to-purple-700', badge: 'KENCLUB' },
     { id: 'highcouncil', name: 'High Council Pemkot', icon: 'fa-building-columns', category: 'Pemerintahan & DOJ', color: 'from-cyan-500 to-blue-700', badge: 'PEMKOT' },
   ];
 
-  const currentDeptObj = depts.find(d => d.id === selectedDept);
+  const currentDeptObj = depts.find(d => d.id === selectedDept) || depts[0];
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -168,10 +168,10 @@ export default function LoketPage() {
                           <option value="lisensi_senjata">🔫 Permohonan Uji Lisensi Senjata Api</option>
                         </>
                       )}
-                      {selectedDept === 'rizz' && (
+                      {selectedDept === 'ultraspeed' && (
                         <>
-                          <option value="booking_servis">🔧 Booking Servis Mesin & Tuning VIP</option>
-                          <option value="towing_request">🛞 Panggilan Towing / Derek Mobil</option>
+                          <option value="booking_servis">🔧 Booking Servis Mesin & Tuning UltraSpeed VIP</option>
+                          <option value="towing_request">🛞 Panggilan Towing / Derek Mobil UltraSpeed</option>
                         </>
                       )}
                       {selectedDept === 'whenthis' && (
@@ -180,10 +180,10 @@ export default function LoketPage() {
                           <option value="franchise">🏪 Permohonan Kerjasama Franchising</option>
                         </>
                       )}
-                      {selectedDept === 'vanilla' && (
+                      {selectedDept === 'kenclub' && (
                         <>
-                          <option value="vip_lounge">💃 Reservasi VIP Table / Lounge Club</option>
-                          <option value="event_hall">🎉 Sewa Venue Hall untuk Event Pribadi</option>
+                          <option value="vip_lounge">💃 Reservasi VIP Table / Lounge KenClub</option>
+                          <option value="event_hall">🎉 Sewa Venue Hall KenClub untuk Event Pribadi</option>
                         </>
                       )}
                       {selectedDept === 'highcouncil' && (
@@ -248,10 +248,10 @@ export default function LoketPage() {
                           <option>🚔 Dispatcher / Tactical Support</option>
                         </>
                       )}
-                      {selectedDept === 'rizz' && (
+                      {selectedDept === 'ultraspeed' && (
                         <>
-                          <option>🔧 Junior Mechanic / Tow Driver</option>
-                          <option>🛞 Tuning & Modification Specialist</option>
+                          <option>🔧 Junior Mechanic / Tow Driver UltraSpeed</option>
+                          <option>🛞 Tuning & Modification Specialist UltraSpeed</option>
                         </>
                       )}
                       {selectedDept === 'whenthis' && (
@@ -260,10 +260,10 @@ export default function LoketPage() {
                           <option>🚚 Delivery Rider & Shift Manager</option>
                         </>
                       )}
-                      {selectedDept === 'vanilla' && (
+                      {selectedDept === 'kenclub' && (
                         <>
-                          <option>💃 Dancer / Entertainer VIP</option>
-                          <option>🍸 Bartender & Lounge Security</option>
+                          <option>💃 Dancer / Entertainer VIP KenClub</option>
+                          <option>🍸 Bartender & KenClub Security</option>
                         </>
                       )}
                       {selectedDept === 'highcouncil' && (

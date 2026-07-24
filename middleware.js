@@ -18,17 +18,17 @@ export function middleware(request) {
     }
   }
 
-  // 3. Subdomain Gate Bengkel (rizz.supercali.tech atau mechanic.)
-  if (hostname.startsWith('rizz.') || hostname.startsWith('mechanic.')) {
+  // 3. Subdomain Gate Bengkel UltraSpeed (ultraspeed.supercali.tech atau rizz. atau mechanic.)
+  if (hostname.startsWith('ultraspeed.') || hostname.startsWith('rizz.') || hostname.startsWith('mechanic.')) {
     if (url.pathname === '/') {
-      return NextResponse.rewrite(new URL('/rizz', request.url));
+      return NextResponse.rewrite(new URL('/loket', request.url));
     }
   }
 
-  // 4. Subdomain Gate VIP Nightlife (vanilla.supercali.tech atau club.)
-  if (hostname.startsWith('vanilla.') || hostname.startsWith('club.')) {
+  // 4. Subdomain Gate KenClub VIP (kenclub.supercali.tech atau vanilla. atau club.)
+  if (hostname.startsWith('kenclub.') || hostname.startsWith('vanilla.') || hostname.startsWith('club.')) {
     if (url.pathname === '/') {
-      return NextResponse.rewrite(new URL('/vanilla', request.url));
+      return NextResponse.rewrite(new URL('/loket', request.url));
     }
   }
 
