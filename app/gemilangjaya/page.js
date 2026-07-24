@@ -37,9 +37,9 @@ export default function GemilangJayaPage() {
     if (!clean) return;
 
     if (clean === 'GEMILANG-S1-VIP') {
-      setClaimResult({ success: true, title: '✅ VOUCHER VALID & AKTIF!', detail: 'Paket VIP Season 1: Hypercar Chiron + PED Hash + Villa #402 MLO + $1,000,000 Cash' });
+      setClaimResult({ success: true, title: '✅ VOUCHER VALID & AKTIF!', detail: 'Paket VIP Season 1: Hypercar Chiron + Custom PED Import + Luxury Villa Property + $1,000,000 Cash' });
     } else if (clean === 'PED-SULTAN-2026') {
-      setClaimResult({ success: true, title: '✅ VOUCHER VALID!', detail: 'Custom PED Import Hash (cs_martinmadrazo)' });
+      setClaimResult({ success: true, title: '✅ VOUCHER VALID!', detail: 'Custom Character PED Import Slot' });
     } else if (clean === 'CHIRON-EXOTIC-2026') {
       setClaimResult({ success: true, title: '✅ VOUCHER VALID!', detail: 'Hypercar Chiron SuperSport 2026 (Class S++)' });
     } else {
@@ -93,7 +93,7 @@ export default function GemilangJayaPage() {
                 GEMILANG JAYA AUTO DEALER & BATTLE PASS SEASON 1
               </h2>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Rilis perdana Season 1! Katalog kendaraan bertahap (`jg-dealership`), Custom PED Import (`sc-ped`), MLO Properties (`ps-housing`), dan penukaran voucher in-game (`/claimcode`).
+                Rilis Perdana Season 1! Koleksi Showroom Eksklusif In-Game, Custom Character PED Imports, Luxury Property Villa MLO, & Sistem In-Game Claim Code (<code className="text-amber-300 font-bold">/claimcode</code>).
               </p>
             </div>
 
@@ -268,7 +268,7 @@ export default function GemilangJayaPage() {
                     <span className="text-[10px] text-slate-400 font-mono">Mid Season</span>
                   </div>
                   <div className="text-slate-300">✓ Free: Cash $300,000 & Repair Pack</div>
-                  <div className="text-purple-400 font-bold">✓ VIP: Custom PED Slot (`sc-ped`) + G63 AMG</div>
+                  <div className="text-purple-400 font-bold">✓ VIP: Custom Character PED Import Slot + G63 AMG</div>
                 </div>
 
                 <div className="bg-black/50 border border-purple-500/40 p-5 rounded-2xl space-y-3 bg-purple-950/20">
@@ -277,7 +277,7 @@ export default function GemilangJayaPage() {
                     <span className="text-[10px] text-pink-400 font-mono">Grand Finale</span>
                   </div>
                   <div className="text-slate-300">✓ Free: Mobil Class A (Mustang 65)</div>
-                  <div className="text-pink-400 font-black">✓ VIP: HYPERCAR CHIRON / JESKO + MLO Villa #402</div>
+                  <div className="text-pink-400 font-black">✓ VIP: HYPERCAR CHIRON / JESKO + Luxury Villa Property</div>
                 </div>
               </div>
             </div>
@@ -360,7 +360,7 @@ export default function GemilangJayaPage() {
                 <ul className="text-xs space-y-2 text-slate-300">
                   <li>✓ Perks Gold Included</li>
                   <li>✓ 1x Custom Car Class S (Exotic)</li>
-                  <li>✓ Custom MLO House Property (`ps-housing`)</li>
+                  <li>✓ Custom MLO House Property</li>
                   <li>✓ Gang Turf/Business Import Permit</li>
                 </ul>
               </div>
@@ -373,7 +373,7 @@ export default function GemilangJayaPage() {
                 <ul className="text-xs space-y-2 text-slate-300">
                   <li>✓ Perks Platinum Included</li>
                   <li>✓ 1x Hypercar Class S++ (Agera/Chiron)</li>
-                  <li>✓ Custom PED Slot (`sc-ped`)</li>
+                  <li>✓ Custom Character PED Import Slot</li>
                   <li>✓ VIP Mansion Custom MLO</li>
                   <li>✓ Badge Direksi & VIP Plenger Club</li>
                 </ul>
