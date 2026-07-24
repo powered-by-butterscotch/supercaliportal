@@ -9,6 +9,14 @@ export default function StaffPage() {
   const [staffLoggedIn, setStaffLoggedIn] = useState(false);
   const [staffRoleName, setStaffRoleName] = useState('');
   
+  // Custom Toast Notification State (Goodbye Majapahit Browser Alerts!)
+  const [toastNotification, setToastNotification] = useState(null);
+
+  const showToast = (message, type = 'info') => {
+    setToastNotification({ message, type });
+    setTimeout(() => setToastNotification(null), 5000);
+  };
+
   // Navigation Tabs
   const [activeTab, setActiveTab] = useState('requests'); // 'requests', 'memos', 'roster', 'handbook'
 
@@ -92,7 +100,6 @@ export default function StaffPage() {
   const [newMemoTitle, setNewMemoTitle] = useState('');
   const [newMemoTarget, setNewMemoTarget] = useState('Semua Instansi / Public');
   const [newMemoContent, setNewMemoContent] = useState('');
-  const [memoSentSuccess, setMemoSentSuccess] = useState(false);
 
   // 3. STATE ANGGOTA / FACTION ROSTER MANAGEMENT
   const [roster, setRoster] = useState([
@@ -173,24 +180,26 @@ export default function StaffPage() {
       } else {
         setFilterDeptCategory('all');
       }
+      showToast(`Selamat Datang, ${role}! Verifikasi PIN Direksi Berhasil.`, 'success');
     } else {
-      alert("AKSES DITOLAK! Autentikasi Password Staff / Instansi Salah!");
+      showToast("AKSES DITOLAK! PIN Direksi / Staff Yang Anda Masukkan Salah!", 'error');
     }
   };
 
   const handleApprove = (id, name, cid) => {
     setStaffRequests(prev => prev.map(r => r.id === id ? { ...r, status: 'APPROVED', officerNote: 'DISETUJUI OLEH PETUGAS - STAMP VERIFIED' } : r));
-    alert(`SUKSES! Berkas resmi untuk ${name} (CID: ${cid}) telah DISETUJUI & terbit ke tablet sc-pad in-game!`);
+    showToast(`SUKSES! Berkas untuk ${name} (CID: ${cid}) telah DISETUJUI & terbit ke tablet sc-pad in-game!`, 'success');
   };
 
   const handleRejectConfirm = (id) => {
     if (!customRejectInput.trim()) {
-      alert("Masukkan alasan penolakan!");
+      showToast("Tuliskan alasan penolakan berkas!", 'warning');
       return;
     }
     setStaffRequests(prev => prev.map(r => r.id === id ? { ...r, status: 'REJECTED', officerNote: customRejectInput } : r));
     setRejectReasonModal(null);
     setCustomRejectInput('');
+    showToast("Berkas warga resmi DITOLAK.", 'error');
   };
 
   const handleCreateMemo = (e) => {
@@ -208,13 +217,12 @@ export default function StaffPage() {
     setMemos([memoObj, ...memos]);
     setNewMemoTitle('');
     setNewMemoContent('');
-    setMemoSentSuccess(true);
-    setTimeout(() => setMemoSentSuccess(false), 6000);
+    showToast("Surat Memo Resmi Direksi Berhasil Diterbitkan & Sync ke Tablet sc-pad!", 'success');
   };
 
   const handlePromoteRank = (id) => {
     setRoster(prev => prev.map(m => m.id === id ? { ...m, rank: `${m.rank} (Promoted)` } : m));
-    alert(`SUKSES! Pangkat Anggota Faksi Telah Ditingkatkan & Sync ke Database QBCore Players / Tablet sc-pad!`);
+    showToast("Pangkat Anggota Faksi Telah Ditingkatkan & Sync ke Database QBCore!", 'success');
   };
 
   const currentHandbook = handbookData[staffDept] || handbookData.safd;
@@ -231,9 +239,20 @@ export default function StaffPage() {
   });
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
+      
+      {/* MODERN GLASSMORPHISM TOAST NOTIFICATION (NO MORE MAJAPAHIT BROWSER ALERTS!) */}
+      {toastNotification && (
+        <div className="fixed top-5 right-5 z-50 animate-bounce">
+          <div className={`p-4 rounded-2xl border backdrop-blur-md shadow-2xl flex items-center gap-3 text-xs font-black text-white ${toastNotification.type === 'error' ? 'bg-red-950/80 border-red-500/50 text-red-300' : toastNotification.type === 'success' ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-300' : toastNotification.type === 'warning' ? 'bg-amber-950/80 border-amber-500/50 text-amber-300' : 'bg-cyan-950/80 border-cyan-500/50 text-cyan-300'}`}>
+            <i className={`text-lg fa-solid ${toastNotification.type === 'error' ? 'fa-circle-xmark text-red-400' : toastNotification.type === 'success' ? 'fa-circle-check text-emerald-400' : 'fa-bell text-amber-400'}`}></i>
+            <span>{toastNotification.message}</span>
+          </div>
+        </div>
+      )}
+
       {/* Header Khusus Staff Portal */}
-      <header className="sticky top-0 z-50 px-8 py-4 flex justify-between items-center bg-[#060812]/85 backdrop-blur-md border-b border-amber-500/30">
+      <header className="sticky top-0 z-40 px-8 py-4 flex justify-between items-center bg-[#060812]/85 backdrop-blur-md border-b border-amber-500/30">
         <div className="flex items-center gap-3.5">
           <div className="w-11 h-11 bg-gradient-to-br from-amber-500 to-amber-700 rounded-xl flex items-center justify-center text-xl shadow-lg shadow-amber-500/30 text-white">
             <i className="fa-solid fa-user-shield"></i>
@@ -484,13 +503,6 @@ export default function StaffPage() {
                        Terbitkan & Kirim Surat Memo Direksi (Auto-Sync to sc-pad Tablet)
                     </button>
                   </form>
-
-                  {memoSentSuccess && (
-                    <div className="p-3 bg-emerald-500/15 border border-emerald-500/30 rounded-xl flex items-center gap-3 text-emerald-400 text-xs">
-                      <i className="fa-solid fa-circle-check text-xl"></i>
-                      <span><strong>Surat Memo Resmi Berhasil Diterbitkan!</strong> Otomatis tersimpan di database `city_official_memos` & langsung tampil di menu Dokumen Tablet sc-pad in-game!</span>
-                    </div>
-                  )}
                 </div>
 
                 <div className="space-y-4">
