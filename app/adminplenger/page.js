@@ -27,6 +27,12 @@ export default function AdminPlengerPage() {
   const [cmdParam, setCmdParam] = useState('police 3');
   const [cmdType, setCmdType] = useState('setjob');
 
+  // State Voucher & Redeem Code Gemilang Jaya
+  const [redeemInput, setRedeemInput] = useState('');
+  const [redeemStatus, setRedeemStatus] = useState(null);
+  const [genVoucherType, setGenVoucherType] = useState('MULTI');
+  const [generatedVoucher, setGeneratedVoucher] = useState(null);
+
   // State Hirarki (Editable)
   const [hierarchyList, setHierarchyList] = useState([
     { id: 1, name: 'Kenxzo / Plenger Boss', role: 'Owner / Founder', tier: 'FOUNDER', discord: 'kenxzo#0001', identifier: 'steam:110000117cbe324', aceGroup: 'group.admin', status: 'ACTIVE', perkCount: 'Unlimited' },
@@ -214,6 +220,34 @@ export default function AdminPlengerPage() {
     alert(`✨ Reward / Perks Donasi Berhasil Dikeluarkan oleh ${userRole.title}!`);
   };
 
+  const handleRedeemVoucher = (e) => {
+    e.preventDefault();
+    const clean = redeemInput.trim().toUpperCase();
+    if (!clean) return;
+
+    if (clean === 'GEMILANG-S1-VIP') {
+      setRedeemStatus({ success: true, text: '✨ BERHASIL KLAIM: Gemilang Jaya VIP Season 1 (Hypercar Chiron + PED Hash + MLO Villa #402 + $1M Cash)' });
+    } else if (clean === 'PED-SULTAN-2026') {
+      setRedeemStatus({ success: true, text: '🧍 BERHASIL KLAIM: Custom PED Import Hash (cs_martinmadrazo)' });
+    } else if (clean === 'CHIRON-EXOTIC-2026') {
+      setRedeemStatus({ success: true, text: '🏎️ BERHASIL KLAIM: Bugatti Chiron SuperSport 2026 (Class S++)' });
+    } else if (clean === 'VILLAMLO-402') {
+      setRedeemStatus({ success: true, text: '🏠 BERHASIL KLAIM: MLO Villa Gang HQ #402 (`ps-housing`)' });
+    } else {
+      setRedeemStatus({ success: false, text: '❌ Kode Voucher tidak ditemukan atau sudah pernah diklaim!' });
+    }
+  };
+
+  const handleGenerateVoucher = () => {
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    const code = `GJ-${genVoucherType}-${randomSuffix}`;
+    setGeneratedVoucher({
+      code: code,
+      type: genVoucherType,
+      date: new Date().toISOString().split('T')[0]
+    });
+  };
+
   const getGeneratedCommand = () => {
     if (cmdType === 'setjob') return `/setjob ${cmdPlayerId} ${cmdParam}`;
     if (cmdType === 'giveitem') return `/giveitem ${cmdPlayerId} ${cmdParam}`;
@@ -242,7 +276,7 @@ export default function AdminPlengerPage() {
                 </span>
               )}
             </div>
-            <p className="text-xs text-slate-400 font-medium">System Hirarki, Donator Perks, Rewards RP, & Kalibrasi 388 Mobil Kota</p>
+            <p className="text-xs text-slate-400 font-medium">Gemilang Jaya Auto Dealer, Battle Pass Season 1 & Code Voucher System</p>
           </div>
         </div>
 
@@ -350,6 +384,16 @@ export default function AdminPlengerPage() {
                   <i className="fa-solid fa-gift text-amber-300"></i> Reward & Claims
                 </button>
               )}
+              {userRole.allowedTabs.includes('donation_system') && (
+                <button
+                  onClick={() => setActiveTab('donation_system')}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
+                    activeTab === 'donation_system' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <i className="fa-solid fa-gem text-amber-300"></i> Gemilang Jaya Catalog & BattlePass
+                </button>
+              )}
               {userRole.allowedTabs.includes('weapons') && (
                 <button
                   onClick={() => setActiveTab('weapons')}
@@ -378,16 +422,6 @@ export default function AdminPlengerPage() {
                   }`}
                 >
                   <i className="fa-solid fa-terminal text-cyan-400"></i> Quick Command Generator
-                </button>
-              )}
-              {userRole.allowedTabs.includes('donation_system') && (
-                <button
-                  onClick={() => setActiveTab('donation_system')}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
-                    activeTab === 'donation_system' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <i className="fa-solid fa-gem text-cyan-300"></i> System Donasi
                 </button>
               )}
               {userRole.allowedTabs.includes('vehicles') && (
@@ -436,7 +470,7 @@ export default function AdminPlengerPage() {
                     </div>
                     <div>
                       <h3 className="text-lg font-black text-white">AGENDA RAPAT DIREKSI ADMIN PLENGER (ESOK)</h3>
-                      <p className="text-xs text-slate-400">Poin penting keputusan rapat struktur kota, target RP, dan monetization roadmap</p>
+                      <p className="text-xs text-slate-400">Poin penting keputusan rapat struktur kota, target RP, dan Gemilang Jaya monetization</p>
                     </div>
                   </div>
 
@@ -460,9 +494,9 @@ export default function AdminPlengerPage() {
                     <div className="bg-black/40 border border-white/10 p-4 rounded-2xl space-y-2">
                       <div className="text-xs font-black text-cyan-400 flex items-center gap-2">
                         <span className="w-5 h-5 bg-cyan-500/30 rounded-full flex items-center justify-center text-[10px]">3</span>
-                        <span>Roadmap Donasi Transparan</span>
+                        <span>Gemilang Jaya Battle Pass S1</span>
                       </div>
-                      <p className="text-xs text-slate-300">Sistem donasi 4 tier (Silver s/d Supreme Boss) untuk peremajaan server/hosting dengan injection perk otomatis dan pencatatan kas kota transparan.</p>
+                      <p className="text-xs text-slate-300">Peluncuran Katalog Musiman Gemilang Jaya & Battle Pass 50 Tiers dengan sistem klaim otomatis in-game `/claimcode` dan FiveM Script (`sc-gemilangjaya`).</p>
                     </div>
                   </div>
                 </div>
@@ -488,107 +522,6 @@ export default function AdminPlengerPage() {
                     </button>
                   )}
                 </div>
-
-                {/* MODAL FORM TAMBAH/EDIT MEMBER */}
-                {showMemberModal && (
-                  <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div className="bg-slate-900 border border-purple-500/40 rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl">
-                      <div className="flex justify-between items-center border-b border-white/10 pb-3">
-                        <h4 className="text-base font-black text-white">Tambah Anggota / Donatur Hirarki</h4>
-                        <button onClick={() => setShowMemberModal(false)} className="text-slate-400 hover:text-white text-lg">✕</button>
-                      </div>
-
-                      <form onSubmit={handleAddMember} className="space-y-4 text-xs">
-                        <div>
-                          <label className="text-slate-300 font-bold block mb-1">Nama / Nickname IC/OOC</label>
-                          <input
-                            type="text"
-                            required
-                            value={newMember.name}
-                            onChange={(e) => setNewMember({ ...newMember, name: e.target.value })}
-                            placeholder="Contoh: Alex Plenger / Donatur_Sultan"
-                            className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-purple-400"
-                          />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="text-slate-300 font-bold block mb-1">Jabatan / Role</label>
-                            <input
-                              type="text"
-                              required
-                              value={newMember.role}
-                              onChange={(e) => setNewMember({ ...newMember, role: e.target.value })}
-                              placeholder="Contoh: High Admin / Donatur Gold"
-                              className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-purple-400"
-                            />
-                          </div>
-                          <div>
-                            <label className="text-slate-300 font-bold block mb-1">Tier Hirarki</label>
-                            <select
-                              value={newMember.tier}
-                              onChange={(e) => setNewMember({ ...newMember, tier: e.target.value })}
-                              className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-purple-400"
-                            >
-                              <option value="FOUNDER">FOUNDER / OWNER</option>
-                              <option value="HIGH_MANAGEMENT">HIGH MANAGEMENT</option>
-                              <option value="STAFF_ADMIN">STAFF ADMIN / MOD</option>
-                              <option value="DONATUR_PLATINUM">DONATUR PLATINUM</option>
-                              <option value="DONATUR_GOLD">DONATUR GOLD</option>
-                              <option value="DONATUR_SILVER">DONATUR SILVER</option>
-                            </select>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="text-slate-300 font-bold block mb-1">Discord Tag</label>
-                            <input
-                              type="text"
-                              value={newMember.discord}
-                              onChange={(e) => setNewMember({ ...newMember, discord: e.target.value })}
-                              placeholder="alex#1234"
-                              className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-purple-400"
-                            />
-                          </div>
-                          <div>
-                            <label className="text-slate-300 font-bold block mb-1">ACE Permission Group</label>
-                            <select
-                              value={newMember.aceGroup}
-                              onChange={(e) => setNewMember({ ...newMember, aceGroup: e.target.value })}
-                              className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-purple-400"
-                            >
-                              <option value="group.admin">group.admin (Full)</option>
-                              <option value="group.mod">group.mod (Moderator)</option>
-                              <option value="group.support">group.support (Support)</option>
-                              <option value="user">user (Player Regular/VIP)</option>
-                            </select>
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="text-slate-300 font-bold block mb-1">Steam / License Identifier</label>
-                          <input
-                            type="text"
-                            value={newMember.identifier}
-                            onChange={(e) => setNewMember({ ...newMember, identifier: e.target.value })}
-                            placeholder="license:xxxxxxxx / steam:xxxxxxxx"
-                            className="w-full bg-black/60 border border-white/10 rounded-xl p-3 font-mono text-white outline-none focus:border-purple-400"
-                          />
-                        </div>
-
-                        <div className="flex gap-3 pt-2">
-                          <button type="button" onClick={() => setShowMemberModal(false)} className="w-1/2 bg-slate-800 text-slate-300 font-bold p-3 rounded-xl hover:bg-slate-700">
-                            Batal
-                          </button>
-                          <button type="submit" className="w-1/2 bg-purple-600 text-white font-black p-3 rounded-xl hover:bg-purple-500 shadow-lg shadow-purple-500/30">
-                            Simpan ke Hirarki
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                )}
 
                 {/* TABEL DATA HIRARKI SERVER */}
                 <div className="bg-slate-900/80 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-md shadow-2xl p-6 space-y-4">
@@ -690,7 +623,6 @@ export default function AdminPlengerPage() {
                         </select>
                       </div>
 
-                      {/* DYNAMIC FORM INPUT BERDASARKAN REWARD TYPE */}
                       {newReward.type === 'DONASI_MOBIL' && (
                         <div>
                           <label className="text-slate-300 font-bold block mb-1">Pilih Kode Mobil (Katalog 388)</label>
@@ -716,7 +648,7 @@ export default function AdminPlengerPage() {
                             type="text"
                             value={newReward.pedHash}
                             onChange={(e) => setNewReward({ ...newReward, pedHash: e.target.value })}
-                            placeholder="Contoh: cs_martinmadrazo / custom_ped_01"
+                            placeholder="cs_martinmadrazo / custom_ped_01"
                             className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white font-mono outline-none focus:border-amber-400"
                           />
                         </div>
@@ -729,7 +661,7 @@ export default function AdminPlengerPage() {
                             type="text"
                             value={newReward.houseId}
                             onChange={(e) => setNewReward({ ...newReward, houseId: e.target.value })}
-                            placeholder="Contoh: MLO House ID #402 (Vagos Gang HQ)"
+                            placeholder="MLO House ID #402 (Vagos Gang HQ)"
                             className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white font-mono outline-none focus:border-amber-400"
                           />
                         </div>
@@ -809,167 +741,153 @@ export default function AdminPlengerPage() {
               </div>
             )}
 
-            {/* TAB NEW: WEAPON DAMAGE MATRIX (sc-weapondamage) */}
-            {activeTab === 'weapons' && userRole.allowedTabs.includes('weapons') && (
+            {/* TAB NEW: GEMILANG JAYA DONATION & BATTLE PASS SYSTEM */}
+            {activeTab === 'donation_system' && userRole.allowedTabs.includes('donation_system') && (
               <div className="space-y-6">
-                <div className="bg-slate-900/80 border border-red-500/30 p-6 rounded-3xl backdrop-blur-md space-y-3">
-                  <h3 className="text-lg font-black text-red-400 flex items-center gap-2">
-                    <i className="fa-solid fa-gun"></i> Kalibrasi Damage Senjata Kota (`sc-weapondamage`)
-                  </h3>
-                  <p className="text-xs text-slate-300">Standar Time to Kill (TTK) & Weapon Damage Modifier kultur US vs Australia untuk faksi Polisi & Penjahat.</p>
+                
+                {/* GEMILANG JAYA BRAND BANNER */}
+                <div className="bg-gradient-to-r from-amber-950/60 via-purple-950/60 to-slate-900 border border-amber-500/40 p-6 rounded-3xl backdrop-blur-md space-y-3 shadow-2xl relative overflow-hidden">
+                  <div className="absolute right-4 -top-6 w-40 h-40 bg-amber-500/10 rounded-full blur-2xl"></div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-amber-500/20 border border-amber-500/40 rounded-2xl flex items-center justify-center text-amber-300 text-2xl">
+                      <i className="fa-solid fa-gem"></i>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-black text-amber-300">GEMILANG JAYA AUTO DEALER & BATTLE PASS SEASON 1</h3>
+                      <p className="text-xs text-slate-300">Pusat Katalog Mobil Musiman, Perks Donasi Custom PED (`sc-ped`), MLO Property, & In-Game Voucher Redemption (`/claimcode`).</p>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="bg-slate-900/80 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-md shadow-2xl p-6 space-y-4">
-                  <table className="w-full text-left">
-                    <thead className="bg-white/5 text-xs text-slate-400 font-bold uppercase border-b border-white/10">
-                      <tr>
-                        <th className="p-3.5">Nama Senjata</th>
-                        <th className="p-3.5">FiveM Hash</th>
-                        <th className="p-3.5">Faksi Pengguna</th>
-                        <th className="p-3.5">Damage Modifier</th>
-                        <th className="p-3.5">Est. TTK (Body Hits)</th>
-                        <th className="p-3.5">Recoil Profile</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/10 text-xs">
-                      {weaponDamageData.map((w, i) => (
-                        <tr key={i} className="hover:bg-white/5">
-                          <td className="p-3.5 font-bold text-white">{w.name}</td>
-                          <td className="p-3.5 font-mono text-cyan-300"><code>{w.hash}</code></td>
-                          <td className="p-3.5 text-purple-300 font-semibold">{w.faction}</td>
-                          <td className="p-3.5 font-mono font-black text-amber-300">{w.modifier}</td>
-                          <td className="p-3.5 font-bold text-red-400">{w.TTK}</td>
-                          <td className="p-3.5 text-slate-400">{w.recoil}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-
-            {/* TAB NEW: STANDAR SANKSI ADMIN & RULEBOOK */}
-            {activeTab === 'sanctions' && userRole.allowedTabs.includes('sanctions') && (
-              <div className="space-y-6">
-                <div className="bg-slate-900/80 border border-amber-500/30 p-6 rounded-3xl backdrop-blur-md space-y-3">
-                  <h3 className="text-lg font-black text-amber-400 flex items-center gap-2">
-                    <i className="fa-solid fa-scale-balanced"></i> Standar Sanksi Admin & Matrix Pelanggaran Kota
-                  </h3>
-                  <p className="text-xs text-slate-300">Pedoman penindakan tiket warga oleh Moderator & Admin agar keputusan adil & tidak menimbulkan tuduhan abuse of power.</p>
-                </div>
-
-                <div className="bg-slate-900/80 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-md shadow-2xl p-6 space-y-4">
-                  <table className="w-full text-left">
-                    <thead className="bg-white/5 text-xs text-slate-400 font-bold uppercase border-b border-white/10">
-                      <tr>
-                        <th className="p-3.5">Jenis Pelanggaran</th>
-                        <th className="p-3.5">Tingkat Bahaya</th>
-                        <th className="p-3.5">Pelanggaran Ke-1</th>
-                        <th className="p-3.5">Pelanggaran Ke-2</th>
-                        <th className="p-3.5">Pelanggaran Berulang</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/10 text-xs">
-                      {sanctionMatrix.map((s, i) => (
-                        <tr key={i} className="hover:bg-white/5">
-                          <td className="p-3.5 font-bold text-white">{s.violation}</td>
-                          <td className="p-3.5 font-black text-amber-300">{s.severity}</td>
-                          <td className="p-3.5 text-slate-300">{s.firstOffense}</td>
-                          <td className="p-3.5 font-bold text-orange-400">{s.secondOffense}</td>
-                          <td className="p-3.5 font-black text-red-500">{s.repeatOffense}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-
-            {/* TAB NEW: QUICK COMMAND GENERATOR */}
-            {activeTab === 'commands' && userRole.allowedTabs.includes('commands') && (
-              <div className="space-y-6">
-                <div className="bg-slate-900/80 border border-cyan-500/30 p-6 rounded-3xl backdrop-blur-md space-y-3">
-                  <h3 className="text-lg font-black text-cyan-300 flex items-center gap-2">
-                    <i className="fa-solid fa-terminal"></i> FiveM Quick Command Generator for Admins
-                  </h3>
-                  <p className="text-xs text-slate-300">Generate perintah in-game instan untuk penanganan cepat saat bertugas di server FiveM.</p>
-                </div>
-
+                {/* MODUL TUKER KODE VOUCHER PLAYER & GENERATOR ADMIN */}
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div className="bg-slate-900/80 border border-white/10 p-6 rounded-3xl backdrop-blur-md space-y-4">
-                    <h4 className="text-sm font-black text-white">Input Parameter Command</h4>
-                    
-                    <div className="space-y-3 text-xs">
+                  
+                  {/* PLAYER CODE REDEEM PORTAL */}
+                  <div className="bg-slate-900/80 border border-amber-500/30 p-6 rounded-3xl backdrop-blur-md space-y-4 shadow-xl">
+                    <div className="border-b border-white/10 pb-3">
+                      <h4 className="text-sm font-black text-white flex items-center gap-2">
+                        <i className="fa-solid fa-ticket text-amber-400"></i> Portal Tuker Kode Voucher Donasi (Simulasi Player)
+                      </h4>
+                      <p className="text-xs text-slate-400">Masukkan kode voucher (misal: <code className="text-amber-300">GEMILANG-S1-VIP</code>) untuk menguji klaim perk.</p>
+                    </div>
+
+                    <form onSubmit={handleRedeemVoucher} className="space-y-4">
                       <div>
-                        <label className="text-slate-300 font-bold block mb-1">Jenis Command</label>
+                        <input
+                          type="text"
+                          value={redeemInput}
+                          onChange={(e) => setRedeemInput(e.target.value)}
+                          placeholder="Masukkan Kode Voucher (misal: GEMILANG-S1-VIP)..."
+                          className="w-full bg-black/60 border border-amber-500/40 rounded-xl p-3.5 text-center font-mono text-amber-300 font-bold tracking-wider outline-none focus:border-amber-400"
+                        />
+                      </div>
+                      <button type="submit" className="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-black font-black p-3.5 rounded-xl shadow-lg shadow-amber-500/30 hover:scale-[1.01] transition-transform text-xs">
+                        🎁 TUKAR KODE VOUCHER GEMILANG JAYA
+                      </button>
+                    </form>
+
+                    {redeemStatus && (
+                      <div className={`p-4 rounded-2xl text-xs font-bold border ${redeemStatus.success ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-red-500/20 text-red-300 border-red-500/40'}`}>
+                        {redeemStatus.text}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ADMIN VOUCHER GENERATOR */}
+                  <div className="bg-slate-900/80 border border-purple-500/30 p-6 rounded-3xl backdrop-blur-md space-y-4 shadow-xl">
+                    <div className="border-b border-white/10 pb-3">
+                      <h4 className="text-sm font-black text-white flex items-center gap-2">
+                        <i className="fa-solid fa-wand-magic-sparkles text-purple-400"></i> Admin Voucher Generator (Gemilang Jaya)
+                      </h4>
+                      <p className="text-xs text-slate-400">Generate kode voucher baru untuk diberikan ke donatur atau pemenang event RP.</p>
+                    </div>
+
+                    <div className="space-y-4 text-xs">
+                      <div>
+                        <label className="text-slate-300 font-bold block mb-1">Pilih Jenis Voucher Perks</label>
                         <select
-                          value={cmdType}
-                          onChange={(e) => setCmdType(e.target.value)}
-                          className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-cyan-400"
+                          value={genVoucherType}
+                          onChange={(e) => setGenVoucherType(e.target.value)}
+                          className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-purple-400"
                         >
-                          <option value="setjob">/setjob [ID] [Job] [Grade] (Set Job IC Player)</option>
-                          <option value="giveitem">/giveitem [ID] [Item] [Qty] (Give Item to Player)</option>
-                          <option value="car">/car [SpawnCode] (Spawn Admin Vehicle)</option>
-                          <option value="ban">/ban [ID] [Reason] (Ban Player Temporary)</option>
-                          <option value="adddonator">/addace [License] group.admin (Add ACE Group)</option>
-                          <option value="revive">/revive [ID] (Revive Injured Player)</option>
+                          <option value="MULTI">💎 VIP Season 1 Bundle (Hypercar + PED + Villa + $1M Cash)</option>
+                          <option value="PED">🧍 Custom PED Import (`sc-ped` slot)</option>
+                          <option value="CHIRON">🏎️ Hypercar Chiron SuperSport (Class S++)</option>
+                          <option value="VILLA">🏠 Villa MLO Property (`ps-housing`)</option>
                         </select>
                       </div>
 
-                      <div>
-                        <label className="text-slate-300 font-bold block mb-1">ID In-Game Player (Server ID)</label>
-                        <input
-                          type="text"
-                          value={cmdPlayerId}
-                          onChange={(e) => setCmdPlayerId(e.target.value)}
-                          placeholder="1"
-                          className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white font-mono outline-none focus:border-cyan-400"
-                        />
-                      </div>
+                      <button
+                        onClick={handleGenerateVoucher}
+                        className="w-full bg-gradient-to-r from-purple-600 to-indigo-700 text-white font-black p-3.5 rounded-xl shadow-lg shadow-purple-500/30 hover:scale-[1.01] transition-transform"
+                      >
+                        ⚡ GENERATE KODE VOUCHER BARU
+                      </button>
 
-                      <div>
-                        <label className="text-slate-300 font-bold block mb-1">Parameter Tambahan (Job/Item/Model/License)</label>
-                        <input
-                          type="text"
-                          value={cmdParam}
-                          onChange={(e) => setCmdParam(e.target.value)}
-                          placeholder="police 3 / agerars / phone 1"
-                          className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white font-mono outline-none focus:border-cyan-400"
-                        />
-                      </div>
+                      {generatedVoucher && (
+                        <div className="bg-black/60 border border-purple-500/40 p-4 rounded-2xl space-y-2">
+                          <div className="text-[11px] text-slate-400">Kode Voucher Berhasil Dibuat:</div>
+                          <div className="font-mono text-base text-purple-300 font-black flex justify-between items-center bg-slate-900 p-3 rounded-xl border border-white/10">
+                            <code>{generatedVoucher.code}</code>
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(generatedVoucher.code);
+                                alert(`Kode Voucher ${generatedVoucher.code} berhasil disalin!`);
+                              }}
+                              className="text-xs bg-purple-500/30 px-2 py-1 rounded hover:bg-purple-500/50"
+                            >
+                              Salin
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  <div className="bg-black/60 border border-cyan-500/40 p-6 rounded-3xl backdrop-blur-md flex flex-col justify-between space-y-4">
-                    <div>
-                      <h4 className="text-sm font-black text-cyan-300 mb-2">Hasil Generated Command (F8 Console / Chat)</h4>
-                      <div className="bg-slate-900 border border-cyan-500/40 rounded-2xl p-5 font-mono text-sm text-cyan-300 font-bold break-all shadow-inner">
-                        <code>{getGeneratedCommand()}</code>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(getGeneratedCommand());
-                        alert(`Command '${getGeneratedCommand()}' berhasil disalin ke clipboard!`);
-                      }}
-                      className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black p-4 rounded-2xl shadow-lg shadow-cyan-500/30 transition-transform active:scale-95 flex items-center justify-center gap-2"
-                    >
-                      <i className="fa-solid fa-copy"></i> SALIN COMMAND KE CLIPBOARD
-                    </button>
-                  </div>
                 </div>
-              </div>
-            )}
 
-            {/* TAB 4: SISTEM DONASI & PERKS ROADMAP */}
-            {activeTab === 'donation_system' && userRole.allowedTabs.includes('donation_system') && (
-              <div className="space-y-6">
-                <div className="bg-slate-900/80 border border-cyan-500/30 p-6 rounded-3xl backdrop-blur-md space-y-3">
-                  <h3 className="text-lg font-black text-cyan-300 flex items-center gap-2">
-                    <i className="fa-solid fa-gem"></i> Blueprint Sistem Donasi & Monetisasi Kota Kedepannya
-                  </h3>
-                  <p className="text-xs text-slate-300">Skema paket donasi resmi untuk mendukung operasional hosting server FiveM, license key, dan custom asset maintenance secara berkelanjutan.</p>
+                {/* BATTLE PASS SEASON 1 PREVIEW (50 TIERS) */}
+                <div className="bg-slate-900/80 border border-white/10 rounded-3xl p-6 backdrop-blur-md space-y-4 shadow-xl">
+                  <div className="flex justify-between items-center border-b border-white/10 pb-3">
+                    <div>
+                      <h4 className="text-base font-black text-white flex items-center gap-2">
+                        <i className="fa-solid fa-trophy text-amber-300"></i> Gemilang Jaya Battle Pass Season 1 (50 Tiers Preview)
+                      </h4>
+                      <p className="text-xs text-slate-400">Daftar hadiah Battle Pass Musiman untuk Player Regular (Free) & Donatur VIP Pass.</p>
+                    </div>
+                    <span className="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-black px-3 py-1 rounded-xl">
+                      SEASON 1 LIVE
+                    </span>
+                  </div>
+
+                  <div className="grid md:grid-cols-3 gap-4 text-xs">
+                    <div className="bg-black/50 border border-white/10 p-4 rounded-2xl space-y-2">
+                      <div className="font-black text-amber-300 text-sm flex justify-between">
+                        <span>Tier 1 - Tier 10</span>
+                        <span className="text-[10px] text-slate-400 font-mono">Starter Pack</span>
+                      </div>
+                      <div className="text-slate-300">✓ Free: Cash $50,000 & Garasi Slot</div>
+                      <div className="text-amber-400 font-bold">✓ VIP: Plate 'GEMILANG' + Priority Queue Tier 1</div>
+                    </div>
+
+                    <div className="bg-black/50 border border-white/10 p-4 rounded-2xl space-y-2">
+                      <div className="font-black text-amber-300 text-sm flex justify-between">
+                        <span>Tier 20 - Tier 30</span>
+                        <span className="text-[10px] text-slate-400 font-mono">Mid Season</span>
+                      </div>
+                      <div className="text-slate-300">✓ Free: Cash $300,000 & Repair Pack</div>
+                      <div className="text-purple-400 font-bold">✓ VIP: Custom PED Slot (`sc-ped`) + G63 AMG</div>
+                    </div>
+
+                    <div className="bg-black/50 border border-purple-500/40 p-4 rounded-2xl space-y-2 bg-purple-950/20">
+                      <div className="font-black text-pink-300 text-sm flex justify-between">
+                        <span>Tier 40 - Tier 50 (MAX)</span>
+                        <span className="text-[10px] text-pink-400 font-mono">Grand Finale</span>
+                      </div>
+                      <div className="text-slate-300">✓ Free: Mobil Class A (Mustang 65)</div>
+                      <div className="text-pink-400 font-black">✓ VIP: HYPERCAR CHIRON / JESKO + MLO Villa</div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* PAKET DONASI TIERS */}
@@ -1029,30 +947,6 @@ export default function AdminPlengerPage() {
                   </div>
                 </div>
 
-                {/* ALUR TRANSKASI & WORKFLOW AUTOMATION */}
-                <div className="bg-slate-900/80 border border-white/10 rounded-3xl p-6 backdrop-blur-md space-y-4">
-                  <h4 className="text-sm font-black text-white flex items-center gap-2">
-                    <i className="fa-solid fa-diagram-project text-cyan-400"></i> Alur Kerja Transaksi & Perk Claim System Donasi
-                  </h4>
-                  <div className="grid md:grid-cols-4 gap-4 text-xs">
-                    <div className="bg-black/40 p-4 rounded-2xl border border-white/10">
-                      <div className="font-bold text-purple-400 mb-1">1. Form Web Donasi</div>
-                      <div className="text-slate-400">Donatur memilih paket di portal web & melampirkan bukti transfer.</div>
-                    </div>
-                    <div className="bg-black/40 p-4 rounded-2xl border border-white/10">
-                      <div className="font-bold text-purple-400 mb-1">2. Verification Admin</div>
-                      <div className="text-slate-400">Admin Plenger memverifikasi mutasi masuk & menandai status APPROVED.</div>
-                    </div>
-                    <div className="bg-black/40 p-4 rounded-2xl border border-white/10">
-                      <div className="font-bold text-purple-400 mb-1">3. Perk Auto Injection</div>
-                      <div className="text-slate-400">Perks (Mobil/Rumah/PED) di-inject via SQL / Reward Claim Selector.</div>
-                    </div>
-                    <div className="bg-black/40 p-4 rounded-2xl border border-white/10">
-                      <div className="font-bold text-purple-400 mb-1">4. Transparency Log</div>
-                      <div className="text-slate-400">Semua dana masuk dicatat di Kas Kota untuk biaya perpanjangan server.</div>
-                    </div>
-                  </div>
-                </div>
               </div>
             )}
 
