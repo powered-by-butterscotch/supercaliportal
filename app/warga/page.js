@@ -152,18 +152,32 @@ export default function WargaPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          {registeredProfile && (
+            <Link href="/warga/dashboard" className="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5">
+              ⚙️ Dashboard Warga
+            </Link>
+          )}
           <Link href="/" className="text-xs font-bold text-slate-400 hover:text-white transition-colors">
             ← City Hub
           </Link>
           <Link href="/gemilangjaya" className="text-xs font-bold text-amber-300 hover:underline">
             💎 Gemilang Jaya
           </Link>
-          <div className="flex items-center gap-2.5 bg-emerald-500/10 border border-emerald-500/30 px-4 py-2 rounded-full text-xs font-bold text-emerald-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Citizen Passport Active</span>
-          </div>
+          {registeredProfile && (
+            <button
+              onClick={() => {
+                if (typeof window !== 'undefined') localStorage.removeItem('supercali_citizen_session');
+                setRegisteredProfile(null);
+                showToast("Logout KTP Berhasil!", "info");
+              }}
+              className="bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 text-xs font-bold px-3 py-2 rounded-xl"
+            >
+              🔒 Logout KTP
+            </button>
+          )}
         </div>
+
       </header>
 
       <main className="max-w-5xl mx-auto my-9 px-6 space-y-6">

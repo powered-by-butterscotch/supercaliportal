@@ -116,7 +116,34 @@ export default function GemilangJayaPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          {citizenSession ? (
+            <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-xl text-xs">
+              <span className="font-black text-white">{citizenSession.icName}</span>
+              <span className="bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono font-bold text-[10px]">
+                {citizenSession.cid}
+              </span>
+              <Link href="/warga/dashboard" className="bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 font-bold px-2 py-1 rounded text-[11px] ml-1">
+                ⚙️ Dashboard
+              </Link>
+              <button
+                onClick={() => {
+                  if (typeof window !== 'undefined') localStorage.removeItem('supercali_citizen_session');
+                  setCitizenSession(null);
+                  showToast("Logout KTP Berhasil!", "info");
+                }}
+                className="text-red-400 hover:text-red-300 font-bold text-[11px] ml-1"
+                title="Logout KTP"
+              >
+                🔒 Logout
+              </button>
+            </div>
+          ) : (
+            <Link href="/warga" className="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold px-3 py-2 rounded-xl">
+              💳 Login KTP
+            </Link>
+          )}
+
           <Link href="/adminplenger" className="bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 text-xs font-black px-4 py-2.5 rounded-xl border border-purple-500/40 flex items-center gap-2 transition-all">
             👑 Secret Admin Gate
           </Link>
@@ -124,6 +151,7 @@ export default function GemilangJayaPage() {
             ← City Hub
           </Link>
         </div>
+
       </header>
 
       <main className="max-w-7xl mx-auto mt-6 px-4 md:px-6 space-y-6">
