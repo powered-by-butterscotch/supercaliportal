@@ -16,11 +16,16 @@ export default function AdminPlengerPage() {
     canIssueReward: false,
     allowedTabs: []
   });
-  const [activeTab, setActiveTab] = useState('overview'); // overview, hierarchy, rewards, donation_system, vehicles
+  const [activeTab, setActiveTab] = useState('overview'); // overview, hierarchy, rewards, weapons, sanctions, commands, donation_system, vehicles
 
   // State Search & Filter Kendaraan
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedClassFilter, setSelectedClassFilter] = useState('ALL');
+
+  // State Command Generator
+  const [cmdPlayerId, setCmdPlayerId] = useState('1');
+  const [cmdParam, setCmdParam] = useState('police 3');
+  const [cmdType, setCmdType] = useState('setjob');
 
   // State Hirarki (Editable)
   const [hierarchyList, setHierarchyList] = useState([
@@ -49,6 +54,25 @@ export default function AdminPlengerPage() {
   const [newReward, setNewReward] = useState({
     recipient: '', type: 'DONASI_MOBIL', vehicleCode: 'agerars', pedHash: '', houseId: '', cashAmount: '500000', reason: ''
   });
+
+  // Dataset Kalibrasi Senjata (sc-weapondamage)
+  const weaponDamageData = [
+    { name: 'Pistol / Glock 17/19', hash: 'WEAPON_GLOCK17 / WEAPON_COMBATPISTOL', faction: 'PD / Police Duties', modifier: '1.0x', TTK: '4-5 Tembakan (Body)', recoil: 'Sedang / Linear' },
+    { name: 'Special Carbine / M4A1', hash: 'WEAPON_M4 / WEAPON_CARBINERIFLE', faction: 'PD SWAT / SRT Unit', modifier: '1.3x', TTK: '3-4 Tembakan (Body)', recoil: 'Rendah-Sedang' },
+    { name: 'AK-47 / Draco Rifle', hash: 'WEAPON_AK47 / WEAPON_ASSAULTRIFLE', faction: 'Criminal Gangs (Heavy)', modifier: '1.4x', TTK: '3-4 Tembakan (Body)', recoil: 'Tinggi (Kaliber 7.62)' },
+    { name: 'Micro SMG / TEC-9', hash: 'WEAPON_MICROSMG / WEAPON_MACHINEPISTOL', faction: 'Gang Drive-By / Street', modifier: '0.8x', TTK: '5-7 Tembakan (Body)', recoil: 'Sangat Tinggi (Fire-rate 900rpm)' },
+    { name: 'Remington / Pump Shotgun', hash: 'WEAPON_PUMPSHOTGUN', faction: 'PD Patrol / Crime Defense', modifier: '1.5x', TTK: '1-2 Tembakan (Close Range)', recoil: 'Staggering / Knockdown' }
+  ];
+
+  // Dataset Rulebook & Sanksi Admin
+  const sanctionMatrix = [
+    { violation: 'RDM (Random Deathmatch)', severity: 'TINGGI', firstOffense: 'Warn 1 + Jail 60 Menit', secondOffense: 'Ban Temp 3 Hari', repeatOffense: 'Ban Permanent' },
+    { violation: 'VDM (Vehicle Deathmatch)', severity: 'SEDANG-TINGGI', firstOffense: 'Jail 30 Menit + Sita Mobil', secondOffense: 'Ban Temp 2 Hari', repeatOffense: 'Ban Temp 7 Hari' },
+    { violation: 'FailRP / Out of Character (OOC) Abuse', severity: 'SEDANG', firstOffense: 'Teguran + Warn 1', secondOffense: 'Jail 45 Menit', repeatOffense: 'Ban Temp 3 Hari' },
+    { violation: 'Combat Logging / Quit saat RP Active', severity: 'TINGGI', firstOffense: 'Ban Temp 3 Hari', secondOffense: 'Ban Temp 7 Hari', repeatOffense: 'Ban Permanent' },
+    { violation: 'Metagaming / Stream Sniping', severity: 'KRITIS', firstOffense: 'Ban Temp 7 Hari', secondOffense: 'Ban Permanent', repeatOffense: 'Ban Permanent' },
+    { violation: 'Cheating / Mod Menu (`mxi_sentinental`)', severity: 'FATAL', firstOffense: 'Ban Permanent (Global HWID)', secondOffense: 'Blacklist Server', repeatOffense: 'No Unban' }
+  ];
 
   // Dataset Kalibrasi Mobil 388 Vehicles
   const classSummaryData = [
@@ -84,7 +108,7 @@ export default function AdminPlengerPage() {
         canDelete: true,
         canEdit: true,
         canIssueReward: true,
-        allowedTabs: ['overview', 'hierarchy', 'rewards', 'donation_system', 'vehicles']
+        allowedTabs: ['overview', 'hierarchy', 'rewards', 'weapons', 'sanctions', 'commands', 'donation_system', 'vehicles']
       });
       setActiveTab('overview');
       setIsAuthorized(true);
@@ -99,7 +123,7 @@ export default function AdminPlengerPage() {
         canDelete: false,
         canEdit: true,
         canIssueReward: true,
-        allowedTabs: ['overview', 'hierarchy', 'rewards', 'vehicles']
+        allowedTabs: ['overview', 'hierarchy', 'rewards', 'weapons', 'sanctions', 'commands', 'vehicles']
       });
       setActiveTab('overview');
       setIsAuthorized(true);
@@ -114,7 +138,7 @@ export default function AdminPlengerPage() {
         canDelete: false,
         canEdit: false,
         canIssueReward: true,
-        allowedTabs: ['overview', 'rewards', 'vehicles']
+        allowedTabs: ['overview', 'rewards', 'sanctions', 'commands', 'vehicles']
       });
       setActiveTab('overview');
       setIsAuthorized(true);
@@ -129,7 +153,7 @@ export default function AdminPlengerPage() {
         canDelete: false,
         canEdit: false,
         canIssueReward: false,
-        allowedTabs: ['donation_system', 'vehicles']
+        allowedTabs: ['donation_system', 'weapons', 'vehicles']
       });
       setActiveTab('donation_system');
       setIsAuthorized(true);
@@ -188,6 +212,15 @@ export default function AdminPlengerPage() {
     setRewardClaims([newClaim, ...rewardClaims]);
     setNewReward({ recipient: '', type: 'DONASI_MOBIL', vehicleCode: 'agerars', pedHash: '', houseId: '', cashAmount: '500000', reason: '' });
     alert(`✨ Reward / Perks Donasi Berhasil Dikeluarkan oleh ${userRole.title}!`);
+  };
+
+  const getGeneratedCommand = () => {
+    if (cmdType === 'setjob') return `/setjob ${cmdPlayerId} ${cmdParam}`;
+    if (cmdType === 'giveitem') return `/giveitem ${cmdPlayerId} ${cmdParam}`;
+    if (cmdType === 'car') return `/car ${cmdParam}`;
+    if (cmdType === 'ban') return `/ban ${cmdPlayerId} 3d ${cmdParam || 'Pelanggaran RP'}`;
+    if (cmdType === 'adddonator') return `/addace identifier:license:${cmdParam} group.admin`;
+    return `/revive ${cmdPlayerId}`;
   };
 
   return (
@@ -290,51 +323,81 @@ export default function AdminPlengerPage() {
               {userRole.allowedTabs.includes('overview') && (
                 <button
                   onClick={() => setActiveTab('overview')}
-                  className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
+                  className={`px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
                     activeTab === 'overview' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <i className="fa-solid fa-chart-pie"></i> Executive Overview
+                  <i className="fa-solid fa-chart-pie"></i> Overview
                 </button>
               )}
               {userRole.allowedTabs.includes('hierarchy') && (
                 <button
                   onClick={() => setActiveTab('hierarchy')}
-                  className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
+                  className={`px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
                     activeTab === 'hierarchy' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <i className="fa-solid fa-sitemap"></i> Hirarki Server & Donatur ({hierarchyList.length})
+                  <i className="fa-solid fa-sitemap"></i> Hirarki Server
                 </button>
               )}
               {userRole.allowedTabs.includes('rewards') && (
                 <button
                   onClick={() => setActiveTab('rewards')}
-                  className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
+                  className={`px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
                     activeTab === 'rewards' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <i className="fa-solid fa-gift text-amber-300"></i> Reward & Claim Selector
+                  <i className="fa-solid fa-gift text-amber-300"></i> Reward & Claims
+                </button>
+              )}
+              {userRole.allowedTabs.includes('weapons') && (
+                <button
+                  onClick={() => setActiveTab('weapons')}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
+                    activeTab === 'weapons' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <i className="fa-solid fa-gun text-red-400"></i> Weapon Damage Matrix
+                </button>
+              )}
+              {userRole.allowedTabs.includes('sanctions') && (
+                <button
+                  onClick={() => setActiveTab('sanctions')}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
+                    activeTab === 'sanctions' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <i className="fa-solid fa-scale-balanced text-amber-400"></i> Standar Sanksi Admin
+                </button>
+              )}
+              {userRole.allowedTabs.includes('commands') && (
+                <button
+                  onClick={() => setActiveTab('commands')}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
+                    activeTab === 'commands' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <i className="fa-solid fa-terminal text-cyan-400"></i> Quick Command Generator
                 </button>
               )}
               {userRole.allowedTabs.includes('donation_system') && (
                 <button
                   onClick={() => setActiveTab('donation_system')}
-                  className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
+                  className={`px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
                     activeTab === 'donation_system' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <i className="fa-solid fa-gem text-cyan-300"></i> System Donasi & Perks Roadmap
+                  <i className="fa-solid fa-gem text-cyan-300"></i> System Donasi
                 </button>
               )}
               {userRole.allowedTabs.includes('vehicles') && (
                 <button
                   onClick={() => setActiveTab('vehicles')}
-                  className={`px-5 py-3 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
+                  className={`px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all ${
                     activeTab === 'vehicles' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <i className="fa-solid fa-car"></i> Katalog 388 Mobil Kota
+                  <i className="fa-solid fa-car"></i> Katalog 388 Mobil
                 </button>
               )}
             </div>
@@ -742,6 +805,159 @@ export default function AdminPlengerPage() {
                     </div>
                   </div>
 
+                </div>
+              </div>
+            )}
+
+            {/* TAB NEW: WEAPON DAMAGE MATRIX (sc-weapondamage) */}
+            {activeTab === 'weapons' && userRole.allowedTabs.includes('weapons') && (
+              <div className="space-y-6">
+                <div className="bg-slate-900/80 border border-red-500/30 p-6 rounded-3xl backdrop-blur-md space-y-3">
+                  <h3 className="text-lg font-black text-red-400 flex items-center gap-2">
+                    <i className="fa-solid fa-gun"></i> Kalibrasi Damage Senjata Kota (`sc-weapondamage`)
+                  </h3>
+                  <p className="text-xs text-slate-300">Standar Time to Kill (TTK) & Weapon Damage Modifier kultur US vs Australia untuk faksi Polisi & Penjahat.</p>
+                </div>
+
+                <div className="bg-slate-900/80 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-md shadow-2xl p-6 space-y-4">
+                  <table className="w-full text-left">
+                    <thead className="bg-white/5 text-xs text-slate-400 font-bold uppercase border-b border-white/10">
+                      <tr>
+                        <th className="p-3.5">Nama Senjata</th>
+                        <th className="p-3.5">FiveM Hash</th>
+                        <th className="p-3.5">Faksi Pengguna</th>
+                        <th className="p-3.5">Damage Modifier</th>
+                        <th className="p-3.5">Est. TTK (Body Hits)</th>
+                        <th className="p-3.5">Recoil Profile</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/10 text-xs">
+                      {weaponDamageData.map((w, i) => (
+                        <tr key={i} className="hover:bg-white/5">
+                          <td className="p-3.5 font-bold text-white">{w.name}</td>
+                          <td className="p-3.5 font-mono text-cyan-300"><code>{w.hash}</code></td>
+                          <td className="p-3.5 text-purple-300 font-semibold">{w.faction}</td>
+                          <td className="p-3.5 font-mono font-black text-amber-300">{w.modifier}</td>
+                          <td className="p-3.5 font-bold text-red-400">{w.TTK}</td>
+                          <td className="p-3.5 text-slate-400">{w.recoil}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* TAB NEW: STANDAR SANKSI ADMIN & RULEBOOK */}
+            {activeTab === 'sanctions' && userRole.allowedTabs.includes('sanctions') && (
+              <div className="space-y-6">
+                <div className="bg-slate-900/80 border border-amber-500/30 p-6 rounded-3xl backdrop-blur-md space-y-3">
+                  <h3 className="text-lg font-black text-amber-400 flex items-center gap-2">
+                    <i className="fa-solid fa-scale-balanced"></i> Standar Sanksi Admin & Matrix Pelanggaran Kota
+                  </h3>
+                  <p className="text-xs text-slate-300">Pedoman penindakan tiket warga oleh Moderator & Admin agar keputusan adil & tidak menimbulkan tuduhan abuse of power.</p>
+                </div>
+
+                <div className="bg-slate-900/80 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-md shadow-2xl p-6 space-y-4">
+                  <table className="w-full text-left">
+                    <thead className="bg-white/5 text-xs text-slate-400 font-bold uppercase border-b border-white/10">
+                      <tr>
+                        <th className="p-3.5">Jenis Pelanggaran</th>
+                        <th className="p-3.5">Tingkat Bahaya</th>
+                        <th className="p-3.5">Pelanggaran Ke-1</th>
+                        <th className="p-3.5">Pelanggaran Ke-2</th>
+                        <th className="p-3.5">Pelanggaran Berulang</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/10 text-xs">
+                      {sanctionMatrix.map((s, i) => (
+                        <tr key={i} className="hover:bg-white/5">
+                          <td className="p-3.5 font-bold text-white">{s.violation}</td>
+                          <td className="p-3.5 font-black text-amber-300">{s.severity}</td>
+                          <td className="p-3.5 text-slate-300">{s.firstOffense}</td>
+                          <td className="p-3.5 font-bold text-orange-400">{s.secondOffense}</td>
+                          <td className="p-3.5 font-black text-red-500">{s.repeatOffense}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* TAB NEW: QUICK COMMAND GENERATOR */}
+            {activeTab === 'commands' && userRole.allowedTabs.includes('commands') && (
+              <div className="space-y-6">
+                <div className="bg-slate-900/80 border border-cyan-500/30 p-6 rounded-3xl backdrop-blur-md space-y-3">
+                  <h3 className="text-lg font-black text-cyan-300 flex items-center gap-2">
+                    <i className="fa-solid fa-terminal"></i> FiveM Quick Command Generator for Admins
+                  </h3>
+                  <p className="text-xs text-slate-300">Generate perintah in-game instan untuk penanganan cepat saat bertugas di server FiveM.</p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="bg-slate-900/80 border border-white/10 p-6 rounded-3xl backdrop-blur-md space-y-4">
+                    <h4 className="text-sm font-black text-white">Input Parameter Command</h4>
+                    
+                    <div className="space-y-3 text-xs">
+                      <div>
+                        <label className="text-slate-300 font-bold block mb-1">Jenis Command</label>
+                        <select
+                          value={cmdType}
+                          onChange={(e) => setCmdType(e.target.value)}
+                          className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-cyan-400"
+                        >
+                          <option value="setjob">/setjob [ID] [Job] [Grade] (Set Job IC Player)</option>
+                          <option value="giveitem">/giveitem [ID] [Item] [Qty] (Give Item to Player)</option>
+                          <option value="car">/car [SpawnCode] (Spawn Admin Vehicle)</option>
+                          <option value="ban">/ban [ID] [Reason] (Ban Player Temporary)</option>
+                          <option value="adddonator">/addace [License] group.admin (Add ACE Group)</option>
+                          <option value="revive">/revive [ID] (Revive Injured Player)</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="text-slate-300 font-bold block mb-1">ID In-Game Player (Server ID)</label>
+                        <input
+                          type="text"
+                          value={cmdPlayerId}
+                          onChange={(e) => setCmdPlayerId(e.target.value)}
+                          placeholder="1"
+                          className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white font-mono outline-none focus:border-cyan-400"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-slate-300 font-bold block mb-1">Parameter Tambahan (Job/Item/Model/License)</label>
+                        <input
+                          type="text"
+                          value={cmdParam}
+                          onChange={(e) => setCmdParam(e.target.value)}
+                          placeholder="police 3 / agerars / phone 1"
+                          className="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-white font-mono outline-none focus:border-cyan-400"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-black/60 border border-cyan-500/40 p-6 rounded-3xl backdrop-blur-md flex flex-col justify-between space-y-4">
+                    <div>
+                      <h4 className="text-sm font-black text-cyan-300 mb-2">Hasil Generated Command (F8 Console / Chat)</h4>
+                      <div className="bg-slate-900 border border-cyan-500/40 rounded-2xl p-5 font-mono text-sm text-cyan-300 font-bold break-all shadow-inner">
+                        <code>{getGeneratedCommand()}</code>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(getGeneratedCommand());
+                        alert(`Command '${getGeneratedCommand()}' berhasil disalin ke clipboard!`);
+                      }}
+                      className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black p-4 rounded-2xl shadow-lg shadow-cyan-500/30 transition-transform active:scale-95 flex items-center justify-center gap-2"
+                    >
+                      <i className="fa-solid fa-copy"></i> SALIN COMMAND KE CLIPBOARD
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
