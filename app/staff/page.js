@@ -10,7 +10,7 @@ export default function StaffPage() {
   const [staffRoleName, setStaffRoleName] = useState('');
   
   // Navigation Tabs
-  const [activeTab, setActiveTab] = useState('requests'); // 'requests', 'memos', 'roster'
+  const [activeTab, setActiveTab] = useState('requests'); // 'requests', 'memos', 'roster', 'handbook'
 
   const [filterDeptCategory, setFilterDeptCategory] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -65,7 +65,7 @@ export default function StaffPage() {
     }
   ]);
 
-  // 2. STATE SURAT-MENYURAT DIREKSI & INTER-AGENCY MEMO (DIRECTOR CORRESPONDENCE)
+  // 2. STATE SURAT-MENYURAT DIREKSI & INTER-AGENCY MEMO
   const [memos, setMemos] = useState([
     {
       id: 'memo-101',
@@ -96,10 +96,66 @@ export default function StaffPage() {
 
   // 3. STATE ANGGOTA / FACTION ROSTER MANAGEMENT
   const [roster, setRoster] = useState([
-    { id: 'ros-1', name: 'Dr. Amara', cid: 'AMR11902', dept: 'safd', rank: 'Chief Medical Officer (Grade 4)', status: 'ON-DUTY' },
-    { id: 'ros-2', name: 'Officer Budi', cid: 'BDI88712', dept: 'scvp', rank: 'Sergeant First Class (Grade 3)', status: 'ON-DUTY' },
-    { id: 'ros-3', name: 'Mekanik Udin', cid: 'UDN99123', dept: 'ultraspeed', rank: 'Head Tuner (Grade 3)', status: 'OFF-DUTY' },
+    { id: 'ros-1', name: 'Dr. Amara', cid: 'AMR11902', dept: 'safd', rank: 'Chief Medical Officer (Grade 4)', status: 'ON-DUTY', casesHandled: 42 },
+    { id: 'ros-2', name: 'Officer Budi', cid: 'BDI88712', dept: 'scvp', rank: 'Sergeant First Class (Grade 3)', status: 'ON-DUTY', casesHandled: 28 },
+    { id: 'ros-3', name: 'Mekanik Udin', cid: 'UDN99123', dept: 'ultraspeed', rank: 'Head Tuner (Grade 3)', status: 'OFF-DUTY', casesHandled: 54 },
   ]);
+
+  // 4. HANDBOOK & TARIF PENANGANAN LOW-PAY ECONOMY ($5 - $45)
+  const handbookData = {
+    safd: {
+      title: "🏥 HANDBOOK SOP DIREKSI SAFD (ARCANE RESCUE)",
+      sopRules: [
+        "SOP 1: Respon Panggilan Darurat EMS 911 Maksimal 3 Menit.",
+        "SOP 2: Setiap Operasi Bedah Harus Disertai Surat Keterangan Medis.",
+        "SOP 3: Dilarang Keras Meninggalkan Pasien Tanpa Penanganan Resusitasi."
+      ],
+      tariffList: [
+        { service: "Pertolongan Pertama / Obat P3K", price: "$5 - $10" },
+        { service: "Pemeriksaan Dokter & Surat Sehat", price: "$15" },
+        { service: "Tindakan Bedah Darurat & Surgery", price: "$35 - $45" },
+      ]
+    },
+    scvp: {
+      title: "🚓 HANDBOOK SOP DIREKSI POLISI (VIBE PATROL SCVP)",
+      sopRules: [
+        "SOP 1: Penggunaan Senjata Api Hanya Saat CODE 3 (Bahayakan Nyawa).",
+        "SOP 2: Hak Miranda Warga Wajib Dibatalkan Jika Buron Berbahaya.",
+        "SOP 3: Razia Senjata Ilegal Wajib Disertai Surat Izin Penggeledahan High Council."
+      ],
+      tariffList: [
+        { service: "Denda Pelanggaran Lampu Merah / Speeding", price: "$10 - $15" },
+        { service: "Denda Balap Liar / Mengemudi Tanpa SIM", price: "$25" },
+        { service: "Denda Kepemilikan Senjata Api Ilegal & DPO", price: "$40 - $45" },
+      ]
+    },
+    ultraspeed: {
+      title: "🔧 HANDBOOK SOP DIREKSI BENGKEL ULTRASPEED MECHANIC",
+      sopRules: [
+        "SOP 1: Derek / Towing Kendaraan Wajib Konfirmasi Plat Nomor Owner.",
+        "SOP 2: Modifikasi Engine VIP Wajib Dilakukan Di Pit-Stop Resmi.",
+        "SOP 3: Garansi Servis Mesin Berlaku 24 Jam RP."
+      ],
+      tariffList: [
+        { service: "Servis Mesin Ringan / Ganti Oli", price: "$10" },
+        { service: "Panggilan Towing Derek Darurat", price: "$15" },
+        { service: "Tuning Engine Stage 3 & VIP Bodykit", price: "$35 - $45" },
+      ]
+    },
+    gov: {
+      title: "🏛️ HANDBOOK SOP DIREKSI PEMKOT (HIGH COUNCIL)",
+      sopRules: [
+        "SOP 1: Pengesahan Izin Usaha Bisnis Baru Wajib Lolos Verifikasi Loket.",
+        "SOP 2: Pengangkatan Pejabat Faksi Wajib Disetujui High Council.",
+        "SOP 3: Audit Anggaran Kas Faksi Dilakukan Setiap Minggu."
+      ],
+      tariffList: [
+        { service: "Penerbitan KTP Digital & Passport IC", price: "$5" },
+        { service: "Pendaftaran STNK DMV Kendaraan", price: "$15" },
+        { service: "Pengesahan Akta Izin Usaha Bisnis", price: "$40 - $45" },
+      ]
+    }
+  };
 
   const handleStaffLogin = (e) => {
     e.preventDefault();
@@ -156,10 +212,12 @@ export default function StaffPage() {
     setTimeout(() => setMemoSentSuccess(false), 6000);
   };
 
-  const handlePromoteRank = (id, currentRank) => {
+  const handlePromoteRank = (id) => {
     setRoster(prev => prev.map(m => m.id === id ? { ...m, rank: `${m.rank} (Promoted)` } : m));
     alert(`SUKSES! Pangkat Anggota Faksi Telah Ditingkatkan & Sync ke Database QBCore Players / Tablet sc-pad!`);
   };
+
+  const currentHandbook = handbookData[staffDept] || handbookData.safd;
 
   const pendingCount = staffRequests.filter(r => r.status === 'PENDING').length;
   const approvedCount = staffRequests.filter(r => r.status === 'APPROVED').length;
@@ -182,9 +240,9 @@ export default function StaffPage() {
           </div>
           <div>
             <h1 className="text-xl font-black text-amber-400">
-              SUPERCALI STAFF & DIRECTORATE CONSOLE
+              SUPERCALI DIREKSI & STAFF CONSOLE
             </h1>
-            <p className="text-xs text-slate-400 font-medium">Department Management, Inter-Agency Memos & Roster Control</p>
+            <p className="text-xs text-slate-400 font-medium">Handbook SOP Instansi, Tarif Penanganan ($5-$45), Memos & Roster</p>
           </div>
         </div>
 
@@ -202,64 +260,71 @@ export default function StaffPage() {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto my-8 px-6">
         {!staffLoggedIn ? (
-          /* LOGIN GATE SECURED */
+          /* LOGIN GATE SECURED WITH DIREKSI FACTION PIN */
           <div className="max-w-md mx-auto my-12 bg-slate-900/60 border border-white/10 rounded-3xl p-8 backdrop-blur-md shadow-2xl space-y-6">
             <div className="text-center space-y-2">
               <div className="w-16 h-16 bg-amber-500/20 border border-amber-500/40 rounded-2xl mx-auto flex items-center justify-center text-3xl text-amber-400 shadow-lg shadow-amber-500/20">
                 <i className="fa-solid fa-vault"></i>
               </div>
-              <h3 className="text-xl font-black text-white">Login Console Petugas & Direksi</h3>
-              <p className="text-xs text-slate-400">Masukkan Role Instansi & Password Staff Rahasia Anda.</p>
+              <h3 className="text-xl font-black text-white">Login Portal Direksi Faksi & Petugas</h3>
+              <p className="text-xs text-slate-400">Pilih Faksi Anda & Masukkan PIN Direksi Rahasia.</p>
             </div>
 
             <form onSubmit={handleStaffLogin} className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-400 uppercase">PILIH ROLE INSTANSI</label>
+                <label className="text-xs font-bold text-slate-400 uppercase">PILIH FAKSI DIREKSI</label>
                 <select value={staffDept} onChange={(e) => setStaffDept(e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm outline-none focus:border-amber-500">
-                  <option value="safd">🚑 SAFD Medis (Arcane Rescue Center)</option>
-                  <option value="scvp">🚓 SCVP Polisi (Vibe Patrol Police)</option>
-                  <option value="gov">🏛️ City Hall Pemkot (High Council)</option>
-                  <option value="all">👑 Super Admin / High Council Director</option>
+                  <option value="safd">🚑 Direksi SAFD Medis (Arcane Rescue)</option>
+                  <option value="scvp">🚓 Direksi SCVP Polisi (Vibe Patrol)</option>
+                  <option value="ultraspeed">🔧 Direksi UltraSpeed Mechanic</option>
+                  <option value="gov">🏛️ Direksi High Council Pemkot</option>
+                  <option value="all">👑 Super Admin High Council</option>
                 </select>
               </div>
               <div>
-                <label className="text-xs font-bold text-slate-400 uppercase">PASSWORD / PIN PERSONAL STAFF</label>
-                <input type="password" value={staffPin} onChange={(e) => setStaffPin(e.target.value)} placeholder="Masukkan PIN Staff Rahasia..." required className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm outline-none focus:border-amber-500" />
+                <label className="text-xs font-bold text-slate-400 uppercase">PIN DIREKSI / STAFF RAHASIA</label>
+                <input type="password" value={staffPin} onChange={(e) => setStaffPin(e.target.value)} placeholder="Masukkan PIN Direksi..." required className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1.5 text-white text-sm outline-none focus:border-amber-500" />
               </div>
               <button type="submit" className="w-full bg-gradient-to-r from-amber-500 to-amber-700 text-white font-extrabold p-4 rounded-xl shadow-lg shadow-amber-500/30 hover:scale-[1.01] transition-transform">
-                Verifikasi Autentikasi Staff
+                Verifikasi Autentikasi Direksi
               </button>
             </form>
           </div>
         ) : (
-          /* ADVANCED DASHBOARD CONSOLE WITH DIREKSI PANELS */
+          /* ADVANCED DASHBOARD DIREKSI FACTION CONSOLE */
           <div className="space-y-6">
             
-            {/* Navigation Tabs Direksi & Petugas */}
+            {/* Navigation Tabs Direksi */}
             <div className="flex justify-between items-center bg-slate-900/60 p-2 rounded-2xl border border-white/10 backdrop-blur-md">
               <div className="flex gap-2">
                 <button
                   onClick={() => setActiveTab('requests')}
-                  className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 ${activeTab === 'requests' ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white'}`}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 ${activeTab === 'requests' ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white'}`}
                 >
-                  <i className="fa-solid fa-inbox"></i> Berkas & Lamaran Warga ({pendingCount})
+                  <i className="fa-solid fa-inbox"></i> Berkas Warga ({pendingCount})
+                </button>
+                <button
+                  onClick={() => setActiveTab('handbook')}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 ${activeTab === 'handbook' ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white'}`}
+                >
+                  <i className="fa-solid fa-book-bookmark"></i> Handbook SOP & Tarif Ekonomi ($5-$45)
                 </button>
                 <button
                   onClick={() => setActiveTab('memos')}
-                  className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 ${activeTab === 'memos' ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white'}`}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 ${activeTab === 'memos' ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white'}`}
                 >
                   <i className="fa-solid fa-paper-plane"></i> Surat Menyurat Direksi ({memos.length})
                 </button>
                 <button
                   onClick={() => setActiveTab('roster')}
-                  className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 ${activeTab === 'roster' ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white'}`}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 ${activeTab === 'roster' ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white'}`}
                 >
-                  <i className="fa-solid fa-users-gear"></i> Kelola Anggota Faksi ({roster.length})
+                  <i className="fa-solid fa-users-gear"></i> Kelola Anggota ({roster.length})
                 </button>
               </div>
 
               <div className="text-xs font-bold text-amber-400 px-4 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30">
-                <i className="fa-solid fa-user-shield mr-1"></i> LOGGED IN: {staffRoleName}
+                <i className="fa-solid fa-user-shield mr-1"></i> DIREKSI: {staffRoleName}
               </div>
             </div>
 
@@ -340,10 +405,55 @@ export default function StaffPage() {
               </div>
             )}
 
-            {/* TAB 2: SURAT MENYURAT DIREKSI & INTER-AGENCY MEMO */}
+            {/* TAB 2: HANDBOOK SOP & TARIF PENANGANAN LOW-PAY ECONOMY ($5 - $45) */}
+            {activeTab === 'handbook' && (
+              <div className="space-y-6">
+                <div className="bg-gradient-to-r from-amber-600/20 to-orange-700/20 border border-amber-500/30 rounded-3xl p-7 flex justify-between items-center backdrop-blur-md">
+                  <div>
+                    <span className="px-3 py-1 rounded-md text-[10px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase">SOP DIREKSI & WHITELIST HANDBOOK</span>
+                    <h2 className="text-2xl font-black text-white mt-1">{currentHandbook.title}</h2>
+                    <p className="text-xs text-slate-400 mt-1">Panduan standar operasional prosedur & daftar tarif penanganan resmi berdasarkan Ekonomi Low-Pay Kota ($5 - $45).</p>
+                  </div>
+                  <i className="fa-solid fa-book-open-reader text-4xl text-amber-400"></i>
+                </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                  {/* SOP Rules */}
+                  <div className="bg-slate-900/60 border border-white/10 rounded-3xl p-6 backdrop-blur-md space-y-4">
+                    <h4 className="text-sm font-black text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                      <i className="fa-solid fa-gavel"></i> Aturan SOP Direksi Instansi
+                    </h4>
+                    <div className="space-y-3">
+                      {currentHandbook.sopRules.map((rule, idx) => (
+                        <div key={idx} className="bg-black/40 p-4 rounded-xl border border-white/5 text-xs text-white font-medium flex items-center gap-3">
+                          <span className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xs">{idx + 1}</span>
+                          <span>{rule}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Tariff & Penalty Price List ($5 - $45) */}
+                  <div className="bg-slate-900/60 border border-white/10 rounded-3xl p-6 backdrop-blur-md space-y-4">
+                    <h4 className="text-sm font-black text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+                      <i className="fa-solid fa-sack-dollar"></i> Standar Tarif Penanganan / Denda ($5 - $45)
+                    </h4>
+                    <div className="space-y-3">
+                      {currentHandbook.tariffList.map((item, idx) => (
+                        <div key={idx} className="bg-black/40 p-4 rounded-xl border border-white/5 flex justify-between items-center text-xs">
+                          <span className="text-slate-300 font-medium">{item.service}</span>
+                          <strong className="text-emerald-400 font-mono font-black text-sm bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/30">{item.price}</strong>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 3: SURAT MENYURAT DIREKSI & INTER-AGENCY MEMO */}
             {activeTab === 'memos' && (
               <div className="space-y-6">
-                {/* Form Buat Surat Menyurat Direksi Baru */}
                 <div className="bg-slate-900/60 border border-amber-500/30 rounded-3xl p-6 backdrop-blur-md shadow-2xl space-y-4">
                   <h3 className="text-base font-black text-amber-400 flex items-center gap-2">
                     <i className="fa-solid fa-pen-to-square"></i> Form Penerbitan Surat Menyurat & Memo Direksi (Sync Tablet sc-pad)
@@ -383,7 +493,6 @@ export default function StaffPage() {
                   )}
                 </div>
 
-                {/* List Inbox / Outbox Surat Menyurat Direksi */}
                 <div className="space-y-4">
                   <h4 className="text-sm font-black text-slate-300 uppercase tracking-wider">
                     <i className="fa-solid fa-folder-open text-amber-400 mr-2"></i> DAFTAR ARSIP SURAT RESMI INSTANSI DIREKSI:
@@ -411,7 +520,7 @@ export default function StaffPage() {
               </div>
             )}
 
-            {/* TAB 3: KELOLA ANGGOTA FACTION ROSTER */}
+            {/* TAB 4: KELOLA ANGGOTA FACTION ROSTER */}
             {activeTab === 'roster' && (
               <div className="space-y-6">
                 <div className="bg-slate-900/60 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-md shadow-2xl">
@@ -427,6 +536,7 @@ export default function StaffPage() {
                         <th className="p-4 px-6">Nama Officer / Staf</th>
                         <th className="p-4 px-6">Citizen ID (CID)</th>
                         <th className="p-4 px-6">Pangkat / Jabatan</th>
+                        <th className="p-4 px-6">Total Penanganan Cases</th>
                         <th className="p-4 px-6">Status Game</th>
                         <th className="p-4 px-6">Aksi Direksi</th>
                       </tr>
@@ -437,13 +547,14 @@ export default function StaffPage() {
                           <td className="p-4 px-6 font-bold text-white">{member.name}</td>
                           <td className="p-4 px-6 font-mono text-cyan-400 font-bold">{member.cid}</td>
                           <td className="p-4 px-6 text-amber-400 font-semibold">{member.rank}</td>
+                          <td className="p-4 px-6 font-bold text-emerald-400 font-mono">{member.casesHandled} Kasus Ditangani</td>
                           <td className="p-4 px-6">
                             <span className={`px-2.5 py-1 rounded-lg text-xs font-black ${member.status === 'ON-DUTY' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : 'bg-slate-500/20 text-slate-400 border border-slate-500/40'}`}>
                               {member.status}
                             </span>
                           </td>
                           <td className="p-4 px-6 space-x-2">
-                            <button onClick={() => handlePromoteRank(member.id, member.rank)} className="bg-amber-500 hover:bg-amber-400 text-black text-xs font-black px-3 py-1.5 rounded-lg shadow-md">
+                            <button onClick={() => handlePromoteRank(member.id)} className="bg-amber-500 hover:bg-amber-400 text-black text-xs font-black px-3 py-1.5 rounded-lg shadow-md">
                               ⭐ Naik Pangkat
                             </button>
                           </td>
