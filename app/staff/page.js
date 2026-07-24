@@ -8,6 +8,10 @@ export default function StaffPage() {
   const [staffPin, setStaffPin] = useState('');
   const [staffLoggedIn, setStaffLoggedIn] = useState(false);
   const [staffRoleName, setStaffRoleName] = useState('');
+  
+  // Navigation Tabs
+  const [activeTab, setActiveTab] = useState('requests'); // 'requests', 'memos', 'roster'
+
   const [filterDeptCategory, setFilterDeptCategory] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -18,6 +22,7 @@ export default function StaffPage() {
   const [customRejectInput, setCustomRejectInput] = useState('');
   const [printCertificateModal, setPrintCertificateModal] = useState(null);
 
+  // 1. STATE BERKAS WARGA
   const [staffRequests, setStaffRequests] = useState([
     { 
       id: 'req-1', 
@@ -60,6 +65,42 @@ export default function StaffPage() {
     }
   ]);
 
+  // 2. STATE SURAT-MENYURAT DIREKSI & INTER-AGENCY MEMO (DIRECTOR CORRESPONDENCE)
+  const [memos, setMemos] = useState([
+    {
+      id: 'memo-101',
+      memoNo: 'SC-MEMO/GOV/2026/001',
+      senderDept: 'High Council Pemkot',
+      targetDept: 'Vibe Patrol SCVP & SAFD Medis',
+      title: '📜 Himbauan Ketertiban & Patroli Skala Besar Konser KenClub',
+      content: 'Diberitahukan kepada seluruh jajaran SCVP & SAFD untuk menempatkan 5 personil on-duty di area KenClub Legion Square malam ini.',
+      date: '2026-07-24 19:00',
+      status: 'TERKIRIM & SYNCED SC-PAD'
+    },
+    {
+      id: 'memo-102',
+      memoNo: 'SC-MEMO/SAFD/2026/004',
+      senderDept: 'Arcane Rescue Center (SAFD)',
+      targetDept: 'High Council Pemkot',
+      title: '🏥 Permohonan Penambahan Ambulans Unit Resusitasi',
+      content: 'Pengajuan anggaran dana pengadaan 2 unit Ambulans Vapid Speedo tambahan untuk Paleto Bay Clinic.',
+      date: '2026-07-24 15:30',
+      status: 'TERKIRIM & SYNCED SC-PAD'
+    }
+  ]);
+
+  const [newMemoTitle, setNewMemoTitle] = useState('');
+  const [newMemoTarget, setNewMemoTarget] = useState('Semua Instansi / Public');
+  const [newMemoContent, setNewMemoContent] = useState('');
+  const [memoSentSuccess, setMemoSentSuccess] = useState(false);
+
+  // 3. STATE ANGGOTA / FACTION ROSTER MANAGEMENT
+  const [roster, setRoster] = useState([
+    { id: 'ros-1', name: 'Dr. Amara', cid: 'AMR11902', dept: 'safd', rank: 'Chief Medical Officer (Grade 4)', status: 'ON-DUTY' },
+    { id: 'ros-2', name: 'Officer Budi', cid: 'BDI88712', dept: 'scvp', rank: 'Sergeant First Class (Grade 3)', status: 'ON-DUTY' },
+    { id: 'ros-3', name: 'Mekanik Udin', cid: 'UDN99123', dept: 'ultraspeed', rank: 'Head Tuner (Grade 3)', status: 'OFF-DUTY' },
+  ]);
+
   const handleStaffLogin = (e) => {
     e.preventDefault();
     if ((staffDept === 'safd' && staffPin === '1111') || 
@@ -96,6 +137,30 @@ export default function StaffPage() {
     setCustomRejectInput('');
   };
 
+  const handleCreateMemo = (e) => {
+    e.preventDefault();
+    const memoObj = {
+      id: `memo-${Date.now()}`,
+      memoNo: `SC-MEMO/${staffDept.toUpperCase()}/2026/00${memos.length + 1}`,
+      senderDept: staffRoleName,
+      targetDept: newMemoTarget,
+      title: newMemoTitle,
+      content: newMemoContent,
+      date: new Date().toLocaleString(),
+      status: 'TERKIRIM & SYNCED SC-PAD'
+    };
+    setMemos([memoObj, ...memos]);
+    setNewMemoTitle('');
+    setNewMemoContent('');
+    setMemoSentSuccess(true);
+    setTimeout(() => setMemoSentSuccess(false), 6000);
+  };
+
+  const handlePromoteRank = (id, currentRank) => {
+    setRoster(prev => prev.map(m => m.id === id ? { ...m, rank: `${m.rank} (Promoted)` } : m));
+    alert(`SUKSES! Pangkat Anggota Faksi Telah Ditingkatkan & Sync ke Database QBCore Players / Tablet sc-pad!`);
+  };
+
   const pendingCount = staffRequests.filter(r => r.status === 'PENDING').length;
   const approvedCount = staffRequests.filter(r => r.status === 'APPROVED').length;
   const rejectedCount = staffRequests.filter(r => r.status === 'REJECTED').length;
@@ -117,9 +182,9 @@ export default function StaffPage() {
           </div>
           <div>
             <h1 className="text-xl font-black text-amber-400">
-              SUPERCALI STAFF MANAGEMENT CONSOLE
+              SUPERCALI STAFF & DIRECTORATE CONSOLE
             </h1>
-            <p className="text-xs text-slate-400 font-medium">Department Management, Verifier & Certificate Generator</p>
+            <p className="text-xs text-slate-400 font-medium">Department Management, Inter-Agency Memos & Roster Control</p>
           </div>
         </div>
 
@@ -129,7 +194,7 @@ export default function StaffPage() {
           </Link>
           <div className="flex items-center gap-2.5 bg-amber-500/10 border border-amber-500/30 px-4 py-2 rounded-full text-xs font-bold text-amber-400">
             <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-            <span>Security Officer Active</span>
+            <span>Director Console Active</span>
           </div>
         </div>
       </header>
@@ -137,13 +202,13 @@ export default function StaffPage() {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto my-8 px-6">
         {!staffLoggedIn ? (
-          /* LOGIN GATE SECURED (NO PASSWORD SPILL) */
+          /* LOGIN GATE SECURED */
           <div className="max-w-md mx-auto my-12 bg-slate-900/60 border border-white/10 rounded-3xl p-8 backdrop-blur-md shadow-2xl space-y-6">
             <div className="text-center space-y-2">
               <div className="w-16 h-16 bg-amber-500/20 border border-amber-500/40 rounded-2xl mx-auto flex items-center justify-center text-3xl text-amber-400 shadow-lg shadow-amber-500/20">
                 <i className="fa-solid fa-vault"></i>
               </div>
-              <h3 className="text-xl font-black text-white">Login Console Petugas & Dokter</h3>
+              <h3 className="text-xl font-black text-white">Login Console Petugas & Direksi</h3>
               <p className="text-xs text-slate-400">Masukkan Role Instansi & Password Staff Rahasia Anda.</p>
             </div>
 
@@ -154,7 +219,7 @@ export default function StaffPage() {
                   <option value="safd">🚑 SAFD Medis (Arcane Rescue Center)</option>
                   <option value="scvp">🚓 SCVP Polisi (Vibe Patrol Police)</option>
                   <option value="gov">🏛️ City Hall Pemkot (High Council)</option>
-                  <option value="all">👑 Super Admin High Council</option>
+                  <option value="all">👑 Super Admin / High Council Director</option>
                 </select>
               </div>
               <div>
@@ -167,110 +232,229 @@ export default function StaffPage() {
             </form>
           </div>
         ) : (
-          /* ADVANCED DASHBOARD CONSOLE */
+          /* ADVANCED DASHBOARD CONSOLE WITH DIREKSI PANELS */
           <div className="space-y-6">
             
-            {/* Live Analytics Bar */}
-            <div className="grid grid-cols-4 gap-5">
-              <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-5 backdrop-blur-md">
-                <div className="text-xs font-bold text-amber-400 uppercase">PENDING REQUESTS</div>
-                <div className="text-2xl font-black text-amber-400 mt-1">{pendingCount} Berkas</div>
+            {/* Navigation Tabs Direksi & Petugas */}
+            <div className="flex justify-between items-center bg-slate-900/60 p-2 rounded-2xl border border-white/10 backdrop-blur-md">
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setActiveTab('requests')}
+                  className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 ${activeTab === 'requests' ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white'}`}
+                >
+                  <i className="fa-solid fa-inbox"></i> Berkas & Lamaran Warga ({pendingCount})
+                </button>
+                <button
+                  onClick={() => setActiveTab('memos')}
+                  className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 ${activeTab === 'memos' ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white'}`}
+                >
+                  <i className="fa-solid fa-paper-plane"></i> Surat Menyurat Direksi ({memos.length})
+                </button>
+                <button
+                  onClick={() => setActiveTab('roster')}
+                  className={`px-5 py-2.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-2 ${activeTab === 'roster' ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white'}`}
+                >
+                  <i className="fa-solid fa-users-gear"></i> Kelola Anggota Faksi ({roster.length})
+                </button>
               </div>
-              <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-5 backdrop-blur-md">
-                <div className="text-xs font-bold text-emerald-400 uppercase">BERKAS DISETUJUI</div>
-                <div className="text-2xl font-black text-emerald-400 mt-1">{approvedCount} Terbit</div>
-              </div>
-              <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-5 backdrop-blur-md">
-                <div className="text-xs font-bold text-red-400 uppercase">BERKAS DITOLAK</div>
-                <div className="text-2xl font-black text-red-400 mt-1">{rejectedCount} Berkas</div>
-              </div>
-              <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-2xl p-5 backdrop-blur-md">
-                <div className="text-xs font-bold text-cyan-400 uppercase">AKUN PETUGAS ACTIVE</div>
-                <div className="text-lg font-black text-cyan-300 mt-1 truncate">{staffRoleName}</div>
+
+              <div className="text-xs font-bold text-amber-400 px-4 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30">
+                <i className="fa-solid fa-user-shield mr-1"></i> LOGGED IN: {staffRoleName}
               </div>
             </div>
 
-            {/* Filter & Search Bar */}
-            <div className="bg-slate-900/60 border border-white/10 rounded-2xl p-4 backdrop-blur-md flex justify-between items-center gap-4 flex-wrap">
-              <div className="flex gap-2 items-center">
-                <span className="text-xs font-bold text-slate-400 mr-2 uppercase">INSTANSI:</span>
-                <button onClick={() => setFilterDeptCategory('all')} className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${filterDeptCategory === 'all' ? 'bg-cyan-500 text-black' : 'bg-white/5 text-slate-400 hover:text-white'}`}>Semua</button>
-                <button onClick={() => setFilterDeptCategory('safd')} className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${filterDeptCategory === 'safd' ? 'bg-cyan-500 text-black' : 'bg-white/5 text-slate-400 hover:text-white'}`}>🚑 SAFD Medis</button>
-                <button onClick={() => setFilterDeptCategory('scvp')} className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${filterDeptCategory === 'scvp' ? 'bg-cyan-500 text-black' : 'bg-white/5 text-slate-400 hover:text-white'}`}>🚓 SCVP Polisi</button>
-                <button onClick={() => setFilterDeptCategory('gov')} className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${filterDeptCategory === 'gov' ? 'bg-cyan-500 text-black' : 'bg-white/5 text-slate-400 hover:text-white'}`}>🏛️ Pemkot</button>
-              </div>
+            {/* TAB 1: BERKAS & LAMARAN WARGA */}
+            {activeTab === 'requests' && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-4 gap-5">
+                  <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-5 backdrop-blur-md">
+                    <div className="text-xs font-bold text-amber-400 uppercase">PENDING REQUESTS</div>
+                    <div className="text-2xl font-black text-amber-400 mt-1">{pendingCount} Berkas</div>
+                  </div>
+                  <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-5 backdrop-blur-md">
+                    <div className="text-xs font-bold text-emerald-400 uppercase">BERKAS DISETUJUI</div>
+                    <div className="text-2xl font-black text-emerald-400 mt-1">{approvedCount} Terbit</div>
+                  </div>
+                  <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-5 backdrop-blur-md">
+                    <div className="text-xs font-bold text-red-400 uppercase">BERKAS DITOLAK</div>
+                    <div className="text-2xl font-black text-red-400 mt-1">{rejectedCount} Berkas</div>
+                  </div>
+                  <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-2xl p-5 backdrop-blur-md">
+                    <div className="text-xs font-bold text-cyan-400 uppercase">TABLET SC-PAD SYNC</div>
+                    <div className="text-lg font-black text-cyan-300 mt-1">ONLINE REALTIME</div>
+                  </div>
+                </div>
 
-              <div className="flex gap-2 items-center">
-                <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="bg-black/40 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white outline-none">
-                  <option value="all">SEMUA STATUS</option>
-                  <option value="PENDING">PENDING</option>
-                  <option value="APPROVED">APPROVED</option>
-                  <option value="REJECTED">REJECTED</option>
-                </select>
-
-                <input 
-                  type="text" 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Cari Nama / CID..."
-                  className="bg-black/40 border border-white/10 rounded-xl px-3.5 py-1.5 text-xs text-white outline-none w-44 focus:border-amber-500"
-                />
-              </div>
-            </div>
-
-            {/* Main Table Console */}
-            <div className="bg-slate-900/60 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-md shadow-2xl">
-              <table className="w-full text-left">
-                <thead className="bg-white/5 text-xs text-slate-400 font-bold uppercase border-b border-white/10">
-                  <tr>
-                    <th className="p-4 px-6">Nama & CID Warga</th>
-                    <th className="p-4 px-6">Instansi & Layanan</th>
-                    <th className="p-4 px-6">Catatan / Proposal RP</th>
-                    <th className="p-4 px-6">Status</th>
-                    <th className="p-4 px-6">Aksi Petugas</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/10 text-sm">
-                  {filteredRequests.map(req => (
-                    <tr key={req.id} className="hover:bg-white/5">
-                      <td className="p-4 px-6">
-                        <strong className="text-white block">{req.name}</strong>
-                        <span className="text-xs text-cyan-400 font-mono font-bold">{req.cid}</span>
-                      </td>
-                      <td className="p-4 px-6 font-bold">{req.title}</td>
-                      <td className="p-4 px-6 text-slate-400 text-xs max-w-xs truncate">{req.reason}</td>
-                      <td className="p-4 px-6">
-                        <span className={`px-2.5 py-1 rounded-lg text-xs font-black ${req.status === 'APPROVED' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : req.status === 'REJECTED' ? 'bg-red-500/20 text-red-400 border border-red-500/40' : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'}`}>
-                          {req.status}
-                        </span>
-                      </td>
-                      <td className="p-4 px-6 space-x-2">
-                        <button onClick={() => setSelectedRequestModal(req)} className="bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10">
-                          👁️ Detail
-                        </button>
-                        
-                        {req.status === 'PENDING' && (
-                          <>
-                            <button onClick={() => handleApprove(req.id, req.name, req.cid)} className="bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-extrabold px-3 py-1.5 rounded-lg shadow-md shadow-emerald-500/20">
-                              ✔ Setujui
+                <div className="bg-slate-900/60 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-md shadow-2xl">
+                  <table className="w-full text-left">
+                    <thead className="bg-white/5 text-xs text-slate-400 font-bold uppercase border-b border-white/10">
+                      <tr>
+                        <th className="p-4 px-6">Nama & CID Warga</th>
+                        <th className="p-4 px-6">Instansi & Layanan</th>
+                        <th className="p-4 px-6">Catatan / Proposal RP</th>
+                        <th className="p-4 px-6">Status</th>
+                        <th className="p-4 px-6">Aksi Petugas</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/10 text-sm">
+                      {filteredRequests.map(req => (
+                        <tr key={req.id} className="hover:bg-white/5">
+                          <td className="p-4 px-6">
+                            <strong className="text-white block">{req.name}</strong>
+                            <span className="text-xs text-cyan-400 font-mono font-bold">{req.cid}</span>
+                          </td>
+                          <td className="p-4 px-6 font-bold">{req.title}</td>
+                          <td className="p-4 px-6 text-slate-400 text-xs max-w-xs truncate">{req.reason}</td>
+                          <td className="p-4 px-6">
+                            <span className={`px-2.5 py-1 rounded-lg text-xs font-black ${req.status === 'APPROVED' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : req.status === 'REJECTED' ? 'bg-red-500/20 text-red-400 border border-red-500/40' : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'}`}>
+                              {req.status}
+                            </span>
+                          </td>
+                          <td className="p-4 px-6 space-x-2">
+                            <button onClick={() => setSelectedRequestModal(req)} className="bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10">
+                              👁️ Detail
                             </button>
-                            <button onClick={() => setRejectReasonModal(req)} className="bg-red-500 hover:bg-red-400 text-white text-xs font-extrabold px-3 py-1.5 rounded-lg shadow-md shadow-red-500/20">
-                              ❌ Tolak
-                            </button>
-                          </>
-                        )}
+                            
+                            {req.status === 'PENDING' && (
+                              <>
+                                <button onClick={() => handleApprove(req.id, req.name, req.cid)} className="bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-extrabold px-3 py-1.5 rounded-lg shadow-md shadow-emerald-500/20">
+                                  ✔ Setujui
+                                </button>
+                                <button onClick={() => setRejectReasonModal(req)} className="bg-red-500 hover:bg-red-400 text-white text-xs font-extrabold px-3 py-1.5 rounded-lg shadow-md shadow-red-500/20">
+                                  ❌ Tolak
+                                </button>
+                              </>
+                            )}
 
-                        {req.status === 'APPROVED' && (
-                          <button onClick={() => setPrintCertificateModal(req)} className="bg-amber-500 hover:bg-amber-400 text-black text-xs font-black px-3 py-1.5 rounded-lg shadow-md shadow-amber-500/20">
-                            🖨️ Cetak Surat
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                            {req.status === 'APPROVED' && (
+                              <button onClick={() => setPrintCertificateModal(req)} className="bg-amber-500 hover:bg-amber-400 text-black text-xs font-black px-3 py-1.5 rounded-lg shadow-md shadow-amber-500/20">
+                                🖨️ Cetak Surat
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 2: SURAT MENYURAT DIREKSI & INTER-AGENCY MEMO */}
+            {activeTab === 'memos' && (
+              <div className="space-y-6">
+                {/* Form Buat Surat Menyurat Direksi Baru */}
+                <div className="bg-slate-900/60 border border-amber-500/30 rounded-3xl p-6 backdrop-blur-md shadow-2xl space-y-4">
+                  <h3 className="text-base font-black text-amber-400 flex items-center gap-2">
+                    <i className="fa-solid fa-pen-to-square"></i> Form Penerbitan Surat Menyurat & Memo Direksi (Sync Tablet sc-pad)
+                  </h3>
+                  <form onSubmit={handleCreateMemo} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-bold text-slate-400 uppercase">Judul / Perihal Surat Resmi</label>
+                        <input type="text" value={newMemoTitle} onChange={(e) => setNewMemoTitle(e.target.value)} placeholder="Contoh: Himbauan Keamanan & Pengawalan Event KenClub" required className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1 text-white text-sm focus:border-amber-500 outline-none" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-slate-400 uppercase">Instansi Tujuan Surat</label>
+                        <select value={newMemoTarget} onChange={(e) => setNewMemoTarget(e.target.value)} className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1 text-white text-sm focus:border-amber-500 outline-none">
+                          <option>Semua Instansi & Warga Public</option>
+                          <option>🚓 Vibe Patrol SCVP (Kepolisian)</option>
+                          <option>🚑 Arcane Rescue Center (SAFD Medis)</option>
+                          <option>🔧 UltraSpeed Mechanic (Bengkel)</option>
+                          <option>💃 KenClub VIP (Nightlife)</option>
+                          <option>🏛️ High Council Pemkot (Government)</option>
+                        </select>
+                      </div>
+                      <div className="col-span-2">
+                        <label className="text-xs font-bold text-slate-400 uppercase">Isi Pesan Surat Memo Resmi Direksi</label>
+                        <textarea value={newMemoContent} onChange={(e) => setNewMemoContent(e.target.value)} placeholder="Tuliskan instruksi atau pengumuman surat resmi instansi..." required className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 mt-1 text-white text-sm focus:border-amber-500 outline-none h-24"></textarea>
+                      </div>
+                    </div>
+                    <button type="submit" className="w-full bg-gradient-to-r from-amber-500 to-amber-700 text-white font-extrabold p-3.5 rounded-xl shadow-lg shadow-amber-500/30 hover:scale-[1.01] transition-transform">
+                       Terbitkan & Kirim Surat Memo Direksi (Auto-Sync to sc-pad Tablet)
+                    </button>
+                  </form>
+
+                  {memoSentSuccess && (
+                    <div className="p-3 bg-emerald-500/15 border border-emerald-500/30 rounded-xl flex items-center gap-3 text-emerald-400 text-xs">
+                      <i className="fa-solid fa-circle-check text-xl"></i>
+                      <span><strong>Surat Memo Resmi Berhasil Diterbitkan!</strong> Otomatis tersimpan di database `city_official_memos` & langsung tampil di menu Dokumen Tablet sc-pad in-game!</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* List Inbox / Outbox Surat Menyurat Direksi */}
+                <div className="space-y-4">
+                  <h4 className="text-sm font-black text-slate-300 uppercase tracking-wider">
+                    <i className="fa-solid fa-folder-open text-amber-400 mr-2"></i> DAFTAR ARSIP SURAT RESMI INSTANSI DIREKSI:
+                  </h4>
+                  <div className="space-y-3">
+                    {memos.map((m) => (
+                      <div key={m.id} className="bg-slate-900/60 border border-white/10 rounded-2xl p-5 backdrop-blur-md space-y-2">
+                        <div className="flex justify-between items-center border-b border-white/10 pb-2">
+                          <div className="flex items-center gap-3">
+                            <span className="px-2.5 py-1 rounded-md text-[10px] font-mono font-black bg-amber-500/20 text-amber-400 border border-amber-500/40">{m.memoNo}</span>
+                            <strong className="text-white text-sm">{m.title}</strong>
+                          </div>
+                          <span className="text-xs text-emerald-400 font-bold bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/30">{m.status}</span>
+                        </div>
+                        <div className="flex justify-between text-xs text-slate-400 pt-1">
+                          <span><strong>Pengirim:</strong> {m.senderDept}</span>
+                          <span><strong>Tujuan:</strong> {m.targetDept}</span>
+                          <span><strong>Tanggal:</strong> {m.date}</span>
+                        </div>
+                        <p className="text-xs text-slate-300 bg-black/40 p-3 rounded-xl border border-white/5">{m.content}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 3: KELOLA ANGGOTA FACTION ROSTER */}
+            {activeTab === 'roster' && (
+              <div className="space-y-6">
+                <div className="bg-slate-900/60 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-md shadow-2xl">
+                  <div className="p-5 border-b border-white/10 flex justify-between items-center">
+                    <h4 className="text-sm font-black text-white uppercase flex items-center gap-2">
+                      <i className="fa-solid fa-users text-amber-400"></i> Faction Member Roster Management (Direct Sync QBCore & sc-pad)
+                    </h4>
+                    <span className="text-xs text-emerald-400 font-bold">3 Officers Registered</span>
+                  </div>
+                  <table className="w-full text-left">
+                    <thead className="bg-white/5 text-xs text-slate-400 font-bold uppercase border-b border-white/10">
+                      <tr>
+                        <th className="p-4 px-6">Nama Officer / Staf</th>
+                        <th className="p-4 px-6">Citizen ID (CID)</th>
+                        <th className="p-4 px-6">Pangkat / Jabatan</th>
+                        <th className="p-4 px-6">Status Game</th>
+                        <th className="p-4 px-6">Aksi Direksi</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/10 text-sm">
+                      {roster.map(member => (
+                        <tr key={member.id} className="hover:bg-white/5">
+                          <td className="p-4 px-6 font-bold text-white">{member.name}</td>
+                          <td className="p-4 px-6 font-mono text-cyan-400 font-bold">{member.cid}</td>
+                          <td className="p-4 px-6 text-amber-400 font-semibold">{member.rank}</td>
+                          <td className="p-4 px-6">
+                            <span className={`px-2.5 py-1 rounded-lg text-xs font-black ${member.status === 'ON-DUTY' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : 'bg-slate-500/20 text-slate-400 border border-slate-500/40'}`}>
+                              {member.status}
+                            </span>
+                          </td>
+                          <td className="p-4 px-6 space-x-2">
+                            <button onClick={() => handlePromoteRank(member.id, member.rank)} className="bg-amber-500 hover:bg-amber-400 text-black text-xs font-black px-3 py-1.5 rounded-lg shadow-md">
+                              ⭐ Naik Pangkat
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
           </div>
         )}
       </main>
