@@ -4,17 +4,24 @@ export function middleware(request) {
   const hostname = request.headers.get('host') || '';
   const url = request.nextUrl;
 
-  // 1. Jika diakses lewat Subdomain Loket / Medis (contoh: loket.supercalirp.com atau ems.supercalirp.com)
-  if (hostname.startsWith('loket.') || hostname.startsWith('ems.')) {
+  // 1. Subdomain Loket Medis & Layanan Publik (loket.supercali.tech)
+  if (hostname.startsWith('loket.')) {
     if (url.pathname === '/') {
       return NextResponse.rewrite(new URL('/loket', request.url));
     }
   }
 
-  // 2. Jika diakses lewat Subdomain Staff / Admin (contoh: staff.supercalirp.com)
-  if (hostname.startsWith('staff.') || hostname.startsWith('admin.')) {
+  // 2. Subdomain Staff Console & Petugas (staff.supercali.tech)
+  if (hostname.startsWith('staff.')) {
     if (url.pathname === '/') {
       return NextResponse.rewrite(new URL('/staff', request.url));
+    }
+  }
+
+  // 3. Subdomain City Hub & Analytics (city.supercali.tech)
+  if (hostname.startsWith('city.')) {
+    if (url.pathname === '/') {
+      return NextResponse.rewrite(new URL('/', request.url));
     }
   }
 
