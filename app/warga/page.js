@@ -57,23 +57,19 @@ export default function WargaPage() {
   };
 
   const handleDiscordLogin = () => {
-    const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || '123456789012345678';
+    // Membaca NEXT_PUBLIC_DISCORD_CLIENT_ID atau DISCORD_CLIENT_ID
+    const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || process.env.DISCORD_CLIENT_ID || '';
     
-    // Redirect langsung ke URL Resmi Discord OAuth2 Authorization
     const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://warga.supercali.tech';
     const redirectUri = `${currentOrigin}/warga`;
-    const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=identify`;
-    
-    if (!process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID) {
-      const userClientId = prompt("Masukkan Discord Client ID Application Anda dari Discord Developer Portal:", "123456789012345678");
-      if (userClientId) {
-        const realAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${userClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=identify`;
-        window.location.href = realAuthUrl;
-        return;
-      }
+
+    if (!clientId || clientId === '123456789012345678') {
+      alert("PENTING: Ganti nama Key Environment Variable di Vercel menjadi NEXT_PUBLIC_DISCORD_CLIENT_ID agar bisa dibaca browser!");
+      return;
     }
 
-    window.location.href = discordAuthUrl;
+    // Direct Redirect ke Official Discord Authorization URL
+    window.location.href = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=identify`;
   };
 
   const handleRegisterCitizen = (e) => {
@@ -153,7 +149,7 @@ export default function WargaPage() {
               onClick={handleDiscordLogin}
               className="w-full bg-[#5865F2] hover:bg-[#4752c4] text-white font-extrabold p-4 rounded-xl shadow-lg shadow-[#5865F2]/30 flex items-center justify-center gap-3 transition-transform hover:scale-[1.01]"
             >
-              <i className="fa-brands fa-discord text-xl"></i> Login Dengan Discord OAuth2 (Official Redirect)
+              <i className="fa-brands fa-discord text-xl"></i> Login Dengan Discord OAuth2
             </button>
           </div>
         )}
