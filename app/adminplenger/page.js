@@ -896,7 +896,7 @@ export default function AdminPlengerPage() {
                   <div className="bg-slate-900/90 border border-slate-700 p-5 rounded-3xl space-y-4 hover:border-slate-500 transition-all">
                     <div className="space-y-1">
                       <span className="bg-slate-800 text-slate-300 text-[10px] font-black px-2.5 py-1 rounded-md border border-slate-600">SILVER TIER</span>
-                      <h4 className="text-xl font-black text-white">Rp 350.000 / $25</h4>
+                      <h4 className="text-xl font-black text-white">Rp 1.500.000 / $100</h4>
                     </div>
                     <ul className="text-xs space-y-2 text-slate-300">
                       <li>✓ Priority Queue Join Server (Tier 1)</li>
@@ -909,7 +909,7 @@ export default function AdminPlengerPage() {
                   <div className="bg-slate-900/90 border border-amber-500/40 p-5 rounded-3xl space-y-4 hover:border-amber-400 transition-all shadow-lg shadow-amber-500/10">
                     <div className="space-y-1">
                       <span className="bg-amber-500/20 text-amber-300 text-[10px] font-black px-2.5 py-1 rounded-md border border-amber-500/40">GOLD TIER</span>
-                      <h4 className="text-xl font-black text-amber-300">Rp 750.000 / $50</h4>
+                      <h4 className="text-xl font-black text-amber-300">Rp 4.500.000 / $300</h4>
                     </div>
                     <ul className="text-xs space-y-2 text-slate-300">
                       <li>✓ Perks Silver Included</li>
@@ -923,7 +923,7 @@ export default function AdminPlengerPage() {
                     <div className="absolute -right-6 -top-6 w-20 h-20 bg-purple-500/20 rounded-full blur-xl"></div>
                     <div className="space-y-1">
                       <span className="bg-purple-500/20 text-purple-300 text-[10px] font-black px-2.5 py-1 rounded-md border border-purple-500/40">PLATINUM TIER</span>
-                      <h4 className="text-xl font-black text-purple-300">Rp 1.500.000 / $100</h4>
+                      <h4 className="text-xl font-black text-purple-300">Rp 10.000.000 / $650</h4>
                     </div>
                     <ul className="text-xs space-y-2 text-slate-300">
                       <li>✓ Perks Gold Included</li>
@@ -936,7 +936,7 @@ export default function AdminPlengerPage() {
                   <div className="bg-gradient-to-b from-pink-950/40 to-slate-900 border border-pink-500/50 p-5 rounded-3xl space-y-4 hover:border-pink-400 transition-all shadow-xl shadow-pink-500/20">
                     <div className="space-y-1">
                       <span className="bg-pink-500/20 text-pink-300 text-[10px] font-black px-2.5 py-1 rounded-md border border-pink-500/40">SUPREME BOSS</span>
-                      <h4 className="text-xl font-black text-pink-300">Rp 3.500.000 / $230</h4>
+                      <h4 className="text-xl font-black text-pink-300">Rp 25.000.000 / $1,600</h4>
                     </div>
                     <ul className="text-xs space-y-2 text-slate-300">
                       <li>✓ Perks Platinum Included</li>
@@ -947,6 +947,7 @@ export default function AdminPlengerPage() {
                     </ul>
                   </div>
                 </div>
+
 
 
               </div>
