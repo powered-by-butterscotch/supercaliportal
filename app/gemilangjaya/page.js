@@ -393,6 +393,51 @@ export default function GemilangJayaPage() {
 
             </div>
 
+            {/* MODUL SEPARATE BUSINESS PURCHASES & ENTERPRISE PERMITS */}
+            <div className="bg-gradient-to-r from-purple-950/70 via-slate-900 to-amber-950/70 border border-purple-500/40 p-7 rounded-3xl backdrop-blur-xl shadow-2xl space-y-4">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-4">
+                <div>
+                  <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-black px-2.5 py-1 rounded-md uppercase">
+                    🏢 BUSINESS & ENTERPRISE PERMIT (TERPISAH DARI DONASI)
+                  </span>
+                  <h3 className="text-xl font-black text-white mt-1">Pembelian Franchise & Kepemilikan Usaha Kota ✨</h3>
+                  <p className="text-xs text-slate-300">
+                    Ingin punya bisnis sendiri di kota (Bengkel, Nightclub, Restaurant, atau Turf Geng)? Transaksi terpisah via kontrak lisensi resmi Direksi Admin Plenger!
+                  </p>
+                </div>
+                <div className="bg-black/50 px-4 py-2 rounded-xl border border-white/10 text-xs font-mono text-amber-300 font-bold">
+                  💼 Direct Contract Available
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-4 text-xs">
+                <div className="bg-black/50 border border-white/10 p-4 rounded-2xl space-y-2">
+                  <div className="font-black text-cyan-300 text-sm flex justify-between">
+                    <span>Commercial Store / Stand</span>
+                    <span className="text-emerald-400 font-mono">Rp 5.000.000</span>
+                  </div>
+                  <p className="text-slate-400">Lisensi minimarket, kedai makanan, atau barbershop kustom dengan MLO eksklusif.</p>
+                </div>
+
+                <div className="bg-black/50 border border-white/10 p-4 rounded-2xl space-y-2">
+                  <div className="font-black text-amber-300 text-sm flex justify-between">
+                    <span>Enterprise Franchise (Mechanic / Nightclub)</span>
+                    <span className="text-emerald-400 font-mono">Rp 15.000.000 - Rp 35.000.000</span>
+                  </div>
+                  <p className="text-slate-400">Kepemilikan penuh bisnis besar seperti UltraSpeed Mechanic, KenClub VIP, atau Burgershot.</p>
+                </div>
+
+                <div className="bg-black/50 border border-purple-500/40 p-4 rounded-2xl space-y-2 bg-purple-950/20">
+                  <div className="font-black text-pink-300 text-sm flex justify-between">
+                    <span>Gang Turf & Monopoly Territory</span>
+                    <span className="text-pink-400 font-mono">Custom Contract</span>
+                  </div>
+                  <p className="text-slate-400">Izin wilayah kekuasaan geng, HQ MLO custom, & monetisasi bisnis wilayah terpilih.</p>
+                </div>
+              </div>
+            </div>
+
+
 
           </div>
         )}
