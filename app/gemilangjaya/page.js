@@ -56,25 +56,44 @@ export default function GemilangJayaPage() {
     'D': ['fortwo17', 'GODz61BUS', 'kart', 'van_blacklions']
   };
 
+  const saveClaimToStorage = (itemObj) => {
+    if (typeof window !== 'undefined') {
+      const existing = localStorage.getItem('supercali_claimed_vouchers');
+      let list = [];
+      if (existing) {
+        try { list = JSON.parse(existing); } catch (e) {}
+      }
+      list = [itemObj, ...list];
+      localStorage.setItem('supercali_claimed_vouchers', JSON.stringify(list));
+    }
+  };
+
   const handleClaimVoucher = (e) => {
     e.preventDefault();
     const clean = voucherCode.trim().toUpperCase();
     if (!clean) return;
 
     if (clean === 'GEMILANG-S1-VIP') {
-      setClaimResult({ success: true, title: '✨ SLAYYY! VOUCHER VALID FR FR!', detail: 'Paket VIP Season 1: Hypercar Chiron + Custom PED Import + Luxury Villa Property + $1,000,000 Cash IC' });
-      showToast("✨ BERHASIL KLAIM: Voucher VIP Season 1!", "success");
+      const claim = { code: '2019chiron', title: 'Bugatti Chiron SuperSport (VIP Season 1)', classTag: 'S++', detail: 'Hypercar Chiron + Villa MLO' };
+      setClaimResult({ success: true, title: '✨ SLAYYY! VOUCHER VALID FR FR!', detail: claim.detail });
+      saveClaimToStorage(claim);
+      showToast("✨ BERHASIL KLAIM: Voucher VIP Season 1! Masuk ke Dashboard Garasi kamu!", "success");
     } else if (clean === 'PED-SULTAN-2026') {
-      setClaimResult({ success: true, title: '✨ SICK! VOUCHER AKTIF!', detail: 'Slot Character Custom PED Import (Standout in City!)' });
+      const claim = { code: 'sc-ped-slot', title: 'Custom Character PED Import Slot', classTag: 'PED', detail: 'PED Import Slot (sc-ped)' };
+      setClaimResult({ success: true, title: '✨ SICK! VOUCHER AKTIF!', detail: claim.detail });
+      saveClaimToStorage(claim);
       showToast("🧍 BERHASIL KLAIM: Custom PED Import Slot!", "success");
     } else if (clean === 'CHIRON-EXOTIC-2026') {
-      setClaimResult({ success: true, title: '🔥 HYPERCAR UNLOCKED!', detail: 'Bugatti Chiron SuperSport 2026 (Class S++ Speed Demon)' });
-      showToast("🏎️ BERHASIL KLAIM: Bugatti Chiron SuperSport!", "success");
+      const claim = { code: '2019chiron', title: 'Bugatti Chiron SuperSport 2026', classTag: 'S++', detail: 'Class S++ Speed Demon' };
+      setClaimResult({ success: true, title: '🔥 HYPERCAR UNLOCKED!', detail: claim.detail });
+      saveClaimToStorage(claim);
+      showToast("🏎️ BERHASIL KLAIM: Bugatti Chiron! Masuk ke Garasi Dashboard!", "success");
     } else {
       setClaimResult({ success: false, title: '❌ WHAATT? KODE WRONG ATAU EXPIRED!', detail: 'Coba re-check kodenya brodie, pastiin typo-free yaa!' });
       showToast("❌ Kode Voucher tidak ditemukan atau expired!", "error");
     }
   };
+
 
   return (
     <div className="min-h-screen bg-[#050713] text-slate-100 font-sans pb-20 relative">

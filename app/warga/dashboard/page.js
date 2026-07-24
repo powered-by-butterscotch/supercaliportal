@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 export default function WargaDashboardPage() {
   const [citizenSession, setCitizenSession] = useState(null);
-  const [activeTab, setActiveTab] = useState('ktp'); // ktp, garage, orders, permits
+  const [claimedVouchers, setClaimedVouchers] = useState([]);
+  const [activeTab, setActiveTab] = useState('ktp'); // ktp, garage, orders
 
   // Toast Notification System
   const [toastNotification, setToastNotification] = useState(null);
@@ -18,12 +18,21 @@ export default function WargaDashboardPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('supercali_citizen_session');
-      if (saved) {
+      const savedSession = localStorage.getItem('supercali_citizen_session');
+      if (savedSession) {
         try {
-          setCitizenSession(JSON.parse(saved));
+          setCitizenSession(JSON.parse(savedSession));
         } catch (e) {
           console.error("Error parsing citizen session", e);
+        }
+      }
+
+      const savedVouchers = localStorage.getItem('supercali_claimed_vouchers');
+      if (savedVouchers) {
+        try {
+          setClaimedVouchers(JSON.parse(savedVouchers));
+        } catch (e) {
+          console.error("Error parsing claimed vouchers", e);
         }
       }
     }
@@ -40,18 +49,28 @@ export default function WargaDashboardPage() {
     }, 1000);
   };
 
-  // Mock Active Orders & Garage Assets linked to Citizen Session
-  const mockOrders = [
-    { id: 'ORD-9912', item: '🏎️ Bugatti Chiron SuperSport 2026 (Class S++)', status: 'INJECTED TO GARAGE', date: '2026-07-25', source: 'Gemilang Jaya Dealer' },
-    { id: 'ORD-8821', item: '🏠 MLO Villa Gang HQ #402', status: 'KEYS DELIVERED', date: '2026-07-24', source: 'Gemilang Jaya Real Estate' },
-    { id: 'ORD-7710', item: '💎 Donasi Supreme Boss Perks (Rp 25M)', status: 'ACTIVE VIP MEMBER', date: '2026-07-22', source: 'High-Roller Club' }
+  // Dynamic Garage Inventory & Orders based on actual purchases/vouchers
+  const citizenGarage = claimedVouchers.length > 0 ? [
+    ...claimedVouchers.map(v => ({
+      code: v.code || 'custom_vehicle',
+      name: v.title || 'Custom Donator Vehicle',
+      class: v.classTag || 'S++',
+      plate: 'GEMILANG',
+      state: 'Stored in Private Garage'
+    }))
+  ] : [
+    { code: 'bmx', name: 'BMX Starter Bike (Sepeda Warga)', class: 'D', plate: 'STARTER', state: 'Stored in Public Garage' }
   ];
 
-  const mockGarage = [
-    { code: '2019chiron', name: 'Bugatti Chiron SuperSport', class: 'S++', plate: 'GEMILANG', state: 'Stored in Garage 1' },
-    { code: 'g632019', name: 'Mercedes-AMG G63', class: 'B', plate: 'SC 9912', state: 'Stored in Garage 2' },
-    { code: 'civic2020', name: 'Honda Civic Type R', class: 'C', plate: 'SC 1022', state: 'Impounded (SCVP)' }
-  ];
+  const citizenOrders = claimedVouchers.length > 0 ? [
+    ...claimedVouchers.map((v, i) => ({
+      id: `ORD-CLAIM-${1000 + i}`,
+      item: v.detail || v.title,
+      status: 'INJECTED TO GARAGE',
+      date: new Date().toISOString().split('T')[0],
+      source: 'Gemilang Jaya Claim Portal'
+    }))
+  ] : [];
 
   return (
     <div className="min-h-screen bg-[#050713] text-slate-100 font-sans pb-20 relative">
@@ -182,7 +201,7 @@ export default function WargaDashboardPage() {
                   activeTab === 'orders' ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                📦 Riwayat Pesanan & Donasi ({mockOrders.length})
+                📦 Riwayat Pesanan & Donasi ({citizenOrders.length})
               </button>
               <button
                 onClick={() => setActiveTab('garage')}
@@ -190,7 +209,7 @@ export default function WargaDashboardPage() {
                   activeTab === 'garage' ? 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                🏎️ Garasi Mobil IC ({mockGarage.length})
+                🏎️ Garasi Mobil IC ({citizenGarage.length})
               </button>
             </div>
 
@@ -257,32 +276,45 @@ export default function WargaDashboardPage() {
                     <p className="text-xs text-slate-400">Daftar transaksi, voucher terpakai, & status klaim aset IC kamu.</p>
                   </div>
                   <span className="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-black px-3 py-1 rounded-xl">
-                    {mockOrders.length} Active Orders
+                    {citizenOrders.length} Orders Logged
                   </span>
                 </div>
 
-                <div className="space-y-3 text-xs">
-                  {mockOrders.map((ord) => (
-                    <div key={ord.id} className="bg-black/50 border border-white/10 p-4 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-amber-300 font-bold">{ord.id}</span>
-                          <span className="bg-slate-800 text-slate-300 border border-slate-700 text-[10px] px-2 py-0.5 rounded font-bold">
-                            {ord.source}
-                          </span>
+                {citizenOrders.length > 0 ? (
+                  <div className="space-y-3 text-xs">
+                    {citizenOrders.map((ord) => (
+                      <div key={ord.id} className="bg-black/50 border border-white/10 p-4 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-amber-300 font-bold">{ord.id}</span>
+                            <span className="bg-slate-800 text-slate-300 border border-slate-700 text-[10px] px-2 py-0.5 rounded font-bold">
+                              {ord.source}
+                            </span>
+                          </div>
+                          <div className="font-black text-white text-sm">{ord.item}</div>
                         </div>
-                        <div className="font-black text-white text-sm">{ord.item}</div>
-                      </div>
 
-                      <div className="text-right space-y-1">
-                        <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-black px-2.5 py-1 rounded-lg block">
-                          {ord.status}
-                        </span>
-                        <span className="text-[10px] font-mono text-slate-500">{ord.date}</span>
+                        <div className="text-right space-y-1">
+                          <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-black px-2.5 py-1 rounded-lg block">
+                            {ord.status}
+                          </span>
+                          <span className="text-[10px] font-mono text-slate-500">{ord.date}</span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 bg-black/40 border border-white/10 rounded-2xl space-y-3">
+                    <div className="text-2xl">🛍️</div>
+                    <div className="text-sm font-bold text-white">Belum Ada Riwayat Pesanan atau Donasi</div>
+                    <p className="text-xs text-slate-400 max-w-md mx-auto">
+                      Kunjungi Gemilang Jaya Auto Dealer untuk beli kendaraan eksklusif atau klaim kode voucher donasi kamu!
+                    </p>
+                    <Link href="/gemilangjaya" className="inline-block bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 text-xs font-black px-5 py-2.5 rounded-xl shadow-lg shadow-amber-500/20 hover:scale-[1.02] transition-transform">
+                      💎 Kunjungi Gemilang Jaya Dealer →
+                    </Link>
+                  </div>
+                )}
               </div>
             )}
 
@@ -297,12 +329,12 @@ export default function WargaDashboardPage() {
                     <p className="text-xs text-slate-400">Daftar kendaraan yang terdaftar di database `player_vehicles` QBCore.</p>
                   </div>
                   <Link href="/gemilangjaya" className="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold px-3 py-1.5 rounded-xl">
-                    + Tambah Mobil Baru
+                    + Beli / Klaim Mobil Baru
                   </Link>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-4 text-xs">
-                  {mockGarage.map((car, idx) => (
+                  {citizenGarage.map((car, idx) => (
                     <div key={idx} className="bg-black/50 border border-white/10 p-5 rounded-2xl space-y-3">
                       <div className="flex justify-between items-center border-b border-white/10 pb-2">
                         <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-black px-2 py-0.5 rounded">
