@@ -6,7 +6,17 @@ import Link from 'next/link';
 export default function AdminPlengerPage() {
   const [adminPin, setAdminPin] = useState('');
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [userRole, setUserRole] = useState({
+    code: 'GUEST',
+    title: 'Guest',
+    badge: 'GUEST',
+    color: 'bg-slate-500/20 text-slate-300 border-slate-500/40',
+    canDelete: false,
+    canEdit: false,
+    canIssueReward: false
+  });
   const [activeTab, setActiveTab] = useState('overview'); // overview, hierarchy, rewards, donation_system, vehicles
+  const [showPinHelp, setShowPinHelp] = useState(false);
 
   // State Search & Filter Kendaraan
   const [searchQuery, setSearchQuery] = useState('');
@@ -59,12 +69,65 @@ export default function AdminPlengerPage() {
     'D': ['fortwo17', 'GODz61BUS', 'kart', 'mlbrabus', 'RYGBus', 'van_blacklions', 'van_vagos', 'vanzwb06']
   };
 
+  // MULTI-TIER PIN AUTHENTICATION SYSTEM
   const handleAdminAuth = (e) => {
     e.preventDefault();
-    if (adminPin === '7777' || adminPin === '1234' || adminPin === 'plenger') {
+    const cleanPin = adminPin.trim().toLowerCase();
+
+    // 👑 TIER 1: OWNER / FOUNDER (PLENGER BOSS - YOU)
+    if (cleanPin === '7777' || cleanPin === '9999' || cleanPin === 'plengerboss' || cleanPin === 'owner') {
+      setUserRole({
+        code: 'OWNER',
+        title: 'Plenger Boss (Owner & Founder)',
+        badge: '👑 OWNER / FOUNDER PLENGER',
+        color: 'bg-gradient-to-r from-pink-500 to-rose-600 text-white border-pink-400',
+        canDelete: true,
+        canEdit: true,
+        canIssueReward: true
+      });
       setIsAuthorized(true);
-    } else {
-      alert("AKSES ADMIN PLENGER DITOLAK! PIN Rahasia Salah.");
+    } 
+    // 🔥 TIER 2: HIGH MANAGEMENT STAFF
+    else if (cleanPin === '8888' || cleanPin === '1234' || cleanPin === 'mgmt' || cleanPin === 'plenger') {
+      setUserRole({
+        code: 'HIGH_MGMT',
+        title: 'High Management Staff',
+        badge: '🔥 HIGH MANAGEMENT',
+        color: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
+        canDelete: false,
+        canEdit: true,
+        canIssueReward: true
+      });
+      setIsAuthorized(true);
+    } 
+    // 🛡️ TIER 3: STAFF ADMIN & TICKET MODERATOR
+    else if (cleanPin === '5555' || cleanPin === '3333' || cleanPin === 'staff') {
+      setUserRole({
+        code: 'STAFF',
+        title: 'Staff Admin & Moderator',
+        badge: '🛡️ STAFF MODERATOR',
+        color: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+        canDelete: false,
+        canEdit: false,
+        canIssueReward: true
+      });
+      setIsAuthorized(true);
+    } 
+    // 💎 TIER 4: DONATUR VIP / GUEST
+    else if (cleanPin === '1111' || cleanPin === 'vip' || cleanPin === 'donatur') {
+      setUserRole({
+        code: 'DONATUR',
+        title: 'VIP Donatur Plenger',
+        badge: '💎 DONATUR VIP CLUB',
+        color: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+        canDelete: false,
+        canEdit: false,
+        canIssueReward: false
+      });
+      setIsAuthorized(true);
+    } 
+    else {
+      alert("AKSES DITOLAK! PIN Rahasia Salah. Pastikan memasukkan PIN yang benar sesuai role Anda.");
     }
   };
 
@@ -81,6 +144,10 @@ export default function AdminPlengerPage() {
   };
 
   const handleDeleteMember = (id) => {
+    if (!userRole.canDelete) {
+      alert("AKSES DITOLAK! Hanya Owner / Founder Plenger Boss yang berhak menghapus anggota dari hirarki.");
+      return;
+    }
     if (confirm("Apakah Anda yakin ingin menghapus user ini dari hirarki admin/donatur?")) {
       setHierarchyList(hierarchyList.filter(item => item.id !== id));
     }
@@ -88,6 +155,10 @@ export default function AdminPlengerPage() {
 
   const handleIssueReward = (e) => {
     e.preventDefault();
+    if (!userRole.canIssueReward) {
+      alert("AKSES DITOLAK! Role Anda tidak memiliki izin untuk menerbitkan reward/perks.");
+      return;
+    }
     if (!newReward.recipient || !newReward.reason) return;
 
     let detailStr = '';
@@ -108,7 +179,7 @@ export default function AdminPlengerPage() {
 
     setRewardClaims([newClaim, ...rewardClaims]);
     setNewReward({ recipient: '', type: 'DONASI_MOBIL', vehicleCode: 'agerars', pedHash: '', houseId: '', cashAmount: '500000', reason: '' });
-    alert("✨ Reward / Perks Donasi Berhasil Dikeluarkan & Dicatat di System Admin Plenger!");
+    alert(`✨ Reward / Perks Donasi Berhasil Dikeluarkan oleh ${userRole.title}!`);
   };
 
   return (
@@ -120,19 +191,29 @@ export default function AdminPlengerPage() {
             <i className="fa-solid fa-crown text-amber-300"></i>
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-300 bg-clip-text text-transparent">
                 CONSOLE DIREKSI ADMIN PLENGER
               </h1>
-              <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
-                RAPAT READY v2.5
-              </span>
+              {isAuthorized && (
+                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border uppercase tracking-wider ${userRole.color}`}>
+                  {userRole.badge}
+                </span>
+              )}
             </div>
             <p className="text-xs text-slate-400 font-medium">System Hirarki, Donator Perks, Rewards RP, & Kalibrasi 388 Mobil Kota</p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
+          {isAuthorized && (
+            <button
+              onClick={() => { setIsAuthorized(false); setAdminPin(''); }}
+              className="bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 text-xs font-bold px-3 py-2 rounded-xl transition-colors"
+            >
+              🔒 Logout Role
+            </button>
+          )}
           <button onClick={() => window.print()} className="bg-purple-600 hover:bg-purple-500 text-white text-xs font-black px-4 py-2.5 rounded-xl shadow-lg shadow-purple-500/30 flex items-center gap-2 transition-all">
             <i className="fa-solid fa-print"></i> Export Deck Rapat (PDF)
           </button>
@@ -144,14 +225,14 @@ export default function AdminPlengerPage() {
 
       <main className="max-w-7xl mx-auto mt-6 px-4 md:px-6 space-y-6">
         {!isAuthorized ? (
-          /* SECRET LOGIN GATE */
-          <div className="max-w-md mx-auto my-20 bg-slate-900/90 border border-purple-500/40 rounded-3xl p-8 backdrop-blur-xl shadow-2xl text-center space-y-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-indigo-900 border border-purple-400/40 rounded-3xl mx-auto flex items-center justify-center text-4xl text-amber-300 shadow-xl shadow-purple-500/30">
+          /* MULTI-TIER SECRET LOGIN GATE */
+          <div className="max-w-lg mx-auto my-16 bg-slate-900/90 border border-purple-500/40 rounded-3xl p-8 backdrop-blur-xl shadow-2xl text-center space-y-6">
+            <div className="w-20 h-20 bg-gradient-to-br from-purple-600 via-pink-600 to-indigo-900 border border-purple-400/40 rounded-3xl mx-auto flex items-center justify-center text-4xl text-amber-300 shadow-xl shadow-purple-500/30">
               <i className="fa-solid fa-user-shield"></i>
             </div>
             <div className="space-y-2">
               <h3 className="text-2xl font-black text-white">PORTAL RAHASIA ADMIN PLENGER</h3>
-              <p className="text-xs text-slate-400">Verifikasi akses khusus High Management & Founder sebelum presentasi rapat.</p>
+              <p className="text-xs text-slate-400">Masukkan Kode PIN Sesuai Role & Jabatan Anda di Kota Supercali RP</p>
             </div>
 
             <form onSubmit={handleAdminAuth} className="space-y-4">
@@ -160,20 +241,79 @@ export default function AdminPlengerPage() {
                   type="password"
                   value={adminPin}
                   onChange={(e) => setAdminPin(e.target.value)}
-                  placeholder="Masukkan PIN Admin (7777 / 1234)..."
+                  placeholder="Masukkan PIN Rahasia Role Anda..."
                   required
                   className="w-full bg-black/70 border border-purple-500/40 rounded-2xl p-4 text-white text-center font-mono text-xl tracking-widest outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-500/40"
                 />
               </div>
               <button type="submit" className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-800 text-white font-black p-4 rounded-2xl shadow-xl shadow-purple-500/40 hover:scale-[1.02] active:scale-[0.98] transition-transform">
-                🔓 MASUK CONSOLE PLENGER
+                🔓 MASUK DENGAN ROLE ANDA
               </button>
             </form>
+
+            {/* TOGGLE PIN HINT MODAL/CHATSHEET UNTUK BOSS */}
+            <div className="pt-2 border-t border-white/10">
+              <button
+                type="button"
+                onClick={() => setShowPinHelp(!showPinHelp)}
+                className="text-[11px] text-purple-400 font-bold hover:underline flex items-center justify-center gap-1.5 mx-auto"
+              >
+                <i className="fa-solid fa-key"></i> {showPinHelp ? 'Sembunyikan Daftar Kode PIN Role' : 'Lihat Daftar Kode PIN Role Admin'}
+              </button>
+
+              {showPinHelp && (
+                <div className="mt-4 p-4 bg-black/60 border border-purple-500/30 rounded-2xl text-left space-y-3 text-xs">
+                  <div className="font-black text-amber-300 flex items-center gap-2">
+                    <i className="fa-solid fa-shield-halved"></i> Daftar Kode PIN Sesuai Role:
+                  </div>
+                  <div className="space-y-2 font-mono text-[11px]">
+                    <div className="flex justify-between items-center bg-pink-500/10 border border-pink-500/30 p-2 rounded-xl">
+                      <span className="text-pink-300 font-bold">👑 Plenger Boss (Owner / You)</span>
+                      <span className="bg-pink-500/30 text-white font-black px-2 py-0.5 rounded">7777</span>
+                    </div>
+                    <div className="flex justify-between items-center bg-purple-500/10 border border-purple-500/30 p-2 rounded-xl">
+                      <span className="text-purple-300 font-bold">🔥 High Management</span>
+                      <span className="bg-purple-500/30 text-white font-black px-2 py-0.5 rounded">1234</span>
+                    </div>
+                    <div className="flex justify-between items-center bg-blue-500/10 border border-blue-500/30 p-2 rounded-xl">
+                      <span className="text-blue-300 font-bold">🛡️ Staff Admin / Moderator</span>
+                      <span className="bg-blue-500/30 text-white font-black px-2 py-0.5 rounded">5555</span>
+                    </div>
+                    <div className="flex justify-between items-center bg-amber-500/10 border border-amber-500/30 p-2 rounded-xl">
+                      <span className="text-amber-300 font-bold">💎 Donatur VIP Viewer</span>
+                      <span className="bg-amber-500/30 text-white font-black px-2 py-0.5 rounded">1111</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         ) : (
           /* AUTHORIZED DASHBOARD CONTAINER */
           <div className="space-y-6">
             
+            {/* WELCOME BADGE USER ROLE */}
+            <div className="bg-gradient-to-r from-slate-900 via-purple-950/40 to-slate-900 border border-purple-500/30 p-4 rounded-2xl backdrop-blur-md flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-purple-500/20 border border-purple-500/40 rounded-xl flex items-center justify-center text-purple-300 text-lg">
+                  <i className="fa-solid fa-user-check"></i>
+                </div>
+                <div>
+                  <div className="text-xs text-slate-400">Terautentikasi Sebagai:</div>
+                  <div className="text-sm font-black text-white flex items-center gap-2">
+                    <span>{userRole.title}</span>
+                    <span className={`px-2 py-0.5 rounded-md text-[10px] font-black border ${userRole.color}`}>
+                      {userRole.badge}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="text-xs text-slate-400 font-mono">
+                Hak Akses: {userRole.canDelete ? '✓ Full Root Access' : userRole.canEdit ? '✓ Edit & Issue Allowed' : '👁️ View & Claim Only'}
+              </div>
+            </div>
+
             {/* EXECUTIVE NAVIGATION TABS */}
             <div className="flex flex-wrap gap-2 p-1.5 bg-slate-900/80 border border-white/10 rounded-2xl backdrop-blur-md">
               <button
@@ -295,12 +435,14 @@ export default function AdminPlengerPage() {
                     </h3>
                     <p className="text-xs text-slate-400">Atur siapa pemegang Owner, High Management, Admin/Mod, serta Donatur VIP kota.</p>
                   </div>
-                  <button
-                    onClick={() => setShowMemberModal(true)}
-                    className="bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-500 hover:to-indigo-600 text-white text-xs font-extrabold px-5 py-3 rounded-xl shadow-lg shadow-purple-500/30 flex items-center gap-2 transition-transform active:scale-95"
-                  >
-                    <i className="fa-solid fa-user-plus"></i> Tambah Anggota / Donatur Baru
-                  </button>
+                  {userRole.canEdit && (
+                    <button
+                      onClick={() => setShowMemberModal(true)}
+                      className="bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-500 hover:to-indigo-600 text-white text-xs font-extrabold px-5 py-3 rounded-xl shadow-lg shadow-purple-500/30 flex items-center gap-2 transition-transform active:scale-95"
+                    >
+                      <i className="fa-solid fa-user-plus"></i> Tambah Anggota / Donatur Baru
+                    </button>
+                  )}
                 </div>
 
                 {/* MODAL FORM TAMBAH/EDIT MEMBER */}
@@ -443,12 +585,16 @@ export default function AdminPlengerPage() {
                             </td>
                             <td className="p-3.5 text-slate-300 font-medium">{item.perkCount}</td>
                             <td className="p-3.5 text-right space-x-2">
-                              <button
-                                onClick={() => handleDeleteMember(item.id)}
-                                className="bg-red-500/20 hover:bg-red-500/40 text-red-300 border border-red-500/40 px-3 py-1.5 rounded-lg font-bold text-[11px]"
-                              >
-                                Hapus
-                              </button>
+                              {userRole.canDelete ? (
+                                <button
+                                  onClick={() => handleDeleteMember(item.id)}
+                                  className="bg-red-500/20 hover:bg-red-500/40 text-red-300 border border-red-500/40 px-3 py-1.5 rounded-lg font-bold text-[11px]"
+                                >
+                                  Hapus
+                                </button>
+                              ) : (
+                                <span className="text-[10px] text-slate-500 italic">Restricted</span>
+                              )}
                             </td>
                           </tr>
                         );
