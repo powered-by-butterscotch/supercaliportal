@@ -470,7 +470,7 @@ export default function GemilangJayaPage() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
               
               {/* SILVER TIER */}
               <div className="bg-slate-900/90 border border-slate-700 p-5 rounded-3xl space-y-4 hover:border-slate-500 transition-all">
@@ -533,7 +533,7 @@ export default function GemilangJayaPage() {
             </div>
 
             {/* MODUL SEPARATE BUSINESS PURCHASES & ENTERPRISE PERMITS */}
-            <div className="bg-gradient-to-r from-purple-950/70 via-slate-900 to-amber-950/70 border border-purple-500/40 p-7 rounded-3xl backdrop-blur-xl shadow-2xl space-y-4">
+            <div className="bg-gradient-to-r from-purple-950/70 via-slate-900 to-amber-950/70 border border-purple-500/40 p-5 sm:p-7 rounded-3xl backdrop-blur-xl shadow-2xl space-y-4">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/10 pb-4">
                 <div>
                   <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-black px-2.5 py-1 rounded-md uppercase">
@@ -549,7 +549,7 @@ export default function GemilangJayaPage() {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
                 <div className="bg-black/50 border border-white/10 p-4 rounded-2xl space-y-2">
                   <div className="font-black text-cyan-300 text-sm flex justify-between">
                     <span>Commercial Store / Stand</span>
@@ -575,6 +575,7 @@ export default function GemilangJayaPage() {
                 </div>
               </div>
             </div>
+
 
           </div>
         )}

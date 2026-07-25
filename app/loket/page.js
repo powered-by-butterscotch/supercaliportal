@@ -79,7 +79,8 @@ export default function LoketPage() {
             <span className="text-xs text-cyan-400 font-bold">6 Instansi Registered</span>
           </div>
 
-          <div className="grid grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+
             {depts.map((d) => (
               <button
                 key={d.id}

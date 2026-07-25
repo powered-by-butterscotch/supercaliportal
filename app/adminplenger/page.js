@@ -559,8 +559,10 @@ export default function AdminPlengerPage() {
                   )}
                 </div>
 
-                <div className="bg-slate-900/80 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-md shadow-2xl p-6 space-y-4">
-                  <table className="w-full text-left border-collapse">
+                <div className="bg-slate-900/80 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-md shadow-2xl p-4 sm:p-6 space-y-4">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse min-w-[700px]">
+
                     <thead className="bg-white/5 text-xs text-slate-400 font-bold uppercase border-b border-white/10">
                       <tr>
                         <th className="p-3.5">Nama / Identitas</th>
@@ -615,6 +617,8 @@ export default function AdminPlengerPage() {
                   </table>
                 </div>
               </div>
+            </div>
+
             )}
 
             {/* TAB 3: REWARD & CLAIM SELECTOR */}
