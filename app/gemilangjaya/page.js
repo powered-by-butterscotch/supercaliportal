@@ -68,31 +68,62 @@ export default function GemilangJayaPage() {
     }
   };
 
+  const DEFAULT_VOUCHER_DB = [
+    { code: 'GEMILANG-S1-VIP', type: 'MULTI', title: 'Gemilang Jaya VIP Season 1 Bundle', detail: 'Paket VIP Season 1: Hypercar Chiron + Custom PED Import + Luxury Villa Property + $1,000,000 Cash IC', vehicleCode: '2019chiron', isUsed: false, usedBy: null, date: '2026-07-25' },
+    { code: 'PED-SULTAN-2026', type: 'PED', title: 'Custom Character PED Import Slot', detail: 'Slot Character Custom PED Import (sc-ped)', vehicleCode: 'sc-ped-slot', isUsed: false, usedBy: null, date: '2026-07-25' },
+    { code: 'CHIRON-EXOTIC-2026', type: 'CHIRON', title: 'Bugatti Chiron SuperSport 2026', detail: 'Bugatti Chiron SuperSport 2026 (Class S++ Speed Demon)', vehicleCode: '2019chiron', isUsed: false, usedBy: null, date: '2026-07-25' },
+    { code: 'VILLAMLO-402', type: 'VILLA', title: 'MLO Villa Gang HQ #402', detail: 'MLO Villa Gang HQ #402 (ps-housing)', vehicleCode: 'mlo-house-402', isUsed: false, usedBy: null, date: '2026-07-25' }
+  ];
+
   const handleClaimVoucher = (e) => {
     e.preventDefault();
     const clean = voucherCode.trim().toUpperCase();
     if (!clean) return;
 
-    if (clean === 'GEMILANG-S1-VIP') {
-      const claim = { code: '2019chiron', title: 'Bugatti Chiron SuperSport (VIP Season 1)', classTag: 'S++', detail: 'Hypercar Chiron + Villa MLO' };
-      setClaimResult({ success: true, title: '✨ SLAYYY! VOUCHER VALID FR FR!', detail: claim.detail });
-      saveClaimToStorage(claim);
-      showToast("✨ BERHASIL KLAIM: Voucher VIP Season 1! Masuk ke Dashboard Garasi kamu!", "success");
-    } else if (clean === 'PED-SULTAN-2026') {
-      const claim = { code: 'sc-ped-slot', title: 'Custom Character PED Import Slot', classTag: 'PED', detail: 'PED Import Slot (sc-ped)' };
-      setClaimResult({ success: true, title: '✨ SICK! VOUCHER AKTIF!', detail: claim.detail });
-      saveClaimToStorage(claim);
-      showToast("🧍 BERHASIL KLAIM: Custom PED Import Slot!", "success");
-    } else if (clean === 'CHIRON-EXOTIC-2026') {
-      const claim = { code: '2019chiron', title: 'Bugatti Chiron SuperSport 2026', classTag: 'S++', detail: 'Class S++ Speed Demon' };
-      setClaimResult({ success: true, title: '🔥 HYPERCAR UNLOCKED!', detail: claim.detail });
-      saveClaimToStorage(claim);
-      showToast("🏎️ BERHASIL KLAIM: Bugatti Chiron! Masuk ke Garasi Dashboard!", "success");
-    } else {
-      setClaimResult({ success: false, title: '❌ WHAATT? KODE WRONG ATAU EXPIRED!', detail: 'Coba re-check kodenya brodie, pastiin typo-free yaa!' });
-      showToast("❌ Kode Voucher tidak ditemukan atau expired!", "error");
+    let db = DEFAULT_VOUCHER_DB;
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('supercali_voucher_database');
+      if (saved) {
+        try { db = JSON.parse(saved); } catch (e) {}
+      }
     }
+
+    const index = db.findIndex(v => v.code.toUpperCase() === clean);
+    if (index === -1) {
+      setClaimResult({ success: false, title: '❌ KODE VOUCHER WRONG ATAU TIDAK ADA!', detail: 'Coba re-check kodenya brodie, pastiin typo-free yaa!' });
+      showToast("❌ Kode Voucher tidak ditemukan di Database Kota!", "error");
+      return;
+    }
+
+    const voucher = db[index];
+    if (voucher.isUsed) {
+      setClaimResult({ success: false, title: '❌ VOUCHER SUDAH PERNAH DIKLAIM!', detail: `Kode Voucher '${voucher.code}' sudah pernah digunakan oleh ${voucher.usedBy || 'Warga lain'}.` });
+      showToast(`❌ Voucher sudah pernah diklaim oleh ${voucher.usedBy || 'Warga lain'}!`, "error");
+      return;
+    }
+
+    // Mark as used & bind to active citizen
+    const redeemerName = citizenSession ? `${citizenSession.icName} (CID: ${citizenSession.cid})` : 'Warga Anonymous';
+    db[index].isUsed = true;
+    db[index].usedBy = redeemerName;
+
+    const claimObj = {
+      code: voucher.vehicleCode || 'custom_reward',
+      title: voucher.title,
+      classTag: 'S++',
+      detail: voucher.detail,
+      redeemedDate: new Date().toISOString().split('T')[0]
+    };
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('supercali_voucher_database', JSON.stringify(db));
+      saveClaimToStorage(claimObj);
+    }
+
+    setClaimResult({ success: true, title: '✨ SLAYYY! VOUCHER VALID & AKTIF!', detail: `Selamat ${redeemerName}! ${voucher.title} (${voucher.detail}) berhasil dikirim ke KTP/Garasi kamu!` });
+    showToast(`✨ BERHASIL KLAIM: ${voucher.title}! Masuk ke Garasi / KTP kamu!`, "success");
   };
+
 
 
   return (

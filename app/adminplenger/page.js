@@ -234,36 +234,104 @@ export default function AdminPlengerPage() {
     showToast(`✨ Reward / Perks Donasi Berhasil Dikeluarkan oleh ${userRole.title}!`, "success");
   };
 
+  // DEFAULT PRESET VOUCHERS DATABASE
+  const DEFAULT_VOUCHER_DB = [
+    { code: 'GEMILANG-S1-VIP', type: 'MULTI', title: 'Gemilang Jaya VIP Season 1 Bundle', detail: 'Paket VIP Season 1: Hypercar Chiron + Custom PED Import + Luxury Villa Property + $1,000,000 Cash IC', vehicleCode: '2019chiron', isUsed: false, usedBy: null, date: '2026-07-25' },
+    { code: 'PED-SULTAN-2026', type: 'PED', title: 'Custom Character PED Import Slot', detail: 'Slot Character Custom PED Import (sc-ped)', vehicleCode: 'sc-ped-slot', isUsed: false, usedBy: null, date: '2026-07-25' },
+    { code: 'CHIRON-EXOTIC-2026', type: 'CHIRON', title: 'Bugatti Chiron SuperSport 2026', detail: 'Bugatti Chiron SuperSport 2026 (Class S++ Speed Demon)', vehicleCode: '2019chiron', isUsed: false, usedBy: null, date: '2026-07-25' },
+    { code: 'VILLAMLO-402', type: 'VILLA', title: 'MLO Villa Gang HQ #402', detail: 'MLO Villa Gang HQ #402 (ps-housing)', vehicleCode: 'mlo-house-402', isUsed: false, usedBy: null, date: '2026-07-25' }
+  ];
+
   const handleRedeemVoucher = (e) => {
     e.preventDefault();
     const clean = redeemInput.trim().toUpperCase();
     if (!clean) return;
 
-    if (clean === 'GEMILANG-S1-VIP') {
-      setRedeemStatus({ success: true, text: '✨ BERHASIL KLAIM: Gemilang Jaya VIP Season 1 (Hypercar Chiron + PED Hash + MLO Villa #402 + $1M Cash)' });
-      showToast("✨ BERHASIL KLAIM: Voucher VIP Season 1!", "success");
-    } else if (clean === 'PED-SULTAN-2026') {
-      setRedeemStatus({ success: true, text: '🧍 BERHASIL KLAIM: Custom PED Import Hash (cs_martinmadrazo)' });
-      showToast("🧍 BERHASIL KLAIM: Custom PED Import Hash!", "success");
-    } else if (clean === 'CHIRON-EXOTIC-2026') {
-      setRedeemStatus({ success: true, text: '🏎️ BERHASIL KLAIM: Bugatti Chiron SuperSport 2026 (Class S++)' });
-      showToast("🏎️ BERHASIL KLAIM: Hypercar Chiron SuperSport!", "success");
-    } else {
-      setRedeemStatus({ success: false, text: '❌ Kode Voucher tidak ditemukan atau sudah pernah diklaim!' });
-      showToast("❌ Kode Voucher salah atau expired!", "error");
+    let db = DEFAULT_VOUCHER_DB;
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('supercali_voucher_database');
+      if (saved) {
+        try { db = JSON.parse(saved); } catch (e) {}
+      }
     }
+
+    const index = db.findIndex(v => v.code.toUpperCase() === clean);
+    if (index === -1) {
+      setRedeemStatus({ success: false, text: '❌ Kode Voucher tidak ditemukan di Database Kota!' });
+      showToast("❌ Kode Voucher tidak ditemukan!", "error");
+      return;
+    }
+
+    const voucher = db[index];
+    if (voucher.isUsed) {
+      setRedeemStatus({ success: false, text: `❌ Kode Voucher '${voucher.code}' sudah pernah diklaim oleh ${voucher.usedBy || 'Warga lain'}!` });
+      showToast(`❌ Kode Voucher sudah pernah diklaim oleh ${voucher.usedBy || 'Warga lain'}!`, "error");
+      return;
+    }
+
+    // Mark as used
+    db[index].isUsed = true;
+    db[index].usedBy = `${userRole.title} (Admin Test)`;
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('supercali_voucher_database', JSON.stringify(db));
+    }
+
+    setRedeemStatus({ success: true, text: `✨ BERHASIL KLAIM: ${voucher.title} (${voucher.detail})` });
+    showToast(`✨ BERHASIL KLAIM: ${voucher.title}!`, "success");
   };
 
   const handleGenerateVoucher = () => {
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const code = `GJ-${genVoucherType}-${randomSuffix}`;
-    setGeneratedVoucher({
+
+    let title = 'Gemilang Jaya Custom Voucher';
+    let detail = 'Custom Voucher Perk Gemilang Jaya';
+    let vehicleCode = 'custom_reward';
+
+    if (genVoucherType === 'MULTI') {
+      title = 'VIP Season 1 Bundle (Chiron + PED + Villa + $1M Cash)';
+      detail = 'Bundle Perk VIP Season 1 Gemilang Jaya';
+      vehicleCode = '2019chiron';
+    } else if (genVoucherType === 'PED') {
+      title = 'Custom Character PED Import Slot';
+      detail = 'PED Import Slot (sc-ped)';
+      vehicleCode = 'sc-ped-slot';
+    } else if (genVoucherType === 'CHIRON') {
+      title = 'Bugatti Chiron SuperSport 2026';
+      detail = 'Class S++ Speed Demon Chiron';
+      vehicleCode = '2019chiron';
+    } else if (genVoucherType === 'VILLA') {
+      title = 'Villa MLO Property Permit';
+      detail = 'Custom Property Villa MLO (ps-housing)';
+      vehicleCode = 'mlo-house-custom';
+    }
+
+    const newVoucher = {
       code: code,
       type: genVoucherType,
+      title: title,
+      detail: detail,
+      vehicleCode: vehicleCode,
+      isUsed: false,
+      usedBy: null,
       date: new Date().toISOString().split('T')[0]
-    });
-    showToast(`✨ Kode Voucher ${code} Berhasil Dibuat!`, "success");
+    };
+
+    if (typeof window !== 'undefined') {
+      let db = DEFAULT_VOUCHER_DB;
+      const saved = localStorage.getItem('supercali_voucher_database');
+      if (saved) {
+        try { db = JSON.parse(saved); } catch (e) {}
+      }
+      db = [newVoucher, ...db];
+      localStorage.setItem('supercali_voucher_database', JSON.stringify(db));
+    }
+
+    setGeneratedVoucher(newVoucher);
+    showToast(`✨ Kode Voucher ${code} Berhasil Dibuat & Aktif di Database Kota!`, "success");
   };
+
 
   const getGeneratedCommand = () => {
     if (cmdType === 'setjob') return `/setjob ${cmdPlayerId} ${cmdParam}`;
